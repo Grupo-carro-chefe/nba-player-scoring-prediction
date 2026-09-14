@@ -1,3 +1,21 @@
+# ─── Específico deste projeto ────────────────────────────────────────────────
+# Dados coletados: grandes e reprodutíveis via `python -m src.collect`
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+# o manifest e pequeno e documenta a proveniencia da coleta: fica versionado
+!data/raw/manifest.json
+
+# Cache de respostas da API da NBA
+.cache_nba/
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+
+# ─── Template Python padrão (GitHub) ─────────────────────────────────────────
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

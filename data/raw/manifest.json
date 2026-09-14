@@ -1,0 +1,40 @@
+{
+  "coletado_em_utc": "2026-09-14T20:08:22+00:00",
+  "fonte": "stats.nba.com via nba_api",
+  "nba_api_version": "1.11.4",
+  "endpoints": [
+    "leaguegamelog.LeagueGameLog(player_or_team_abbreviation='P')",
+    "leaguegamelog.LeagueGameLog(player_or_team_abbreviation='T')"
+  ],
+  "temporadas": [
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26"
+  ],
+  "season_types": [
+    "Regular Season"
+  ],
+  "requests_realizados": 8,
+  "cache_hits": 2,
+  "linhas": {
+    "player_game_logs": 131292,
+    "team_game_logs": 12300
+  },
+  "filtros": {
+    "grao": "uma linha por jogador-jogo",
+    "temporadas_excluidas": [
+      "2019-20",
+      "2020-21"
+    ],
+    "motivo_exclusao": "temporadas atipicas de COVID",
+    "playoffs_incluidos": false
+  },
+  "arquivos": [
+    "player_game_logs.csv",
+    "player_game_logs.parquet",
+    "team_game_logs.csv",
+    "team_game_logs.parquet"
+  ]
+}
