@@ -5,7 +5,7 @@
 #
 # INTEGRANTES DO GRUPO:
 #   - Rodrigo Lucas Mascarenhas Leite Oliveira - TIA 10427925
-#   - Andre Ihsan Ward - TIA 10425684
+#   - André Ihsan Ward - TIA 10425684
 #
 # ARQUIVO: src/io_utils.py
 # SINTESE: Leitura e escrita de tabelas em parquet com fallback para CSV.

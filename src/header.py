@@ -5,7 +5,7 @@
 #
 # INTEGRANTES DO GRUPO:
 #   - Rodrigo Lucas Mascarenhas Leite Oliveira - TIA 10427925
-#   - Andre Ihsan Ward - TIA 10425684
+#   - André Ihsan Ward - TIA 10425684
 #
 # ARQUIVO: src/header.py
 # SINTESE: Metadados do grupo para o cabeçalho obrigatório.
@@ -29,7 +29,7 @@ PROJETO = "Previsão de desempenho de jogadores da NBA (pontos por jogo)"
 
 INTEGRANTES: list[dict[str, str]] = [
     {"nome": "Rodrigo Lucas Mascarenhas Leite Oliveira", "tia": "10427925"},
-    {"nome": "Andre Ihsan Ward", "tia": "10425684"},
+    {"nome": "André Ihsan Ward", "tia": "10425684"},
 ]
 
 SINTESES: dict[str, str] = {

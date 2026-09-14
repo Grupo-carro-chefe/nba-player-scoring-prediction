@@ -5,7 +5,7 @@
 #
 # INTEGRANTES DO GRUPO:
 #   - Rodrigo Lucas Mascarenhas Leite Oliveira - TIA 10427925
-#   - Andre Ihsan Ward - TIA 10425684
+#   - André Ihsan Ward - TIA 10425684
 #
 # ARQUIVO: src/target.py
 # SINTESE: Alvos de regressão e classificação com linha sintética.

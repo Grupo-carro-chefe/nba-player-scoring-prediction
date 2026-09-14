@@ -5,7 +5,7 @@
 #
 # INTEGRANTES DO GRUPO:
 #   - Rodrigo Lucas Mascarenhas Leite Oliveira - TIA 10427925
-#   - Andre Ihsan Ward - TIA 10425684
+#   - André Ihsan Ward - TIA 10425684
 #
 # ARQUIVO: tests/test_no_leakage.py
 # SINTESE: Testes de vazamento temporal nas features.

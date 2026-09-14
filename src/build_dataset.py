@@ -5,7 +5,7 @@
 #
 # INTEGRANTES DO GRUPO:
 #   - Rodrigo Lucas Mascarenhas Leite Oliveira - TIA 10427925
-#   - Andre Ihsan Ward - TIA 10425684
+#   - André Ihsan Ward - TIA 10425684
 #
 # ARQUIVO: src/build_dataset.py
 # SINTESE: Pipeline de coleta bruta até dataset analítico com split temporal.
