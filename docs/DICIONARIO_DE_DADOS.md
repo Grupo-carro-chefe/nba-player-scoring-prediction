@@ -7,9 +7,9 @@ Dataset analítico: `data/processed/dataset.csv` (e `.parquet` quando `pyarrow` 
 
 A coluna **Momento** é a mais importante para avaliar o trabalho:
 
-- **pré-jogo** — informação disponível **antes da bola subir**. Pode ser usada como feature (`X`).
-- **pós-jogo** — só existe depois que o jogo acabou. É **alvo** (`y`) e nunca pode entrar em `X`.
-- **contexto** — identificação/metadado. Não é feature nem alvo (mas `is_home` é exceção: é conhecido antes e vira feature).
+- **pré-jogo**: informação disponível **antes da bola subir**. Pode ser usada como feature (`X`).
+- **pós-jogo**: só existe depois que o jogo acabou. É **alvo** (`y`) e nunca pode entrar em `X`.
+- **contexto**: identificação/metadado. Não é feature nem alvo (mas `is_home` é exceção: é conhecido antes e vira feature).
 
 ---
 
@@ -30,7 +30,7 @@ A coluna **Momento** é a mais importante para avaliar o trabalho:
 
 ---
 
-## Features pré-jogo — produção recente do jogador
+## Features pré-jogo: produção recente do jogador
 
 Todas calculadas por (`PLAYER_ID`, `SEASON`) e **shiftadas em 1 jogo**: a linha do jogo *t* só enxerga jogos < *t*, e a janela **zera a cada temporada**.
 
@@ -43,7 +43,7 @@ Todas calculadas por (`PLAYER_ID`, `SEASON`) e **shiftadas em 1 jogo**: a linha 
 | `pts_std5_prev` | float | Desvio-padrão dos pontos nos 5 jogos anteriores (volatilidade) | derivada de `PTS` | pré-jogo |
 | `pts_season_mean_prev` | float | Média de pontos acumulada na temporada até o jogo anterior | derivada de `PTS` | pré-jogo |
 
-## Features pré-jogo — oportunidade (minutos e volume)
+## Features pré-jogo: oportunidade (minutos e volume)
 
 Minutos e volume de arremesso são os preditores mais fortes de pontos: quem não joga, não pontua.
 
@@ -58,18 +58,18 @@ Minutos e volume de arremesso são os preditores mais fortes de pontos: quem nã
 | `fg3a_ma5_prev` | float | Média de tentativas de 3 pontos (5 jogos) | derivada de `FG3A` | pré-jogo |
 | `fta_ma5_prev` | float | Média de tentativas de lance livre (5 jogos) | derivada de `FTA` | pré-jogo |
 
-## Features pré-jogo — contexto do jogador
+## Features pré-jogo: contexto do jogador
 
 | Coluna | Tipo | Descrição | Fonte | Momento |
 |---|---|---|---|---|
-| `reb_ma5_prev` | float | Média de rebotes (5 jogos) — proxy de papel/posição | derivada de `REB` | pré-jogo |
-| `ast_ma5_prev` | float | Média de assistências (5 jogos) — proxy de papel de criação | derivada de `AST` | pré-jogo |
+| `reb_ma5_prev` | float | Média de rebotes (5 jogos): proxy de papel/posição | derivada de `REB` | pré-jogo |
+| `ast_ma5_prev` | float | Média de assistências (5 jogos): proxy de papel de criação | derivada de `AST` | pré-jogo |
 | `games_played_prev` | int | Jogos já disputados pelo jogador **naquela temporada** (0 no primeiro) | derivada | pré-jogo |
 | `starter_proxy_prev` | Int64 (0/1) | **PROXY** de titularidade: `1` se `min_ma5_prev ≥ 28`. Ver ressalva abaixo | derivada de `MIN` | pré-jogo |
 
 > ⚠️ **`starter_proxy_prev` não é a escalação oficial.** O endpoint de game log não expõe `START_POSITION`; obter a escalação real exigiria uma requisição de box score **por jogo** (dezenas de milhares), inviável sob rate limit. Usamos minutos recentes como proxy declarado. Consequência: um titular recém-promovido aparece como reserva por alguns jogos, e um titular voltando de lesão idem. Está listado em `docs/LIMITACOES_E_VIESES.md`.
 
-## Features pré-jogo — calendário e mando
+## Features pré-jogo: calendário e mando
 
 | Coluna | Tipo | Descrição | Fonte | Momento |
 |---|---|---|---|---|
@@ -77,7 +77,7 @@ Minutos e volume de arremesso são os preditores mais fortes de pontos: quem nã
 | `is_b2b` | Int64 (0/1) | `1` se é *back-to-back* (`rest_days == 1`) | derivada | pré-jogo |
 | `is_home` | Int64 (0/1) | `1` se o jogador joga em casa | derivada de `MATCHUP` | pré-jogo |
 
-## Features pré-jogo — força do adversário
+## Features pré-jogo: força do adversário
 
 Calculadas a partir do log **por time** e shiftadas: na linha do jogo *t*, o valor é a média do adversário **até o jogo anterior dele**.
 
@@ -87,7 +87,8 @@ Calculadas a partir do log **por time** e shiftadas: na linha do jogo *t*, o val
 | `opp_pace_proxy_prev` | float | Proxy de ritmo: média do total de pontos dos jogos do adversário | derivada de `team_game_logs` | pré-jogo |
 | `opp_games_played_prev` | int | Jogos já disputados pelo adversário na temporada | derivada | pré-jogo |
 
-> Usamos pontos cedidos calculados dos próprios jogos em vez de um *defensive rating* de temporada fechada **de propósito**: o rating publicado resume a temporada inteira, incluindo jogos que ainda não aconteceram na data da linha — vazamento clássico.
+> Usamos pontos cedidos calculados dos próprios jogos em vez de um *defensive rating* de temporada fechada **de propósito**: o rating publicado resume a temporada inteira, incluindo jogos que ainda não aconteceram na data da linha, o que é vazamento
+clássico.
 
 ---
 
@@ -96,14 +97,14 @@ Calculadas a partir do log **por time** e shiftadas: na linha do jogo *t*, o val
 | Coluna | Tipo | Descrição | Fonte | Momento |
 |---|---|---|---|---|
 | `line_synthetic` | float | **Linha sintética**: mediana dos pontos dos 10 jogos anteriores, arredondada para `.5` | derivada (`src/target.py`) | pré-jogo |
-| `y_pts` | int | **Alvo de regressão** — pontos marcados no jogo | nba_api / `PTS` | **pós-jogo** |
-| `y_over` | int (0/1) | **Alvo de classificação** — `1` se `y_pts > line_synthetic` | derivada | **pós-jogo** |
+| `y_pts` | int | **Alvo de regressão**: pontos marcados no jogo | nba_api / `PTS` | **pós-jogo** |
+| `y_over` | int (0/1) | **Alvo de classificação**: `1` se `y_pts > line_synthetic` | derivada | **pós-jogo** |
 
 Notas sobre os alvos:
 
 - A linha é arredondada para `.5` e os pontos são inteiros, então **nunca há empate** (*push*): o alvo binário é sempre bem definido.
 - `y_over` é `NaN` (e a linha é descartada) enquanto o jogador não tem 10 jogos na temporada. Não viram zero.
-- A justificativa completa da linha sintética — e por que não usamos linha de mercado — está em `src/target.py` e em `docs/AUDITORIA_TECNICA.md`.
+- A justificativa completa da linha sintética (e por que não usamos linha de mercado) está em `src/target.py` e em `docs/AUDITORIA_TECNICA.md`.
 
 ---
 

@@ -1,6 +1,6 @@
 # Previsão de desempenho de jogadores da NBA
 
-Projeto da disciplina de **Inteligência Artificial** — Universidade Presbiteriana Mackenzie.
+Projeto da disciplina de **Inteligência Artificial**: Universidade Presbiteriana Mackenzie.
 
 O objetivo é prever **quantos pontos um jogador da NBA marca em uma partida**,
 usando apenas informação disponível antes do jogo começar. O enquadramento é de
@@ -39,11 +39,11 @@ O pipeline tem três etapas independentes:
                                                     (features + alvos + split)
 ```
 
-1. **Coleta** (`src/collect.py`) — baixa os game logs da temporada, no grão de
+1. **Coleta** (`src/collect.py`): baixa os game logs da temporada, no grão de
    uma linha por jogador-jogo, com cache local e limite de requisições.
-2. **Features e alvos** (`src/features.py`, `src/target.py`) — transforma o
+2. **Features e alvos** (`src/features.py`, `src/target.py`): transforma o
    histórico em variáveis pré-jogo e define o que será previsto.
-3. **Dataset** (`src/build_dataset.py`) — junta tudo, aplica os filtros e marca
+3. **Dataset** (`src/build_dataset.py`): junta tudo, aplica os filtros e marca
    a divisão treino/validação/teste.
 
 ---
@@ -161,15 +161,20 @@ jupyter notebook notebooks/01_eda.ipynb
 
 ## Dados gerados
 
-Nada em `data/` é versionado — tudo é reproduzível pelos scripts.
+O dataset analítico e os manifests ficam versionados, por serem itens de
+entrega. Os arquivos brutos não, por serem grandes e reproduzíveis pelos scripts.
 
-| Arquivo | Conteúdo |
-|---|---|
-| `data/raw/player_game_logs.csv` | Bruto, uma linha por jogador-jogo |
-| `data/raw/team_game_logs.csv` | Bruto por time, usado para calcular a defesa do adversário |
-| `data/raw/manifest.json` | Data da coleta, endpoints, versão da lib, filtros, contagem de linhas |
-| `data/processed/dataset.csv` | Dataset analítico: features pré-jogo, alvos e split |
-| `data/processed/dataset_manifest.json` | Metadados do dataset (features, filtros, balanceamento) |
+| Arquivo | Conteúdo | No repositório |
+|---|---|---|
+| `data/processed/dataset.csv` | **Dataset analítico** (24 MB): features pré-jogo, alvos e split | sim |
+| `data/processed/dataset.parquet` | Mesmo conteúdo em formato colunar (4,4 MB) | sim |
+| `data/processed/dataset_manifest.json` | Metadados da construção: features, filtros, balanceamento | sim |
+| `data/raw/manifest.json` | Metadados da coleta: data, endpoints, versão da lib, contagens | sim |
+| `data/raw/player_game_logs.csv` | Bruto, uma linha por jogador-jogo (24 MB) | não |
+| `data/raw/team_game_logs.csv` | Bruto por time, base da defesa do adversário (2 MB) | não |
+
+A descrição do dataset (dimensões, colunas, divisão, balanceamento e como foi
+construído) está em [`data/README.md`](data/README.md).
 
 Os arquivos também são gravados em `.parquet` quando `pyarrow` está instalado.
 O CSV é sempre gerado, então o projeto roda mesmo sem ele.
@@ -228,7 +233,7 @@ Toda feature é uma estatística dos jogos **anteriores**. Na prática:
 4. Aplica `shift(1)` dentro do grupo.
 
 O agrupamento por temporada é o que impede a janela de arrastar jogos do ano
-anterior — inclusive playoffs — para dentro da média da temporada corrente.
+anterior (inclusive playoffs) para dentro da média da temporada corrente.
 Existem testes automatizados cobrindo isso.
 
 Grupos de features: médias móveis de 3, 5 e 10 jogos, média exponencial
@@ -289,7 +294,7 @@ pytest -q
 ```
 
 Seis testes cobrem vazamento temporal. O principal altera o resultado de um jogo
-futuro e verifica que nenhuma feature das linhas anteriores muda — se mudasse,
+futuro e verifica que nenhuma feature das linhas anteriores muda, se mudasse,
 haveria informação do futuro vazando para o passado. Os outros verificam o
 cálculo das médias móveis, a linha sintética, o reset entre temporadas, a
 ausência de colunas pós-jogo na lista de features e a inexistência de
@@ -304,6 +309,7 @@ correlação quase perfeita com o alvo.
 | [`docs/DICIONARIO_DE_DADOS.md`](docs/DICIONARIO_DE_DADOS.md) | Todas as colunas: tipo, descrição, fonte e se é pré ou pós-jogo |
 | [`docs/AUDITORIA_TECNICA.md`](docs/AUDITORIA_TECNICA.md) | Auditoria do estimador de probabilidade anterior: amostra pequena, contaminação entre temporadas, efeito do decaimento e ausência de regressão à média |
 | [`docs/LIMITACOES_E_VIESES.md`](docs/LIMITACOES_E_VIESES.md) | Vieses de amostragem, lacunas de cobertura e limites metodológicos |
+| [`data/README.md`](data/README.md) | Descrição do dataset entregue: dimensões, colunas, divisão e construção |
 | [`GRUPO.md`](GRUPO.md) | Identificação dos integrantes |
 
 ---
@@ -330,7 +336,7 @@ Falta o `pyarrow`. Instale com `pip install pyarrow` ou ignore: os arquivos
 **A coleta falha ou fica lenta**
 A API pública da NBA limita requisições em rajada. O script já espera 1,2 s
 entre chamadas e tenta novamente com espera crescente. Se persistir, aguarde
-alguns minutos — o que já foi baixado fica em `.cache_nba/` e não será
+alguns minutos, o que já foi baixado fica em `.cache_nba/` e não será
 requisitado outra vez.
 
 **`FileNotFoundError` ao montar o dataset**

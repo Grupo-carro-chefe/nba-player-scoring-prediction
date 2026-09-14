@@ -4,8 +4,12 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-# o manifest e pequeno e documenta a proveniencia da coleta: fica versionado
+# O manifest da coleta e o dataset analitico ficam versionados: o dataset e um
+# item de entrega do trabalho, nao apenas um artefato reproduzivel.
 !data/raw/manifest.json
+!data/processed/dataset.csv
+!data/processed/dataset.parquet
+!data/processed/dataset_manifest.json
 
 # Cache de respostas da API da NBA
 .cache_nba/

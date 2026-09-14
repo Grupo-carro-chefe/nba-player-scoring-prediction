@@ -5,7 +5,7 @@ esperado** e **como mitigamos ou por que aceitamos**.
 
 ---
 
-## A. Vieses de amostragem — quem está no dataset
+## A. Vieses de amostragem: quem está no dataset
 
 ### A1. Seleção por minutos (o mais relevante)
 Aplicamos `min_ma5_prev ≥ 15` para recortar jogadores de rotação.
@@ -14,7 +14,7 @@ Aplicamos `min_ma5_prev ≥ 15` para recortar jogadores de rotação.
   atletas de contrato de 10 dias e chamados da G-League ficam de fora. Um modelo
   treinado aqui não deve ser aplicado a esses perfis.
 - **Mitigação:** o filtro usa **informação pré-jogo** (média de minutos anterior),
-  não os minutos do jogo em questão — então é recorte de população, não vazamento.
+  não os minutos do jogo em questão. É recorte de população, não vazamento.
   O parâmetro é ajustável (`--min-minutes-prev`) e o número de linhas descartadas
   fica registrado em `dataset_manifest.json`.
 
@@ -38,13 +38,13 @@ encurtado, ginásios vazios).
 
 ---
 
-## B. Limitações de cobertura — o que falta no dado
+## B. Limitações de cobertura: o que falta no dado
 
 ### B1. Sem informação de lesão e escalação  ⟵ maior fonte de erro irredutível
 Não sabemos quem está fora, quem é dúvida, nem quem foi promovido a titular.
 
-- **Impacto:** o caso mais informativo do basquete — o astro fica fora e o reserva
-  recebe 34 minutos — aparece como uma "surpresa" que o modelo não tinha como
+- **Impacto:** o caso mais informativo do basquete (o astro fica fora e o reserva
+  recebe 34 minutos) aparece como uma "surpresa" que o modelo não tinha como
   prever. Isso coloca um **teto na acurácia** alcançável.
 - **Mitigação parcial:** as médias móveis de minutos capturam a mudança **depois**
   que ela acontece (com 1 a 3 jogos de atraso). No relatório, tratar isso como
@@ -59,7 +59,7 @@ o box score exigiria uma requisição por jogo.
 - **Mitigação:** está declarado como proxy no dicionário de dados e no código.
 
 ### B3. Troca de time no meio da temporada
-A janela agrupa por (`PLAYER_ID`, `SEASON`) — **não** reseta quando o jogador
+A janela agrupa por (`PLAYER_ID`, `SEASON`): **não** reseta quando o jogador
 muda de time.
 
 - **Impacto:** logo após uma troca, as médias móveis descrevem o papel do jogador
@@ -73,7 +73,7 @@ Não temos distância de viagem, fuso horário, altitude (Denver) nem sequência
 jogos fora de casa. Só `rest_days`, `is_b2b` e `is_home`.
 
 ### B5. *Garbage time* não identificado
-Jogos decididos cedo alteram minutos e pontos de forma não modelada — em ambas as
+Jogos decididos cedo alteram minutos e pontos de forma não modelada, nas duas
 direções (titular poupado, reserva inflado).
 
 ---
@@ -84,7 +84,7 @@ direções (titular poupado, reserva inflado).
 `line_synthetic` é a mediana móvel do próprio jogador, não a linha de uma casa.
 
 - **Impacto:** o problema resolvido é "o jogador supera o próprio patamar
-  recente?", que é **previsão de desempenho** — não valor de aposta. Nenhum
+  recente?", que é **previsão de desempenho**: não valor de aposta. Nenhum
   resultado deste trabalho permite concluir lucratividade em mercado real.
 - **Justificativa:** não existe fonte gratuita, completa e reproduzível de linhas
   históricas de props (detalhes em `docs/AUDITORIA_TECNICA.md`). Preferimos um
@@ -96,7 +96,7 @@ quem melhora vê a própria linha subir alguns jogos depois.
 
 - **Impacto:** o alvo fica próximo de 50/50 por construção (medimos ~48%), o que é
   bom para balanceamento, mas significa que boa parte da variância é ruído
-  genuíno — o teto de acurácia é modesto.
+  genuíno; o teto de acurácia é modesto.
 - **Mitigação:** entregamos também `y_pts` (regressão), que não sofre desse efeito
   e é o alvo primário mais defensável.
 
@@ -121,7 +121,7 @@ A liga muda: ritmo, volume de bolas de 3, regras de falta. Treinamos em 2021-24 
 testamos em 2025-26.
 
 - **Impacto:** parte do erro no teste é deriva, não falha do modelo.
-- **Mitigação:** é **proposital** — reproduz o cenário real de uso (prever o
+- **Mitigação:** é **proposital**: reproduz o cenário real de uso (prever o
   futuro com o passado). Reportar a métrica por temporada para separar os efeitos.
 
 ---

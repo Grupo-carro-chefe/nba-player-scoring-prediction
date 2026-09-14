@@ -16,7 +16,7 @@ Quatro problemas, do mais grave ao mais sutil.
 
 ---
 
-## 1. Amostra pequena — o intervalo de confiança engole o sinal
+## 1. Amostra pequena: o intervalo de confiança engole o sinal
 
 Estimar uma probabilidade binária com 10–20 observações produz uma incerteza que,
 na prática, é maior que o efeito que se quer medir.
@@ -34,7 +34,7 @@ a ~87%. Qualquer decisão baseada na diferença entre 62% e 58% é ruído.
 
 **O que fizemos:** abandonamos a frequência empírica como estimador. No 2º
 bimestre, a probabilidade sai de um **modelo treinado sobre milhares de linhas**,
-não da contagem dos últimos jogos de um único atleta — e será avaliada por
+não da contagem dos últimos jogos de um único atleta, e será avaliada por
 **Brier score** e **curva de calibração**, não só por acurácia.
 
 ---
@@ -49,7 +49,8 @@ jogador**, e atravessava temporadas. Consequências:
 - O sistema marcava o contexto como "playoffs" indevidamente e priorizava esses
   jogos no *lookback*.
 - Resultado: a estimativa da temporada regular corrente ficava dominada por
-  partidas de playoff antigas — outro nível de defesa, outra rotação, outro ritmo.
+  partidas de playoff antigas, com outro nível de defesa, outra rotação e outro
+  ritmo.
 
 Playoffs não são uma amostra a mais da mesma distribuição: a defesa aperta, a
 rotação encurta, o ritmo cai. Misturar os dois contextos é misturar populações.
@@ -57,7 +58,7 @@ rotação encurta, o ritmo cai. Misturar os dois contextos é misturar populaç�
 **O que fizemos:**
 
 - Toda janela é agrupada por (`PLAYER_ID`, **`SEASON`**) e **zera a cada
-  temporada** — ver `src/features.py::GROUP`.
+  temporada**: ver `src/features.py::GROUP`.
 - O recorte padrão é **só temporada regular**. Playoffs entram apenas se pedidos
   explicitamente (`--include-playoffs`) e vêm marcados em `IS_PLAYOFF`.
 - Há um teste automatizado que falha se a janela vazar entre temporadas:
@@ -65,7 +66,7 @@ rotação encurta, o ritmo cai. Misturar os dois contextos é misturar populaç�
 
 ---
 
-## 3. Decaimento exponencial — reduz o viés, mas destrói a amostra
+## 3. Decaimento exponencial: reduz o viés, mas destrói a amostra
 
 O decaimento `0.9^k` existe por um motivo legítimo: dar mais peso à forma recente.
 O problema é que ele **reduz o tamanho efetivo da amostra**, e isso não estava
@@ -81,8 +82,8 @@ Usando o tamanho efetivo de Kish, `n_eff = (Σwᵢ)² / Σwᵢ²`:
 
 O achado que mais importa está na última linha: **com decaimento 0.9, aumentar a
 janela de 20 para 100 jogos leva o tamanho efetivo de 14,9 para apenas 19,0.**
-A janela ficou 5× maior e a informação praticamente não mudou — porque o peso do
-100º jogo mais antigo é `0.9^99 ≈ 0,00003`, ou seja, ele não existe.
+A janela ficou 5× maior e a informação praticamente não mudou, porque o peso do
+100º jogo mais antigo é `0.9^99 ≈ 0,00003`. Na prática, ele não existe.
 
 Dois números que ajudam a entender o regime:
 
@@ -107,7 +108,7 @@ média**. Um jogador que superou a linha em 8 dos 10 últimos jogos recebia 80%.
 Mas, com `n = 10`, boa parte desse 80% é sorte: o valor verdadeiro está quase
 certamente mais perto da média da população.
 
-O efeito é sistemático — infla as extremidades da distribuição de probabilidade
+O efeito é sistemático, infla as extremidades da distribuição de probabilidade
 e produz exatamente os casos que *parecem* as melhores oportunidades. É o
 mecanismo clássico pelo qual um sistema desses fica confiante justamente onde
 está mais errado.
@@ -122,7 +123,7 @@ p̂ = (k + α) / (n + α + β)
 onde `α, β` vêm da distribuição da liga. Com `n` pequeno, `p̂` fica perto da média
 da liga; conforme `n` cresce, converge para a frequência observada.
 
-**O que fizemos:** o dataset não tem estimador de probabilidade embutido — isso
+**O que fizemos:** o dataset não tem estimador de probabilidade embutido; isso
 passa a ser trabalho do modelo. No 2º bimestre, a regressão à média é tratada de
 duas formas: (a) modelos regularizados, que naturalmente encolhem coeficientes; e
 (b) **calibração explícita** das probabilidades previstas, comparando previsto vs.
@@ -143,12 +144,12 @@ históricas de props:
   informar se a linha é de abertura ou de fechamento.
 
 Por isso este projeto adota uma **linha sintética** (mediana móvel pré-jogo,
-arredondada para `.5`) e assume o trade-off por escrito — ver `src/target.py` e a
+arredondada para `.5`) e assume o trade-off por escrito. Ver `src/target.py` e a
 seção correspondente em `docs/LIMITACOES_E_VIESES.md`.
 
 ---
 
-## Resumo — do achado à decisão
+## Resumo: do achado à decisão
 
 | Achado | Decisão neste dataset |
 |---|---|

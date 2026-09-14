@@ -1,0 +1,83 @@
+{
+  "gerado_em_utc": "2026-09-14T20:14:07+00:00",
+  "linhas": 83799,
+  "colunas": 37,
+  "features_pre_jogo": [
+    "pts_ma3_prev",
+    "pts_ma5_prev",
+    "pts_ma10_prev",
+    "pts_ewm_prev",
+    "pts_std5_prev",
+    "pts_season_mean_prev",
+    "min_ma3_prev",
+    "min_ma5_prev",
+    "min_ma10_prev",
+    "min_ewm_prev",
+    "min_season_mean_prev",
+    "fga_ma5_prev",
+    "fg3a_ma5_prev",
+    "fta_ma5_prev",
+    "reb_ma5_prev",
+    "ast_ma5_prev",
+    "games_played_prev",
+    "starter_proxy_prev",
+    "rest_days",
+    "is_b2b",
+    "is_home",
+    "opp_def_pts_allowed_prev",
+    "opp_pace_proxy_prev",
+    "opp_games_played_prev"
+  ],
+  "colunas_pos_jogo_removidas": [
+    "PTS",
+    "MIN",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "PLUS_MINUS",
+    "WL"
+  ],
+  "alvos": {
+    "regressao": "y_pts",
+    "classificacao": "y_over",
+    "linha": "line_synthetic"
+  },
+  "filtros": {
+    "min_minutes_prev": 15.0,
+    "descartadas_por_minutos": 33504,
+    "descartadas_sem_alvo": 13989
+  },
+  "split_temporal": {
+    "2021-22": "train",
+    "2022-23": "train",
+    "2023-24": "train",
+    "2024-25": "val",
+    "2025-26": "test"
+  },
+  "distribuicao_split": {
+    "train": 50045,
+    "test": 17101,
+    "val": 16653
+  },
+  "alvo": {
+    "linhas_totais": 83799,
+    "linhas_com_alvo": 83799,
+    "linhas_sem_historico": 0,
+    "proporcao_classe_positiva": 0.4831,
+    "janela_da_linha": 10
+  }
+}

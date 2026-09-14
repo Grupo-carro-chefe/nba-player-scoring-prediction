@@ -2,7 +2,7 @@
 
 - **Instituição:** Universidade Presbiteriana Mackenzie
 - **Disciplina:** Inteligência Artificial
-- **Entrega:** 1º bimestre — dataset + EDA + relatório
+- **Entrega:** 1º bimestre, dataset + EDA + relatório
 
 | Nome completo | TIA |
 |---|---|
