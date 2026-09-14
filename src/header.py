@@ -41,6 +41,7 @@ SINTESES: dict[str, str] = {
     "src/io_utils.py": "Leitura e escrita de tabelas em parquet com fallback para CSV.",
     "scripts/apply_header.py": "Aplica o cabeçalho obrigatório nos arquivos .py e .ipynb.",
     "tests/test_no_leakage.py": "Testes de vazamento temporal nas features.",
+    "tests/test_documentacao.py": "Testes que mantêm a documentação coerente com o dataset gerado.",
     "notebooks/01_eda.ipynb": "Análise exploratória do dataset.",
 }
 

@@ -84,6 +84,13 @@ def build(
     df = df[df["y_over"].notna()].copy()
     dropped_no_target = before - len(df)
 
+    # A conta precisa fechar: brutas - filtros = final. E o numero mais facil de
+    # conferir de fora, entao o manifest registra as tres parcelas.
+    assert len(players) - dropped_minutes - dropped_no_target == len(df), (
+        f"aritmetica dos filtros nao fecha: {len(players)} - {dropped_minutes} "
+        f"- {dropped_no_target} != {len(df)}"
+    )
+
     df["split"] = df["SEASON"].map(SPLIT_BY_SEASON).fillna("unassigned")
 
     keep = [c for c in ID_COLUMNS + PRE_GAME_FEATURES + ["line_synthetic", "y_pts", "y_over", "split"] if c in df.columns]
@@ -99,9 +106,11 @@ def build(
         "colunas_pos_jogo_removidas": POST_GAME_COLUMNS,
         "alvos": {"regressao": "y_pts", "classificacao": "y_over", "linha": "line_synthetic"},
         "filtros": {
+            "linhas_brutas": int(len(players)),
             "min_minutes_prev": min_minutes_prev,
             "descartadas_por_minutos": int(dropped_minutes),
             "descartadas_sem_alvo": int(dropped_no_target),
+            "conferencia": f"{len(players)} - {dropped_minutes} - {dropped_no_target} = {len(df)}",
         },
         "split_temporal": SPLIT_BY_SEASON,
         "distribuicao_split": out["split"].value_counts().to_dict(),

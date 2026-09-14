@@ -1,5 +1,5 @@
 {
-  "gerado_em_utc": "2026-09-14T20:14:07+00:00",
+  "gerado_em_utc": "2026-09-14T21:05:47+00:00",
   "linhas": 83799,
   "colunas": 37,
   "features_pre_jogo": [
@@ -57,9 +57,11 @@
     "linha": "line_synthetic"
   },
   "filtros": {
+    "linhas_brutas": 131292,
     "min_minutes_prev": 15.0,
     "descartadas_por_minutos": 33504,
-    "descartadas_sem_alvo": 13989
+    "descartadas_sem_alvo": 13989,
+    "conferencia": "131292 - 33504 - 13989 = 83799"
   },
   "split_temporal": {
     "2021-22": "train",

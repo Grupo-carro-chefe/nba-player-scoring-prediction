@@ -293,12 +293,20 @@ execução. Para registrar uma alteração, adicione uma linha em `HISTORICO`
 pytest -q
 ```
 
-Seis testes cobrem vazamento temporal. O principal altera o resultado de um jogo
-futuro e verifica que nenhuma feature das linhas anteriores muda. Se mudasse,
-haveria informação do futuro vazando para o passado. Os outros verificam o
-cálculo das médias móveis, a linha sintética, o reset entre temporadas, a
-ausência de colunas pós-jogo na lista de features e a inexistência de
-correlação quase perfeita com o alvo.
+São dez testes, em dois grupos.
+
+**Vazamento temporal (6).** O principal altera o resultado de um jogo futuro e
+verifica que nenhuma feature das linhas anteriores muda. Se mudasse, haveria
+informação do futuro vazando para o passado. Os outros verificam o cálculo das
+médias móveis, a linha sintética, o reset entre temporadas, a ausência de
+colunas pós-jogo na lista de features e a inexistência de correlação quase
+perfeita com o alvo.
+
+**Coerência da documentação (4).** Conferem que a aritmética dos filtros fecha
+(`linhas brutas − descartadas = linhas finais`), que a soma dos splits bate com
+o total e que os números citados em `data/README.md` são os mesmos do
+`dataset_manifest.json`. Esses testes são pulados se o dataset ainda não foi
+gerado.
 
 ---
 

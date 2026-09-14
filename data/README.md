@@ -52,15 +52,23 @@ cerca de 51,7%, que é a linha de base a ser superada.
 
 ## Como o dataset foi construído
 
-A partir de **131.292** registros brutos de jogador por partida:
+A partir de **131.292** registros brutos de jogador por partida, na ordem em que
+`src/build_dataset.py` aplica os filtros:
 
-1. Remoção das linhas sem histórico suficiente para calcular a linha sintética,
-   que exige 10 jogos anteriores na mesma temporada (2.814 linhas).
-2. Recorte para jogadores de rotação, com média de ao menos 15 minutos nos
-   5 jogos anteriores (6.839 linhas). O filtro usa informação anterior à
-   partida, e não os minutos do jogo em questão.
+1. **Recorte para jogadores de rotação:** exige média de ao menos 15 minutos nos
+   5 jogos anteriores. Remove **33.504** linhas. O critério usa informação
+   anterior à partida, nunca os minutos do jogo em questão. Junto saem o primeiro
+   jogo de cada atleta em cada temporada, que não tem média anterior, e os
+   jogadores de fim de banco.
+2. **Remoção das linhas sem alvo definido:** a linha sintética exige 10 jogos
+   anteriores na mesma temporada. Remove **13.989** das linhas que sobraram.
 
-Restam as 83.799 linhas do arquivo final.
+```
+131.292 − 33.504 − 13.989 = 83.799
+```
+
+O primeiro filtro é o mais agressivo porque a base bruta inclui todo atleta que
+entrou em quadra por qualquer tempo, inclusive em garbage time.
 
 ## Arquivos nesta pasta
 
