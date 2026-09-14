@@ -205,8 +205,8 @@ A descrição coluna a coluna está em
 │   ├── AUDITORIA_TECNICA.md
 │   └── LIMITACOES_E_VIESES.md
 ├── data/
-│   ├── raw/                # dados brutos (não versionado)
-│   └── processed/          # dataset analítico (não versionado)
+│   ├── raw/                # brutos fora do repo; só o manifest.json entra
+│   └── processed/          # dataset analítico versionado + manifest
 ├── GRUPO.md
 ├── requirements.txt
 └── README.md
@@ -294,7 +294,7 @@ pytest -q
 ```
 
 Seis testes cobrem vazamento temporal. O principal altera o resultado de um jogo
-futuro e verifica que nenhuma feature das linhas anteriores muda, se mudasse,
+futuro e verifica que nenhuma feature das linhas anteriores muda. Se mudasse,
 haveria informação do futuro vazando para o passado. Os outros verificam o
 cálculo das médias móveis, a linha sintética, o reset entre temporadas, a
 ausência de colunas pós-jogo na lista de features e a inexistência de
@@ -336,7 +336,7 @@ Falta o `pyarrow`. Instale com `pip install pyarrow` ou ignore: os arquivos
 **A coleta falha ou fica lenta**
 A API pública da NBA limita requisições em rajada. O script já espera 1,2 s
 entre chamadas e tenta novamente com espera crescente. Se persistir, aguarde
-alguns minutos, o que já foi baixado fica em `.cache_nba/` e não será
+alguns minutos. O que já foi baixado fica em `.cache_nba/` e não será
 requisitado outra vez.
 
 **`FileNotFoundError` ao montar o dataset**

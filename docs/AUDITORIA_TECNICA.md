@@ -108,7 +108,7 @@ média**. Um jogador que superou a linha em 8 dos 10 últimos jogos recebia 80%.
 Mas, com `n = 10`, boa parte desse 80% é sorte: o valor verdadeiro está quase
 certamente mais perto da média da população.
 
-O efeito é sistemático, infla as extremidades da distribuição de probabilidade
+O efeito é sistemático: infla as extremidades da distribuição de probabilidade
 e produz exatamente os casos que *parecem* as melhores oportunidades. É o
 mecanismo clássico pelo qual um sistema desses fica confiante justamente onde
 está mais errado.
