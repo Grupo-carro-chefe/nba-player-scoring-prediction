@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
+#   2026-11-15 | Rodrigo    | Usa o histórico por arquivo de src/header.py.
 # === FIM DO CABECALHO ===
 
 """Aplica o cabecalho obrigatorio em todos os .py e .ipynb.
@@ -35,7 +36,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.header import DISCIPLINA, HISTORICO, INSTITUICAO, INTEGRANTES, PROJETO, SINTESES  # noqa: E402
+from src.header import DISCIPLINA, INSTITUICAO, INTEGRANTES, PROJETO, SINTESES, historico  # noqa: E402
 
 # Montados por concatenacao: se o marcador aparecesse literal aqui, o script
 # apagaria as proprias definicoes ao se processar.
@@ -64,7 +65,7 @@ def build_header(rel_path: str) -> str:
         "#   data       | autor      | descricao",
         "#   -----------|------------|-------------------------------------------",
     ]
-    linhas += [f"#   {data} | {autor:<10} | {desc}" for data, autor, desc in HISTORICO]
+    linhas += [f"#   {data} | {autor:<10} | {desc}" for data, autor, desc in historico(rel_path)]
     linhas.append(END)
     return "\n".join(linhas)
 

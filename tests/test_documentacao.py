@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
+#   2026-11-15 | Rodrigo    | Teste de que todo arquivo-fonte tem síntese e cabeçalho atualizado.
 # === FIM DO CABECALHO ===
 
 """Testes que mantem a documentacao coerente com o dataset gerado.
@@ -90,3 +91,25 @@ def test_readme_do_dataset_cita_os_splits():
     citados = _numeros(DATA_README.read_text(encoding="utf-8"))
     for nome, valor in m["distribuicao_split"].items():
         assert valor in citados, f"data/README.md nao cita o split {nome} = {valor:,}".replace(",", ".")
+
+
+def test_todo_arquivo_fonte_tem_cabecalho_e_sintese():
+    """Exigencia do enunciado: todo .py/.ipynb com identificacao, sintese e historico."""
+    import subprocess
+    import sys
+
+    out = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "apply_header.py"), "--check"],
+        capture_output=True, text=True, cwd=ROOT,
+    )
+    assert out.returncode == 0, f"cabecalhos desatualizados:\n{out.stdout}"
+
+    sem_sintese = []
+    for p in ROOT.rglob("*"):
+        rel = p.relative_to(ROOT).as_posix()
+        if p.suffix not in {".py", ".ipynb"} or any(part in rel.split("/") for part in (".git", ".venv", "data", ".ipynb_checkpoints")):
+            continue
+        linha = next((ln for ln in p.read_text(encoding="utf-8").splitlines() if "# SINTESE:" in ln), "")
+        if "sem sintese cadastrada" in linha:
+            sem_sintese.append(rel)
+    assert not sem_sintese, f"arquivos sem sintese em src/header.py: {sem_sintese}"

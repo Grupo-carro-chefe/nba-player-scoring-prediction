@@ -1,0 +1,1818 @@
+{
+  "ambiente": {
+    "gerado_em_utc": "2026-11-15T17:33:18+00:00",
+    "git_commit": "a937c4df4b9cb5b2e1e981eb22aabcb831b2e4de",
+    "python": "3.12.1",
+    "sklearn": "1.9.1",
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "seed": 42
+  },
+  "linhas_teste": 17101,
+  "regressao": {
+    "modelo_final": "hgb_absoluto",
+    "teste": {
+      "media_3_jogos": {
+        "n": 17101,
+        "mae": 5.464865602401418,
+        "rmse": 7.03663871566649,
+        "r2": 0.32379319892600866,
+        "vies": 0.14256476229460266,
+        "tipo": "baseline"
+      },
+      "media_5_jogos": {
+        "n": 17101,
+        "mae": 5.231904566984387,
+        "rmse": 6.730583680550733,
+        "r2": 0.38133651483705233,
+        "vies": 0.13168820536810713,
+        "tipo": "baseline"
+      },
+      "media_10_jogos": {
+        "n": 17101,
+        "mae": 5.045447634641249,
+        "rmse": 6.5139173043593575,
+        "r2": 0.4205265945761888,
+        "vies": -0.012923220864276917,
+        "tipo": "baseline"
+      },
+      "media_exponencial": {
+        "n": 17101,
+        "mae": 4.976684901615112,
+        "rmse": 6.421741621700291,
+        "r2": 0.43681032658092334,
+        "vies": -0.10935905414620832,
+        "tipo": "baseline"
+      },
+      "media_da_temporada": {
+        "n": 17101,
+        "mae": 5.064529720266566,
+        "rmse": 6.558171186075034,
+        "r2": 0.4126262619387029,
+        "vies": -0.3770016336262557,
+        "tipo": "baseline"
+      },
+      "mediana_10_jogos": {
+        "n": 17101,
+        "mae": 5.11592889304719,
+        "rmse": 6.6286054366285,
+        "r2": 0.39994181386540584,
+        "vies": -0.3692474124320215,
+        "tipo": "baseline"
+      },
+      "constante_media_treino": {
+        "n": 17101,
+        "mae": 6.818722188682896,
+        "rmse": 8.559544651355134,
+        "r2": -0.0005766208329891498,
+        "vies": 0.2054805175079291,
+        "tipo": "baseline"
+      },
+      "constante_mediana_treino": {
+        "n": 17101,
+        "mae": 6.713934857610666,
+        "rmse": 8.7305097156319,
+        "r2": -0.04094606411201274,
+        "vies": -1.7315361674755863,
+        "tipo": "baseline"
+      },
+      "linear_sobre_exponencial": {
+        "n": 17101,
+        "mae": 4.986135585918004,
+        "rmse": 6.402730259517175,
+        "r2": 0.44014000087115734,
+        "vies": 0.08062662842605145,
+        "tipo": "baseline"
+      },
+      "ridge": {
+        "n": 17101,
+        "mae": 4.9417503727103425,
+        "rmse": 6.338274377162678,
+        "r2": 0.451355413571189,
+        "vies": 0.2068596182824885,
+        "tipo": "modelo"
+      },
+      "lasso": {
+        "n": 17101,
+        "mae": 4.941746498834354,
+        "rmse": 6.338273552137773,
+        "r2": 0.45135555640041725,
+        "vies": 0.20694557452554604,
+        "tipo": "modelo"
+      },
+      "poisson_glm": {
+        "n": 17101,
+        "mae": 5.030134786575593,
+        "rmse": 6.465200324522977,
+        "r2": 0.42916183736457514,
+        "vies": -0.06256096059554053,
+        "tipo": "modelo"
+      },
+      "random_forest": {
+        "n": 17101,
+        "mae": 4.961021956390392,
+        "rmse": 6.366404534352171,
+        "r2": 0.4464746824852286,
+        "vies": 0.20094082898675272,
+        "tipo": "modelo"
+      },
+      "hgb_quadratico": {
+        "n": 17101,
+        "mae": 4.947566911725776,
+        "rmse": 6.35205756016192,
+        "r2": 0.44896665899662325,
+        "vies": 0.2013725533953094,
+        "tipo": "modelo"
+      },
+      "hgb_poisson": {
+        "n": 17101,
+        "mae": 4.946514235398111,
+        "rmse": 6.350630659649696,
+        "r2": 0.44921419499164705,
+        "vies": 0.21376959917781407,
+        "tipo": "modelo"
+      },
+      "hgb_absoluto": {
+        "n": 17101,
+        "mae": 4.9235451891108575,
+        "rmse": 6.374246742527088,
+        "r2": 0.4451101652582826,
+        "vies": -0.3638928466788796,
+        "tipo": "modelo"
+      }
+    },
+    "comparacoes_bootstrap": {
+      "media_3_jogos_vs_media_5_jogos": {
+        "delta": 0.23296103541703214,
+        "ic_inf": 0.20348683246698618,
+        "ic_sup": 0.2641822858842516,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_3_jogos_vs_media_exponencial": {
+        "delta": 0.48818070078630604,
+        "ic_inf": 0.4523784443490515,
+        "ic_sup": 0.5254623793025495,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_3_jogos_vs_linear_sobre_exponencial": {
+        "delta": 0.47873001648341523,
+        "ic_inf": 0.442034999185096,
+        "ic_sup": 0.5168140085364781,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_5_jogos_vs_media_exponencial": {
+        "delta": 0.2552196653692739,
+        "ic_inf": 0.2303723687099899,
+        "ic_sup": 0.28182201206005714,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_5_jogos_vs_linear_sobre_exponencial": {
+        "delta": 0.24576898106638306,
+        "ic_inf": 0.21992793090428578,
+        "ic_sup": 0.27395771104356625,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_10_jogos_vs_media_5_jogos": {
+        "delta": -0.18645693234313784,
+        "ic_inf": -0.21584537660988262,
+        "ic_sup": -0.1591736555216101,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_10_jogos_vs_media_exponencial": {
+        "delta": 0.068762733026136,
+        "ic_inf": 0.05494530601029373,
+        "ic_sup": 0.08236035862282955,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_10_jogos_vs_linear_sobre_exponencial": {
+        "delta": 0.05931204872324525,
+        "ic_inf": 0.04443518158761515,
+        "ic_sup": 0.07495465676411317,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_exponencial_vs_media_5_jogos": {
+        "delta": -0.2552196653692739,
+        "ic_inf": -0.28182201206005714,
+        "ic_sup": -0.2303723687099899,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_exponencial_vs_linear_sobre_exponencial": {
+        "delta": -0.009450684302890746,
+        "ic_inf": -0.015275533032462008,
+        "ic_sup": -0.00356358030787911,
+        "p_valor": 0.002,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_da_temporada_vs_media_5_jogos": {
+        "delta": -0.16737484671782105,
+        "ic_inf": -0.21268579722422842,
+        "ic_sup": -0.12002844609420717,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_da_temporada_vs_media_exponencial": {
+        "delta": 0.0878448186514528,
+        "ic_inf": 0.0606706053146085,
+        "ic_sup": 0.11712895553570903,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_da_temporada_vs_linear_sobre_exponencial": {
+        "delta": 0.07839413434856204,
+        "ic_inf": 0.04875353427004051,
+        "ic_sup": 0.10976974048820816,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "mediana_10_jogos_vs_media_5_jogos": {
+        "delta": -0.11597567393719665,
+        "ic_inf": -0.15200978671774176,
+        "ic_sup": -0.08181636603486958,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "mediana_10_jogos_vs_media_exponencial": {
+        "delta": 0.1392439914320772,
+        "ic_inf": 0.11758103679145444,
+        "ic_sup": 0.16096295531565896,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "mediana_10_jogos_vs_linear_sobre_exponencial": {
+        "delta": 0.12979330712918646,
+        "ic_inf": 0.10622044344048591,
+        "ic_sup": 0.15353514178816008,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "constante_media_treino_vs_media_5_jogos": {
+        "delta": 1.586817621698509,
+        "ic_inf": 1.33663318002555,
+        "ic_sup": 1.843534500094063,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "constante_media_treino_vs_media_exponencial": {
+        "delta": 1.8420372870677826,
+        "ic_inf": 1.590394421107717,
+        "ic_sup": 2.100324528349705,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "constante_media_treino_vs_linear_sobre_exponencial": {
+        "delta": 1.832586602764892,
+        "ic_inf": 1.5822925625633928,
+        "ic_sup": 2.0876832532335063,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "constante_mediana_treino_vs_media_5_jogos": {
+        "delta": 1.4820302906262792,
+        "ic_inf": 1.1937416529397553,
+        "ic_sup": 1.7752079519236914,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "constante_mediana_treino_vs_media_exponencial": {
+        "delta": 1.7372499559955532,
+        "ic_inf": 1.452118780812089,
+        "ic_sup": 2.036237273748022,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "constante_mediana_treino_vs_linear_sobre_exponencial": {
+        "delta": 1.7277992716926625,
+        "ic_inf": 1.4435631884782905,
+        "ic_sup": 2.0264996120305407,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "linear_sobre_exponencial_vs_media_5_jogos": {
+        "delta": -0.24576898106638306,
+        "ic_inf": -0.27395771104356625,
+        "ic_sup": -0.2199279309042858,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "linear_sobre_exponencial_vs_media_exponencial": {
+        "delta": 0.009450684302890746,
+        "ic_inf": 0.0035635803078791083,
+        "ic_sup": 0.015275533032462006,
+        "p_valor": 0.002,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "ridge_vs_media_5_jogos": {
+        "delta": -0.2901541942740448,
+        "ic_inf": -0.3219133357912911,
+        "ic_sup": -0.2609170423727524,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "ridge_vs_media_exponencial": {
+        "delta": -0.03493452890477102,
+        "ic_inf": -0.05019395634729141,
+        "ic_sup": -0.019910248789387144,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "ridge_vs_linear_sobre_exponencial": {
+        "delta": -0.04438521320766176,
+        "ic_inf": -0.05771865649138951,
+        "ic_sup": -0.0310359201113395,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "lasso_vs_media_5_jogos": {
+        "delta": -0.29015806815003425,
+        "ic_inf": -0.3219066037947114,
+        "ic_sup": -0.26092502396512124,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "lasso_vs_media_exponencial": {
+        "delta": -0.034938402780760415,
+        "ic_inf": -0.05019984914870726,
+        "ic_sup": -0.01990259062238705,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "lasso_vs_linear_sobre_exponencial": {
+        "delta": -0.044389087083651156,
+        "ic_inf": -0.05771444823299406,
+        "ic_sup": -0.031037002690969737,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "poisson_glm_vs_media_5_jogos": {
+        "delta": -0.20176978040879343,
+        "ic_inf": -0.24151814475118158,
+        "ic_sup": -0.1636426804906745,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "poisson_glm_vs_media_exponencial": {
+        "delta": 0.053449884960480414,
+        "ic_inf": 0.02144956288423669,
+        "ic_sup": 0.08408586540282166,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "poisson_glm_vs_linear_sobre_exponencial": {
+        "delta": 0.043999200657589665,
+        "ic_inf": 0.012794706056562266,
+        "ic_sup": 0.07518636868838702,
+        "p_valor": 0.006,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "random_forest_vs_media_5_jogos": {
+        "delta": -0.27088261059399416,
+        "ic_inf": -0.2990498318557448,
+        "ic_sup": -0.24352942310369766,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "random_forest_vs_media_exponencial": {
+        "delta": -0.015662945224720285,
+        "ic_inf": -0.028212953819005578,
+        "ic_sup": -0.003401679181225574,
+        "p_valor": 0.014,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "random_forest_vs_linear_sobre_exponencial": {
+        "delta": -0.02511362952761104,
+        "ic_inf": -0.03662617473114784,
+        "ic_sup": -0.01370071915178033,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_quadratico_vs_media_5_jogos": {
+        "delta": -0.28433765525861077,
+        "ic_inf": -0.31302300624896917,
+        "ic_sup": -0.2561807172092387,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_quadratico_vs_media_exponencial": {
+        "delta": -0.02911798988933693,
+        "ic_inf": -0.04469076099699239,
+        "ic_sup": -0.013818035750935563,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_quadratico_vs_linear_sobre_exponencial": {
+        "delta": -0.038568674192227675,
+        "ic_inf": -0.05358719719471935,
+        "ic_sup": -0.023916219283827804,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_poisson_vs_media_5_jogos": {
+        "delta": -0.2853903315862757,
+        "ic_inf": -0.3140180145617915,
+        "ic_sup": -0.2578597033983018,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_poisson_vs_media_exponencial": {
+        "delta": -0.03017066621700187,
+        "ic_inf": -0.0450742921902483,
+        "ic_sup": -0.015755456518854263,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_poisson_vs_linear_sobre_exponencial": {
+        "delta": -0.039621350519892615,
+        "ic_inf": -0.053780270359154746,
+        "ic_sup": -0.025605183238212367,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_absoluto_vs_media_5_jogos": {
+        "delta": -0.3083593778735293,
+        "ic_inf": -0.3358670854644246,
+        "ic_sup": -0.281169588177077,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_absoluto_vs_media_exponencial": {
+        "delta": -0.0531397125042554,
+        "ic_inf": -0.06559184104857767,
+        "ic_sup": -0.04093683672887272,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "hgb_absoluto_vs_linear_sobre_exponencial": {
+        "delta": -0.06259039680714615,
+        "ic_inf": -0.07668507434526943,
+        "ic_sup": -0.04846138843170348,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      }
+    },
+    "exponencial_vs_simples": {
+      "media_3_jogos": {
+        "delta": -0.48818070078630604,
+        "ic_inf": -0.5254623793025496,
+        "ic_sup": -0.45237844434905156,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_5_jogos": {
+        "delta": -0.2552196653692739,
+        "ic_inf": -0.28182201206005714,
+        "ic_sup": -0.2303723687099899,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_10_jogos": {
+        "delta": -0.068762733026136,
+        "ic_inf": -0.08236035862282956,
+        "ic_sup": -0.05494530601029374,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      },
+      "media_da_temporada": {
+        "delta": -0.0878448186514528,
+        "ic_inf": -0.1171289555357091,
+        "ic_sup": -0.0606706053146085,
+        "p_valor": 0.0,
+        "n_clusters": 450,
+        "n_boot": 2000
+      }
+    },
+    "por_faixa_de_minutos": {
+      "hgb_absoluto": [
+        {
+          "grupo": "15-20",
+          "n": 3218,
+          "mae": 3.9987620733,
+          "rmse": 5.2111213454,
+          "r2": 0.0977470649,
+          "vies": -0.8139221207,
+          "media_pontos": 7.1019266625,
+          "mae_relativo": 0.5630531352
+        },
+        {
+          "grupo": "20-25",
+          "n": 4090,
+          "mae": 4.5518913159,
+          "rmse": 5.8397028466,
+          "r2": 0.1754335148,
+          "vies": -0.5294026054,
+          "media_pontos": 9.6794621027,
+          "mae_relativo": 0.4702628377
+        },
+        {
+          "grupo": "25-30",
+          "n": 4521,
+          "mae": 4.9413395058,
+          "rmse": 6.3126284797,
+          "r2": 0.2595216136,
+          "vies": -0.4441990899,
+          "media_pontos": 12.8697190887,
+          "mae_relativo": 0.383950844
+        },
+        {
+          "grupo": "30-35",
+          "n": 3984,
+          "mae": 5.5763312549,
+          "rmse": 7.1831508141,
+          "r2": 0.3030300911,
+          "vies": 0.1297526879,
+          "media_pontos": 17.2916666667,
+          "mae_relativo": 0.3224866268
+        },
+        {
+          "grupo": "35+",
+          "n": 1288,
+          "mae": 6.3326046738,
+          "rmse": 7.9907955924,
+          "r2": 0.2952643286,
+          "vies": 0.0410060918,
+          "media_pontos": 21.8982919255,
+          "mae_relativo": 0.2891825854
+        }
+      ],
+      "media_5_jogos": [
+        {
+          "grupo": "15-20",
+          "n": 3218,
+          "mae": 4.1940335612,
+          "rmse": 5.3889350993,
+          "r2": 0.0351232587,
+          "vies": -0.3794903667,
+          "media_pontos": 7.1019266625,
+          "mae_relativo": 0.5905487004
+        },
+        {
+          "grupo": "20-25",
+          "n": 4090,
+          "mae": 4.791198044,
+          "rmse": 6.1240701105,
+          "r2": 0.0931729014,
+          "vies": -0.1219559902,
+          "media_pontos": 9.6794621027,
+          "mae_relativo": 0.494985981
+        },
+        {
+          "grupo": "25-30",
+          "n": 4521,
+          "mae": 5.2527759345,
+          "rmse": 6.667182683,
+          "r2": 0.1740064879,
+          "vies": -0.0464941385,
+          "media_pontos": 12.8697190887,
+          "mae_relativo": 0.4081500069
+        },
+        {
+          "grupo": "30-35",
+          "n": 3984,
+          "mae": 5.9962851406,
+          "rmse": 7.6561482761,
+          "r2": 0.2082196303,
+          "vies": 0.6580321285,
+          "media_pontos": 17.2916666667,
+          "mae_relativo": 0.3467731166
+        },
+        {
+          "grupo": "35+",
+          "n": 1288,
+          "mae": 6.7868012422,
+          "rmse": 8.5133344439,
+          "r2": 0.2000817568,
+          "vies": 1.2116459627,
+          "media_pontos": 21.8982919255,
+          "mae_relativo": 0.3099237724
+        }
+      ],
+      "media_exponencial": [
+        {
+          "grupo": "15-20",
+          "n": 3218,
+          "mae": 4.0780688478,
+          "rmse": 5.2419589974,
+          "r2": 0.0870370143,
+          "vies": -0.3209532944,
+          "media_pontos": 7.1019266625,
+          "mae_relativo": 0.5742200732
+        },
+        {
+          "grupo": "20-25",
+          "n": 4090,
+          "mae": 4.5891015163,
+          "rmse": 5.8650819971,
+          "r2": 0.168250865,
+          "vies": -0.2702618715,
+          "media_pontos": 9.6794621027,
+          "mae_relativo": 0.4741070803
+        },
+        {
+          "grupo": "25-30",
+          "n": 4521,
+          "mae": 4.973980374,
+          "rmse": 6.3570687479,
+          "r2": 0.249059129,
+          "vies": -0.2645209684,
+          "media_pontos": 12.8697190887,
+          "mae_relativo": 0.3864870973
+        },
+        {
+          "grupo": "30-35",
+          "n": 3984,
+          "mae": 5.6485760136,
+          "rmse": 7.2588594499,
+          "r2": 0.2882608858,
+          "vies": 0.248998989,
+          "media_pontos": 17.2916666667,
+          "mae_relativo": 0.3266646369
+        },
+        {
+          "grupo": "35+",
+          "n": 1288,
+          "mae": 6.3838087265,
+          "rmse": 8.0507705882,
+          "r2": 0.2846458278,
+          "vies": 0.3664106342,
+          "media_pontos": 21.8982919255,
+          "mae_relativo": 0.2915208523
+        }
+      ]
+    },
+    "por_perfil": {
+      "estrela": {
+        "hgb_absoluto": [
+          {
+            "grupo": "media < 20 pts",
+            "n": 14866,
+            "mae": 4.7222020072,
+            "rmse": 6.091295585,
+            "r2": 0.2862165545,
+            "vies": -0.4745930225,
+            "media_pontos": 11.075070631,
+            "mae_relativo": 0.4263812092
+          },
+          {
+            "grupo": "media >= 20 pts",
+            "n": 2235,
+            "mae": 6.26277013,
+            "rmse": 8.0057247659,
+            "r2": 0.1439163131,
+            "vies": 0.3724242957,
+            "media_pontos": 23.7494407159,
+            "mae_relativo": 0.2637017943
+          }
+        ],
+        "media_exponencial": [
+          {
+            "grupo": "media < 20 pts",
+            "n": 14866,
+            "mae": 4.7733797659,
+            "rmse": 6.1349781776,
+            "r2": 0.2759423159,
+            "vies": -0.2255104353,
+            "media_pontos": 11.075070631,
+            "mae_relativo": 0.4310021963
+          },
+          {
+            "grupo": "media >= 20 pts",
+            "n": 2235,
+            "mae": 6.3289596877,
+            "rmse": 8.0739938177,
+            "r2": 0.1292535024,
+            "vies": 0.6632165306,
+            "media_pontos": 23.7494407159,
+            "mae_relativo": 0.2664887887
+          }
+        ]
+      },
+      "novo_no_treino": {
+        "hgb_absoluto": [
+          {
+            "grupo": "jogador ausente do treino",
+            "n": 4546,
+            "mae": 4.5803481642,
+            "rmse": 5.9108191579,
+            "r2": 0.2738159852,
+            "vies": -0.6982452285,
+            "media_pontos": 10.1447426309,
+            "mae_relativo": 0.4514996911
+          },
+          {
+            "grupo": "jogador presente no treino",
+            "n": 12555,
+            "mae": 5.0478123078,
+            "rmse": 6.5339473611,
+            "r2": 0.4596993968,
+            "vies": -0.2428282567,
+            "media_pontos": 13.668180008,
+            "mae_relativo": 0.3693112254
+          }
+        ],
+        "media_exponencial": [
+          {
+            "grupo": "jogador ausente do treino",
+            "n": 4546,
+            "mae": 4.6398376947,
+            "rmse": 5.9751205949,
+            "r2": 0.2579303149,
+            "vies": -0.5186126089,
+            "media_pontos": 10.1447426309,
+            "mae_relativo": 0.457363766
+          },
+          {
+            "grupo": "jogador presente no treino",
+            "n": 12555,
+            "mae": 5.0986528349,
+            "rmse": 6.5759813944,
+            "r2": 0.4527253383,
+            "vies": 0.0388262632,
+            "media_pontos": 13.668180008,
+            "mae_relativo": 0.3730308521
+          }
+        ]
+      }
+    },
+    "por_temporada": {
+      "2022-23": {
+        "modelo_final_mae": 5.001297510733183,
+        "media_exponencial_mae": 5.012928592892019,
+        "media_5_jogos_mae": 5.270907558979297,
+        "origem": "dobra da validacao cruzada"
+      },
+      "2023-24": {
+        "modelo_final_mae": 4.983891384828833,
+        "media_exponencial_mae": 5.013763624542809,
+        "media_5_jogos_mae": 5.276202562243172,
+        "origem": "dobra da validacao cruzada"
+      },
+      "2024-25": {
+        "modelo_final_mae": 4.996093566069504,
+        "media_exponencial_mae": 5.053072173519223,
+        "media_5_jogos_mae": 5.313553113553114,
+        "origem": "validacao"
+      },
+      "2025-26": {
+        "modelo_final_mae": 4.9235451891108575,
+        "media_exponencial_mae": 4.976684901615112,
+        "media_5_jogos_mae": 5.231904566984387,
+        "origem": "teste"
+      }
+    },
+    "ablacao_por_familia": {
+      "historico_pontos": {
+        "features_removidas": [
+          "pts_ma3_prev",
+          "pts_ma5_prev",
+          "pts_ma10_prev",
+          "pts_ewm_prev",
+          "pts_std5_prev",
+          "pts_season_mean_prev"
+        ],
+        "mae_sem_familia": 5.022896143383232,
+        "aumento_vs_completo": {
+          "delta": 0.09935095427237332,
+          "ic_inf": 0.0778707853540556,
+          "ic_sup": 0.12027903889101828,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "minutos_e_papel": {
+        "features_removidas": [
+          "min_ma3_prev",
+          "min_ma5_prev",
+          "min_ma10_prev",
+          "min_ewm_prev",
+          "min_season_mean_prev",
+          "starter_proxy_prev"
+        ],
+        "mae_sem_familia": 4.930938999923703,
+        "aumento_vs_completo": {
+          "delta": 0.00739381081284596,
+          "ic_inf": 0.000719002231186485,
+          "ic_sup": 0.014094031919564577,
+          "p_valor": 0.033,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "volume_de_jogo": {
+        "features_removidas": [
+          "fga_ma5_prev",
+          "fg3a_ma5_prev",
+          "fta_ma5_prev",
+          "reb_ma5_prev",
+          "ast_ma5_prev"
+        ],
+        "mae_sem_familia": 4.926366271480352,
+        "aumento_vs_completo": {
+          "delta": 0.0028210823694944025,
+          "ic_inf": -0.003925746335903904,
+          "ic_sup": 0.009777187472783498,
+          "p_valor": 0.392,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "descanso_e_mando": {
+        "features_removidas": [
+          "rest_days",
+          "is_b2b",
+          "is_home"
+        ],
+        "mae_sem_familia": 4.92862416991278,
+        "aumento_vs_completo": {
+          "delta": 0.005078980801922279,
+          "ic_inf": 4.3095918184018305e-05,
+          "ic_sup": 0.010036714648401442,
+          "p_valor": 0.049,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "adversario": {
+        "features_removidas": [
+          "opp_def_pts_allowed_prev",
+          "opp_pace_proxy_prev",
+          "opp_games_played_prev"
+        ],
+        "mae_sem_familia": 4.936171814872006,
+        "aumento_vs_completo": {
+          "delta": 0.012626625761149254,
+          "ic_inf": 0.006560284402886833,
+          "ic_sup": 0.018747206908227527,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "calendario_do_jogador": {
+        "features_removidas": [
+          "games_played_prev"
+        ],
+        "mae_sem_familia": 4.924704531137955,
+        "aumento_vs_completo": {
+          "delta": 0.0011593420270967665,
+          "ic_inf": -0.001976602356301683,
+          "ic_sup": 0.004193720614217201,
+          "p_valor": 0.454,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      }
+    },
+    "importancia_permutacao_agrupada": {
+      "mae_base": 4.9235451891108575,
+      "familias": {
+        "historico_pontos": {
+          "aumento_mae_medio": 2.505104619379984,
+          "desvio": 0.05300615993824883
+        },
+        "minutos_e_papel": {
+          "aumento_mae_medio": 0.02569378584319324,
+          "desvio": 0.0034746233646998684
+        },
+        "volume_de_jogo": {
+          "aumento_mae_medio": 0.06570168755276633,
+          "desvio": 0.004057042981437816
+        },
+        "descanso_e_mando": {
+          "aumento_mae_medio": 0.008836980648285753,
+          "desvio": 0.002300448620401246
+        },
+        "adversario": {
+          "aumento_mae_medio": 0.018218007904482292,
+          "desvio": 0.0023707084770889335
+        },
+        "calendario_do_jogador": {
+          "aumento_mae_medio": 0.0010305935013935398,
+          "desvio": 0.0004727978390228969
+        }
+      }
+    },
+    "teto_preditivo": {
+      "nota": "Oraculos usam jogos futuros do proprio jogador (temporada inteira ou 5 antes/5 depois, sem o proprio jogo). Nao sao utilizaveis na pratica: medem quanto erro sobra mesmo conhecendo o nivel real do atleta. Versao em mediana acrescentada apos a primeira execucao (2026-11-15); nao altera nenhuma escolha de modelo.",
+      "oraculo_temporada_media": {
+        "mae": 4.961297275174985,
+        "modelo_menos_oraculo": {
+          "delta": -0.03775208606412706,
+          "ic_inf": -0.06643573616979563,
+          "ic_sup": -0.010393786978870678,
+          "p_valor": 0.008,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "oraculo_local_media": {
+        "mae": 5.006522244591656,
+        "modelo_menos_oraculo": {
+          "delta": -0.08297705548079809,
+          "ic_inf": -0.11213051402227653,
+          "ic_sup": -0.05364476030957636,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "oraculo_temporada_mediana": {
+        "mae": 4.987252207473247,
+        "modelo_menos_oraculo": {
+          "delta": -0.06370701836238954,
+          "ic_inf": -0.10478857935248492,
+          "ic_sup": -0.02858582139202387,
+          "p_valor": 0.001,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "oraculo_local_mediana": {
+        "mae": 5.070405239459681,
+        "modelo_menos_oraculo": {
+          "delta": -0.14686005034882307,
+          "ic_inf": -0.18277881688340594,
+          "ic_sup": -0.11000924134787415,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "melhor_oraculo": "oraculo_temporada_media",
+      "ganho_sobre_exponencial_que_o_melhor_oraculo_teria": 0.015387626440126922,
+      "ganho_sobre_exponencial_do_modelo": 0.05313971250425453
+    },
+    "diagnosticos_posteriores": {
+      "nota": "Acrescentados apos a revisao do relatorio; nao alteram nenhuma escolha de modelo.",
+      "mediana_sobre_exponencial": {
+        "mae_validacao": 5.042844678373165,
+        "mae_teste": 4.96345330599641,
+        "modelo_final_vs_esta": {
+          "delta": -0.03990811688555236,
+          "ic_inf": -0.05222150957568806,
+          "ic_sup": -0.02752063060027142,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "modelo_com_nivel_oraculo": {
+        "descricao": "modelo final + media leave-one-out do jogador na temporada (usa jogos futuros)",
+        "mae_teste": 4.8574273853519045,
+        "modelo_final_menos_oraculo": {
+          "delta": 0.06611780375895379,
+          "ic_inf": 0.03454033036807678,
+          "ic_sup": 0.09762600372135044,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      }
+    },
+    "intervalos": {
+      "80": {
+        "nominal": 0.8,
+        "q": 2.325594165554828,
+        "global": {
+          "n": 17101,
+          "cobertura": 0.8022922636103151,
+          "largura_media": 15.833793644571465,
+          "largura_mediana": 15.43053360966788
+        },
+        "por_faixa_de_minutos": [
+          {
+            "grupo": "15-20",
+            "n": 3218,
+            "cobertura": 0.7790553139,
+            "largura_media": 11.3196368621,
+            "largura_mediana": 11.4301973309
+          },
+          {
+            "grupo": "20-25",
+            "n": 4090,
+            "cobertura": 0.7843520782,
+            "largura_media": 13.8905810027,
+            "largura_mediana": 13.7000997861
+          },
+          {
+            "grupo": "25-30",
+            "n": 4521,
+            "cobertura": 0.8095554081,
+            "largura_media": 16.1886458004,
+            "largura_mediana": 15.9282557625
+          },
+          {
+            "grupo": "30-35",
+            "n": 3984,
+            "cobertura": 0.8220381526,
+            "largura_media": 19.2041804304,
+            "largura_mediana": 19.1347585121
+          },
+          {
+            "grupo": "35+",
+            "n": 1288,
+            "cobertura": 0.8307453416,
+            "largura_media": 21.6120457252,
+            "largura_mediana": 22.0488098284
+          }
+        ],
+        "por_tercil_da_previsao": [
+          {
+            "grupo": "previsao alta",
+            "n": 5700,
+            "cobertura": 0.8284210526,
+            "largura_media": 20.4677110321,
+            "largura_mediana": 19.9874577787
+          },
+          {
+            "grupo": "previsao baixa",
+            "n": 5701,
+            "cobertura": 0.7812664445,
+            "largura_media": 11.5896399226,
+            "largura_mediana": 11.9430457778
+          },
+          {
+            "grupo": "previsao media",
+            "n": 5700,
+            "cobertura": 0.7971929825,
+            "largura_media": 15.4447745673,
+            "largura_mediana": 15.4307127503
+          }
+        ]
+      },
+      "90": {
+        "nominal": 0.9,
+        "q": 2.946457705396691,
+        "global": {
+          "n": 17101,
+          "cobertura": 0.9018770832115081,
+          "largura_media": 19.78031758609167,
+          "largura_mediana": 19.550020947761386
+        },
+        "por_faixa_de_minutos": [
+          {
+            "grupo": "15-20",
+            "n": 3218,
+            "cobertura": 0.8760099441,
+            "largura_media": 13.4763413099,
+            "largura_mediana": 13.2800604338
+          },
+          {
+            "grupo": "20-25",
+            "n": 4090,
+            "cobertura": 0.9019559902,
+            "largura_media": 17.2205405569,
+            "largura_mediana": 17.3548080824
+          },
+          {
+            "grupo": "25-30",
+            "n": 4521,
+            "cobertura": 0.9066578191,
+            "largura_media": 20.4143102604,
+            "largura_mediana": 20.1806199122
+          },
+          {
+            "grupo": "30-35",
+            "n": 3984,
+            "cobertura": 0.9134036145,
+            "largura_media": 24.3232719593,
+            "largura_mediana": 24.2431622395
+          },
+          {
+            "grupo": "35+",
+            "n": 1288,
+            "cobertura": 0.9138198758,
+            "largura_media": 27.381460911,
+            "largura_mediana": 27.9351774165
+          }
+        ],
+        "por_tercil_da_previsao": [
+          {
+            "grupo": "previsao alta",
+            "n": 5700,
+            "cobertura": 0.9157894737,
+            "largura_media": 25.9319729021,
+            "largura_mediana": 25.3235065067
+          },
+          {
+            "grupo": "previsao baixa",
+            "n": 5701,
+            "cobertura": 0.8951061217,
+            "largura_media": 13.8419965157,
+            "largura_mediana": 14.1590320152
+          },
+          {
+            "grupo": "previsao media",
+            "n": 5700,
+            "cobertura": 0.8947368421,
+            "largura_media": 19.5680251511,
+            "largura_mediana": 19.5502479136
+          }
+        ]
+      }
+    },
+    "maiores_erros": [
+      {
+        "PLAYER_NAME": "Bam Adebayo",
+        "GAME_DATE": "2026-03-10",
+        "OPPONENT": "WAS",
+        "min_ma5_prev": 33.6,
+        "pts_season_mean_prev": 18.9122807018,
+        "previsto": 23.080843509,
+        "y_pts": 83.0,
+        "erro": 59.919156491
+      },
+      {
+        "PLAYER_NAME": "Brice Sensabaugh",
+        "GAME_DATE": "2026-01-14",
+        "OPPONENT": "CHI",
+        "min_ma5_prev": 27.8,
+        "pts_season_mean_prev": 10.1315789474,
+        "previsto": 11.9990392316,
+        "y_pts": 43.0,
+        "erro": 31.0009607684
+      },
+      {
+        "PLAYER_NAME": "Anthony Edwards",
+        "GAME_DATE": "2026-01-17",
+        "OPPONENT": "SAS",
+        "min_ma5_prev": 33.8,
+        "pts_season_mean_prev": 28.8787878788,
+        "previsto": 25.0445266623,
+        "y_pts": 55.0,
+        "erro": 29.9554733377
+      },
+      {
+        "PLAYER_NAME": "Cooper Flagg",
+        "GAME_DATE": "2026-01-29",
+        "OPPONENT": "CHA",
+        "min_ma5_prev": 28.4,
+        "pts_season_mean_prev": 18.7674418605,
+        "previsto": 19.0604145424,
+        "y_pts": 49.0,
+        "erro": 29.9395854576
+      },
+      {
+        "PLAYER_NAME": "Nikola Jokić",
+        "GAME_DATE": "2025-12-25",
+        "OPPONENT": "MIN",
+        "min_ma5_prev": 34.8,
+        "pts_season_mean_prev": 28.8620689655,
+        "previsto": 26.4995082496,
+        "y_pts": 56.0,
+        "erro": 29.5004917504
+      },
+      {
+        "PLAYER_NAME": "Jamal Murray",
+        "GAME_DATE": "2025-12-03",
+        "OPPONENT": "IND",
+        "min_ma5_prev": 34.6,
+        "pts_season_mean_prev": 23.2631578947,
+        "previsto": 22.9252118363,
+        "y_pts": 52.0,
+        "erro": 29.0747881637
+      },
+      {
+        "PLAYER_NAME": "Kawhi Leonard",
+        "GAME_DATE": "2025-12-28",
+        "OPPONENT": "DET",
+        "min_ma5_prev": 37.8,
+        "pts_season_mean_prev": 26.15,
+        "previsto": 25.9642996678,
+        "y_pts": 55.0,
+        "erro": 29.0357003322
+      },
+      {
+        "PLAYER_NAME": "CJ McCollum",
+        "GAME_DATE": "2025-11-25",
+        "OPPONENT": "ATL",
+        "min_ma5_prev": 29.0,
+        "pts_season_mean_prev": 16.5,
+        "previsto": 16.9904387707,
+        "y_pts": 46.0,
+        "erro": 29.0095612293
+      },
+      {
+        "PLAYER_NAME": "Cooper Flagg",
+        "GAME_DATE": "2026-04-03",
+        "OPPONENT": "ORL",
+        "min_ma5_prev": 35.8,
+        "pts_season_mean_prev": 20.28125,
+        "previsto": 22.1630896805,
+        "y_pts": 51.0,
+        "erro": 28.8369103195
+      },
+      {
+        "PLAYER_NAME": "Luka Dončić",
+        "GAME_DATE": "2026-03-19",
+        "OPPONENT": "MIA",
+        "min_ma5_prev": 38.6,
+        "pts_season_mean_prev": 32.9824561404,
+        "previsto": 31.3021823344,
+        "y_pts": 60.0,
+        "erro": 28.6978176656
+      },
+      {
+        "PLAYER_NAME": "Jamal Murray",
+        "GAME_DATE": "2026-03-25",
+        "OPPONENT": "DAL",
+        "min_ma5_prev": 35.2,
+        "pts_season_mean_prev": 25.0441176471,
+        "previsto": 24.4009694248,
+        "y_pts": 53.0,
+        "erro": 28.5990305752
+      },
+      {
+        "PLAYER_NAME": "Gary Trent Jr.",
+        "GAME_DATE": "2026-03-29",
+        "OPPONENT": "LAC",
+        "min_ma5_prev": 23.2,
+        "pts_season_mean_prev": 7.7540983607,
+        "previsto": 7.5787837625,
+        "y_pts": 36.0,
+        "erro": 28.4212162375
+      },
+      {
+        "PLAYER_NAME": "Nikola Jokić",
+        "GAME_DATE": "2025-11-12",
+        "OPPONENT": "LAC",
+        "min_ma5_prev": 33.2,
+        "pts_season_mean_prev": 26.2,
+        "previsto": 26.7447484322,
+        "y_pts": 55.0,
+        "erro": 28.2552515678
+      },
+      {
+        "PLAYER_NAME": "Landry Shamet",
+        "GAME_DATE": "2025-11-14",
+        "OPPONENT": "MIA",
+        "min_ma5_prev": 21.2,
+        "pts_season_mean_prev": 7.6363636364,
+        "previsto": 7.9122277965,
+        "y_pts": 36.0,
+        "erro": 28.0877722035
+      },
+      {
+        "PLAYER_NAME": "CJ McCollum",
+        "GAME_DATE": "2025-11-10",
+        "OPPONENT": "DET",
+        "min_ma5_prev": 24.6,
+        "pts_season_mean_prev": 14.3,
+        "previsto": 13.9280536339,
+        "y_pts": 42.0,
+        "erro": 28.0719463661
+      },
+      {
+        "PLAYER_NAME": "Julian Champagnie",
+        "GAME_DATE": "2025-12-31",
+        "OPPONENT": "NYK",
+        "min_ma5_prev": 22.0,
+        "pts_season_mean_prev": 9.75,
+        "previsto": 8.0439376134,
+        "y_pts": 36.0,
+        "erro": 27.9560623866
+      },
+      {
+        "PLAYER_NAME": "Jarrett Allen",
+        "GAME_DATE": "2026-02-01",
+        "OPPONENT": "POR",
+        "min_ma5_prev": 27.8,
+        "pts_season_mean_prev": 13.3157894737,
+        "previsto": 12.3047081354,
+        "y_pts": 40.0,
+        "erro": 27.6952918646
+      },
+      {
+        "PLAYER_NAME": "James Harden",
+        "GAME_DATE": "2025-11-22",
+        "OPPONENT": "CHA",
+        "min_ma5_prev": 37.4,
+        "pts_season_mean_prev": 26.5,
+        "previsto": 27.3169811349,
+        "y_pts": 55.0,
+        "erro": 27.6830188651
+      },
+      {
+        "PLAYER_NAME": "Jaylon Tyson",
+        "GAME_DATE": "2026-01-16",
+        "OPPONENT": "PHI",
+        "min_ma5_prev": 24.2,
+        "pts_season_mean_prev": 12.7567567568,
+        "previsto": 11.631123008,
+        "y_pts": 39.0,
+        "erro": 27.368876992
+      },
+      {
+        "PLAYER_NAME": "Giannis Antetokounmpo",
+        "GAME_DATE": "2025-12-03",
+        "OPPONENT": "DET",
+        "min_ma5_prev": 24.8,
+        "pts_season_mean_prev": 30.625,
+        "previsto": 28.4466862355,
+        "y_pts": 2.0,
+        "erro": -26.4466862355
+      }
+    ],
+    "vies_por_decil_da_previsao": [
+      {
+        "decil": 1,
+        "previsto_medio": 4.5905192211,
+        "real_medio": 5.3956750438,
+        "n": 1711
+      },
+      {
+        "decil": 2,
+        "previsto_medio": 6.3753177928,
+        "real_medio": 7.0801169591,
+        "n": 1710
+      },
+      {
+        "decil": 3,
+        "previsto_medio": 7.6396178017,
+        "real_medio": 8.3543859649,
+        "n": 1710
+      },
+      {
+        "decil": 4,
+        "previsto_medio": 8.8666741048,
+        "real_medio": 9.5532163743,
+        "n": 1710
+      },
+      {
+        "decil": 5,
+        "previsto_medio": 10.2913554813,
+        "real_medio": 10.8450292398,
+        "n": 1710
+      },
+      {
+        "decil": 6,
+        "previsto_medio": 11.7595905636,
+        "real_medio": 12.5040935673,
+        "n": 1710
+      },
+      {
+        "decil": 7,
+        "previsto_medio": 13.5915494399,
+        "real_medio": 13.5964912281,
+        "n": 1710
+      },
+      {
+        "decil": 8,
+        "previsto_medio": 15.991334324,
+        "real_medio": 16.1046783626,
+        "n": 1710
+      },
+      {
+        "decil": 9,
+        "previsto_medio": 19.2258820507,
+        "real_medio": 18.9368421053,
+        "n": 1710
+      },
+      {
+        "decil": 10,
+        "previsto_medio": 25.3491404538,
+        "real_medio": 24.949122807,
+        "n": 1710
+      }
+    ]
+  },
+  "classificacao": {
+    "modelo_final": "logistica_l2",
+    "calibracao": {
+      "brier_segunda_metade": {
+        "sem_calibracao": 0.23460824793158963,
+        "sigmoid": 0.23483030009526415,
+        "isotonic": 0.23520227238433566
+      },
+      "metodo": "sem_calibracao",
+      "data_corte": "2025-01-30"
+    },
+    "teste": {
+      "constante_treino": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5196187357464476,
+        "precisao": 0.0,
+        "revocacao": 0.0,
+        "f1": 0.0,
+        "auc": 0.5,
+        "brier": 0.24962808789600366,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.0,
+        "log_loss": 0.69240318960273,
+        "ece": 0.013958872603219187
+      },
+      "logistica_l2": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5914274019063213,
+        "precisao": 0.5770002508151493,
+        "revocacao": 0.5600730371272064,
+        "f1": 0.5684106492062512,
+        "auc": 0.6301304725618297,
+        "brier": 0.23663545552974954,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.05204795852807598,
+        "log_loss": 0.6657831895087407,
+        "ece": 0.011795073195646629
+      },
+      "logistica_l1": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5909011168937489,
+        "precisao": 0.5765799723583365,
+        "revocacao": 0.5586122945830797,
+        "f1": 0.5674539384196859,
+        "auc": 0.6300893895202491,
+        "brier": 0.23664229176040272,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.05202057286522532,
+        "log_loss": 0.665799228266909,
+        "ece": 0.011547358121049565
+      },
+      "random_forest": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.583767031167768,
+        "precisao": 0.5677746200420116,
+        "revocacao": 0.559342665855143,
+        "f1": 0.5635271032622026,
+        "auc": 0.6215381304462599,
+        "brier": 0.23822314403806372,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.04568774272986176,
+        "log_loss": 0.6690505091159733,
+        "ece": 0.011908574182528072
+      },
+      "hgb": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5875095023682826,
+        "precisao": 0.5742232451093211,
+        "revocacao": 0.5466828971393792,
+        "f1": 0.5601147418308805,
+        "auc": 0.6235820905336535,
+        "brier": 0.2378383336370264,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.04722927759591278,
+        "log_loss": 0.668255152852746,
+        "ece": 0.01199720008688116
+      },
+      "final_calibrado": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5914274019063213,
+        "precisao": 0.5770002508151493,
+        "revocacao": 0.5600730371272064,
+        "f1": 0.5684106492062512,
+        "auc": 0.6301304725618297,
+        "brier": 0.23663545552974954,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.05204795852807598,
+        "log_loss": 0.6657831895087407,
+        "ece": 0.011795073195646629
+      }
+    },
+    "teste_sem_empates": {
+      "constante_treino": {
+        "n": 16533,
+        "taxa_positiva": 0.4968850178431017,
+        "acuracia": 0.5031149821568983,
+        "precisao": 0.0,
+        "revocacao": 0.0,
+        "f1": 0.0,
+        "auc": 0.5,
+        "brier": 0.2501567224649725,
+        "brier_ingenuo": 0.2501567224649725,
+        "brier_skill": 0.0,
+        "log_loss": 0.6934608205480486,
+        "ece": 0.014417141309046321
+      },
+      "logistica_l2": {
+        "n": 16533,
+        "taxa_positiva": 0.4968850178431017,
+        "acuracia": 0.5919070949011068,
+        "precisao": 0.5949056115852082,
+        "revocacao": 0.5600730371272064,
+        "f1": 0.5769640729826322,
+        "auc": 0.6317095397100965,
+        "brier": 0.2366798451651029,
+        "brier_ingenuo": 0.2501567224649725,
+        "brier_skill": 0.053873736300477204,
+        "log_loss": 0.6658956874630678,
+        "ece": 0.013166647206895758
+      },
+      "logistica_l1": {
+        "n": 16533,
+        "taxa_positiva": 0.4968850178431017,
+        "acuracia": 0.5916046694489808,
+        "precisao": 0.5948152948801037,
+        "revocacao": 0.5586122945830797,
+        "f1": 0.5761456371625863,
+        "auc": 0.6316739782331565,
+        "brier": 0.23668438427910696,
+        "brier_ingenuo": 0.2501567224649725,
+        "brier_skill": 0.05385559121942829,
+        "log_loss": 0.6659064255951974,
+        "ece": 0.012290310061099775
+      },
+      "random_forest": {
+        "n": 16533,
+        "taxa_positiva": 0.4968850178431017,
+        "acuracia": 0.5847698542309321,
+        "precisao": 0.5860969387755102,
+        "revocacao": 0.559342665855143,
+        "f1": 0.572407349735285,
+        "auc": 0.6241215839579397,
+        "brier": 0.2379656184957197,
+        "brier_ingenuo": 0.2501567224649725,
+        "brier_skill": 0.04873386511113975,
+        "log_loss": 0.6684945732206097,
+        "ece": 0.0108684991438548
+      },
+      "hgb": {
+        "n": 16533,
+        "taxa_positiva": 0.4968850178431017,
+        "acuracia": 0.5870078025766648,
+        "precisao": 0.5913100724160631,
+        "revocacao": 0.5466828971393792,
+        "f1": 0.5681214421252372,
+        "auc": 0.6249288294844741,
+        "brier": 0.23788298443572836,
+        "brier_ingenuo": 0.2501567224649725,
+        "brier_skill": 0.04906419427110431,
+        "log_loss": 0.6683306714598996,
+        "ece": 0.01219635347300052
+      },
+      "final_calibrado": {
+        "n": 16533,
+        "taxa_positiva": 0.4968850178431017,
+        "acuracia": 0.5919070949011068,
+        "precisao": 0.5949056115852082,
+        "revocacao": 0.5600730371272064,
+        "f1": 0.5769640729826322,
+        "auc": 0.6317095397100965,
+        "brier": 0.2366798451651029,
+        "brier_ingenuo": 0.2501567224649725,
+        "brier_skill": 0.053873736300477204,
+        "log_loss": 0.6658956874630678,
+        "ece": 0.013166647206895758
+      }
+    },
+    "regra_exponencial_acima_da_linha": {
+      "acuracia": 0.5686801941406935,
+      "auc": 0.6088417719325427,
+      "acuracia_sem_empates": 0.5744873888586464,
+      "auc_sem_empates": 0.6124041358436711
+    },
+    "auc_ic": {
+      "valor": 0.6301304725618297,
+      "ic_inf": 0.6222910245690773,
+      "ic_sup": 0.6380221936109602,
+      "n_boot": 1000
+    },
+    "auc_ic_regra": {
+      "valor": 0.6088417719325427,
+      "ic_inf": 0.6017310871221442,
+      "ic_sup": 0.6164891509141308,
+      "n_boot": 1000
+    },
+    "brier_vs_ingenuo": {
+      "delta": -0.012992632366254085,
+      "ic_inf": -0.014490012673073474,
+      "ic_sup": -0.011501393490603104,
+      "p_valor": 0.0,
+      "n_clusters": 450,
+      "n_boot": 2000
+    },
+    "curva_calibracao": [
+      {
+        "faixa": 1,
+        "n": 1711,
+        "prob_media_prevista": 0.2821733998,
+        "frequencia_observada": 0.2857977791
+      },
+      {
+        "faixa": 2,
+        "n": 1710,
+        "prob_media_prevista": 0.3654181948,
+        "frequencia_observada": 0.3467836257
+      },
+      {
+        "faixa": 3,
+        "n": 1710,
+        "prob_media_prevista": 0.4076825774,
+        "frequencia_observada": 0.4134502924
+      },
+      {
+        "faixa": 4,
+        "n": 1710,
+        "prob_media_prevista": 0.4429538086,
+        "frequencia_observada": 0.4333333333
+      },
+      {
+        "faixa": 5,
+        "n": 1710,
+        "prob_media_prevista": 0.4748496105,
+        "frequencia_observada": 0.4766081871
+      },
+      {
+        "faixa": 6,
+        "n": 1710,
+        "prob_media_prevista": 0.5049973912,
+        "frequencia_observada": 0.4883040936
+      },
+      {
+        "faixa": 7,
+        "n": 1710,
+        "prob_media_prevista": 0.5355492548,
+        "frequencia_observada": 0.5011695906
+      },
+      {
+        "faixa": 8,
+        "n": 1710,
+        "prob_media_prevista": 0.5691940448,
+        "frequencia_observada": 0.5684210526
+      },
+      {
+        "faixa": 9,
+        "n": 1710,
+        "prob_media_prevista": 0.6116787435,
+        "frequencia_observada": 0.5935672515
+      },
+      {
+        "faixa": 10,
+        "n": 1710,
+        "prob_media_prevista": 0.6878988792,
+        "frequencia_observada": 0.6964912281
+      }
+    ],
+    "curva_calibracao_sem_ajuste": [
+      {
+        "faixa": 1,
+        "n": 1711,
+        "prob_media_prevista": 0.2821733998,
+        "frequencia_observada": 0.2857977791
+      },
+      {
+        "faixa": 2,
+        "n": 1710,
+        "prob_media_prevista": 0.3654181948,
+        "frequencia_observada": 0.3467836257
+      },
+      {
+        "faixa": 3,
+        "n": 1710,
+        "prob_media_prevista": 0.4076825774,
+        "frequencia_observada": 0.4134502924
+      },
+      {
+        "faixa": 4,
+        "n": 1710,
+        "prob_media_prevista": 0.4429538086,
+        "frequencia_observada": 0.4333333333
+      },
+      {
+        "faixa": 5,
+        "n": 1710,
+        "prob_media_prevista": 0.4748496105,
+        "frequencia_observada": 0.4766081871
+      },
+      {
+        "faixa": 6,
+        "n": 1710,
+        "prob_media_prevista": 0.5049973912,
+        "frequencia_observada": 0.4883040936
+      },
+      {
+        "faixa": 7,
+        "n": 1710,
+        "prob_media_prevista": 0.5355492548,
+        "frequencia_observada": 0.5011695906
+      },
+      {
+        "faixa": 8,
+        "n": 1710,
+        "prob_media_prevista": 0.5691940448,
+        "frequencia_observada": 0.5684210526
+      },
+      {
+        "faixa": 9,
+        "n": 1710,
+        "prob_media_prevista": 0.6116787435,
+        "frequencia_observada": 0.5935672515
+      },
+      {
+        "faixa": 10,
+        "n": 1710,
+        "prob_media_prevista": 0.6878988792,
+        "frequencia_observada": 0.6964912281
+      }
+    ],
+    "ablacao": {
+      "completo": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5914274019063213,
+        "precisao": 0.5770002508151493,
+        "revocacao": 0.5600730371272064,
+        "f1": 0.5684106492062512,
+        "auc": 0.6301304725618297,
+        "brier": 0.23663545552974954,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.05204795852807598,
+        "log_loss": 0.6657831895087407,
+        "ece": 0.011795073195646629
+      },
+      "sem_linha_inteira": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5894976901935559,
+        "precisao": 0.5744362775632241,
+        "revocacao": 0.5612903225806452,
+        "f1": 0.5677872183228666,
+        "auc": 0.6278780150109955,
+        "brier": 0.23701319808762653,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.050534737155189635,
+        "log_loss": 0.6665438981098173,
+        "ece": 0.015296727600340277
+      },
+      "so_pre_jogo": {
+        "n": 17101,
+        "taxa_positiva": 0.48038126425355243,
+        "acuracia": 0.5708438103034911,
+        "precisao": 0.5538877952755905,
+        "revocacao": 0.5480219111381619,
+        "f1": 0.550939240041608,
+        "auc": 0.6015405661130799,
+        "brier": 0.24162706547965734,
+        "brier_ingenuo": 0.24962808789600366,
+        "brier_skill": 0.032051771432386134,
+        "log_loss": 0.6761087291727158,
+        "ece": 0.01378020861785369
+      }
+    },
+    "empates_no_teste": {
+      "n": 568,
+      "fracao": 0.033214431904566986
+    }
+  },
+  "tempo_s": 101.6
+}
