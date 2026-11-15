@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: CV temporal, seleção, calibração e conformal.
 #   2026-11-15 | Rodrigo    | Hash do código nos resultados; JSON com fim de linha LF.
+#   2026-11-15 | Rodrigo    | Trava: não retreina com o teste já avaliado sem --force.
 # === FIM DO CABECALHO ===
 
 """Treino, selecao de hiperparametros e escolhas feitas na validacao.
@@ -315,7 +316,21 @@ def train(fast: bool = False) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Treina e seleciona modelos (nao toca o teste).")
     ap.add_argument("--fast", action="store_true", help="pula RF e variantes do HGB (para depurar)")
+    ap.add_argument("--force", action="store_true",
+                    help="retreina mesmo com o teste ja avaliado (rode depois src.evaluate --final --force)")
     args = ap.parse_args()
+    # Trava: retreinar sobrescreve modelos, quantis e treino_validacao.json. Com
+    # o teste ja avaliado, isso deixaria test_final.json descrevendo artefatos
+    # que nao existem mais. O caminho seguro e scripts/run_all.py --retrain.
+    final = METRICS_DIR / "test_final.json"
+    if final.exists() and not args.force:
+        raise SystemExit(
+            f"{final} ja existe: retreinar agora deixaria o teste inconsistente com os modelos. "
+            "Use python scripts/run_all.py --retrain (treina e reavalia juntos) ou, manualmente, "
+            "python -m src.train --force seguido de python -m src.evaluate --final --force."
+        )
+    if args.fast and final.exists():
+        raise SystemExit("--fast e so para depurar antes da avaliacao: grava nos mesmos arquivos dos modelos finais.")
     train(fast=args.fast)
 
 

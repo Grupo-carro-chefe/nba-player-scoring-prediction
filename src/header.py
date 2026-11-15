@@ -94,7 +94,10 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
     ],
     "src/__init__.py": [(_N2, "Rodrigo", "Síntese cadastrada no cabeçalho.")],
     "tests/__init__.py": [(_N2, "Rodrigo", "Síntese cadastrada no cabeçalho.")],
-    "src/modeling.py": [(_N2, "Rodrigo", "Versão inicial: splits, famílias, baselines e catálogo de modelos.")],
+    "src/modeling.py": [
+        (_N2, "Rodrigo", "Versão inicial: splits, famílias, baselines e catálogo de modelos."),
+        (_N2, "Rodrigo", "Docstring: a regressão linear sobre a exponencial não é a régua mais exigente em MAE."),
+    ],
     "src/metrics.py": [(_N2, "Rodrigo", "Versão inicial: métricas, ECE e bootstrap pareado por jogador.")],
     "src/uncertainty.py": [
         (_N2, "Rodrigo", "Versão inicial: conformal normalizado e oráculos do teto."),
@@ -104,6 +107,7 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
     "src/train.py": [
         (_N2, "Rodrigo", "Versão inicial: CV temporal, seleção, calibração e conformal."),
         (_N2, "Rodrigo", "Hash do código nos resultados; JSON com fim de linha LF."),
+        (_N2, "Rodrigo", "Trava: não retreina com o teste já avaliado sem --force."),
     ],
     "src/evaluate.py": [
         (_N2, "Rodrigo", "Versão inicial: avaliação única no teste, ablação e teto."),
@@ -119,15 +123,18 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
         (_N2, "Rodrigo", "Versão inicial: demonstração com intervalo e aviso de escopo."),
         (_N2, "Rodrigo", "Saída em UTF-8 também quando redirecionada (Windows)."),
         (_N2, "Rodrigo", "--team sem data mostra só o jogo mais recente."),
+        (_N2, "Rodrigo", "Recusa nome ambíguo e --sample fora do intervalo."),
     ],
     "src/report.py": [
         (_N2, "Rodrigo", "Versão inicial: relatório N2 gerado a partir dos resultados."),
         (_N2, "Rodrigo", "Correções da revisão crítica: teto, baselines, ablação, conformal, referências."),
         (_N2, "Rodrigo", "Fatos do texto verificados contra os resultados; números lidos dos arquivos."),
+        (_N2, "Rodrigo", "Metadados próprios do .docx; texto do run_all --retrain."),
     ],
     "scripts/run_all.py": [
         (_N2, "Rodrigo", "Versão inicial: pipeline da N2 de ponta a ponta."),
         (_N2, "Rodrigo", "Não retreina sem --retrain quando o teste já foi avaliado."),
+        (_N2, "Rodrigo", "Passa --force ao treino e --pdf no Windows."),
     ],
     "tests/test_splits.py": [(_N2, "Rodrigo", "Versão inicial: não sobreposição e ordem temporal dos splits.")],
     "tests/test_modelagem.py": [

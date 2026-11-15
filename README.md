@@ -102,7 +102,7 @@ previsto, e não autoriza nenhuma conclusão sobre mercados de apostas.
 
 Python 3.11 ou superior. Bibliotecas em `requirements.txt`: `nba_api`, `pandas`,
 `numpy`, `pyarrow`, `scikit-learn` (1.8 ou 1.9), `scipy`, `matplotlib`,
-`seaborn`, `jupyter`, `nbconvert`, `python-docx`, `pytest`.
+`jupyter`, `nbconvert`, `python-docx`, `pytest`.
 
 ```bash
 git clone https://github.com/Grupo-carro-chefe/nba-player-scoring-prediction.git
@@ -123,20 +123,31 @@ pandas 3.1 (versões registradas em `results/metrics/*.json`).
 ### Reproduzir a N2 de ponta a ponta
 
 ```bash
-python scripts/run_all.py
+python scripts/run_all.py            # a partir dos resultados versionados
+python scripts/run_all.py --retrain  # refaz treino e avaliação no teste (~5 min em 8 núcleos)
 ```
 
-Treina (cerca de 4 minutos em 8 núcleos), avalia no teste **se ainda não houver
-avaliação**, gera figuras, executa os notebooks 02 a 05, atualiza cabeçalhos e
-roda os testes. Passo a passo:
+Sem opções, o script regenera figuras, notebooks 02 a 05, cabeçalhos e o
+relatório a partir de `results/` (só treina e avalia se `test_final.json` ainda
+não existir) e roda os testes. Com `--retrain`, refaz treino e avaliação juntos,
+para que modelos, quantis e resultados do teste nunca fiquem desencontrados. O
+PDF do relatório só é regenerado no Windows com Word; em outros sistemas, o
+script avisa e regenera apenas o `.docx`.
+
+Passo a passo, para quem quiser rodar cada etapa:
 
 ```bash
 python -m src.train                 # CV temporal e escolhas na validação (não lê o teste)
-python -m src.evaluate --final      # teste 2025-26; recusa rodar de novo sem --force
+python -m src.evaluate --final      # teste 2025-26
 python -m src.figures               # results/figures/*.png
 python -m src.report --pdf          # relatorio/relatorio_N2.docx e .pdf (PDF requer Word no Windows)
 pytest -q
 ```
+
+Como o teste já foi avaliado e `test_final.json` está versionado, `src.train`
+recusa rodar sem `--force`: retreinar sozinho deixaria o resultado do teste
+descrevendo modelos que não existem mais. Nesse caso use `run_all.py --retrain`
+ou `python -m src.train --force` seguido de `python -m src.evaluate --final --force`.
 
 ### Reconstruir o dataset (N1)
 
@@ -265,13 +276,16 @@ modelo treinaria com o futuro do próprio atleta.
 ### Modelos e avaliação
 
 - Baselines: médias de 3, 5 e 10 jogos, média exponencial, média da temporada,
-  constantes e regressão linear sobre a média exponencial (a régua mais exigente).
+  constantes e regressão linear sobre a média exponencial (verifica se o ganho
+  vem só de reescalar a média recente). Em MAE, a régua mais exigente é a
+  própria média exponencial e, como diagnóstico, uma regressão mediana sobre ela.
 - Modelos: Ridge, Lasso, GLM Poisson, floresta aleatória e gradient boosting
   (perdas quadrática, Poisson e absoluta), em `Pipeline` do scikit-learn.
 - Classificação: regressão logística L1/L2, floresta e gradient boosting, com a
   linha e as diferenças em relação a ela como features; calibração escolhida na
   validação.
-- Incerteza: intervalo conformal `μ ± q·√μ` calibrado na validação.
+- Incerteza: intervalo conformal `μ ± q·√max(μ, 1)`, limitado a zero,
+  calibrado na validação.
 - Comparações com IC 95% por **bootstrap pareado por jogador**; métricas por
   faixa de minutos (pré-jogo) e por temporada; ablação por família de features.
 

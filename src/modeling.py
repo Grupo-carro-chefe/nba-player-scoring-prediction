@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: splits, famílias, baselines e catálogo de modelos.
+#   2026-11-15 | Rodrigo    | Docstring: a regressão linear sobre a exponencial não é a régua mais exigente em MAE.
 # === FIM DO CABECALHO ===
 
 """Dados, splits, familias de features, baselines e catalogo de modelos.
@@ -230,9 +231,10 @@ def predict_baselines(df: pd.DataFrame, train: pd.DataFrame) -> dict[str, np.nda
     """Previsoes de todas as baselines para as linhas de `df`.
 
     Inclui as constantes do treino (media e mediana) e uma regressao linear de
-    uma variavel sobre a media exponencial. Esta ultima e a baseline mais
-    exigente: mostra se o ganho de um modelo vem de usar mais informacao ou so
-    de reescalar a media recente.
+    uma variavel sobre a media exponencial. Esta ultima mostra se o ganho de um
+    modelo vem de usar mais informacao ou so de reescalar a media recente; por
+    ser ajustada por minimos quadrados, NAO e a regua mais exigente em MAE (a
+    propria media exponencial erra menos que ela).
     """
     preds = {nome: df[col].to_numpy(dtype=float) for nome, col in REG_BASELINES.items()}
     preds["constante_media_treino"] = np.full(len(df), train[TARGET_REG].mean())

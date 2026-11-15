@@ -16,6 +16,7 @@
 #   2026-11-15 | Rodrigo    | Versão inicial: relatório N2 gerado a partir dos resultados.
 #   2026-11-15 | Rodrigo    | Correções da revisão crítica: teto, baselines, ablação, conformal, referências.
 #   2026-11-15 | Rodrigo    | Fatos do texto verificados contra os resultados; números lidos dos arquivos.
+#   2026-11-15 | Rodrigo    | Metadados próprios do .docx; texto do run_all --retrain.
 # === FIM DO CABECALHO ===
 
 """Gera o relatorio da N2 (.docx) sobre o template da FCI.
@@ -84,6 +85,18 @@ def inteiro(n: int) -> str:
 class Relatorio:
     def __init__(self) -> None:
         self.doc = Document(str(TEMPLATE))
+        # Os metadados do template oficial vem de outro documento; o relatorio
+        # leva os proprios (titulo, autores, assunto).
+        from src.header import INTEGRANTES
+
+        props = self.doc.core_properties
+        props.title = "Predição de Desempenho Individual de Atletas da NBA por Meio de Aprendizado de Máquina Supervisionado"
+        props.author = "; ".join(m["nome"] for m in INTEGRANTES)
+        props.last_modified_by = props.author
+        props.subject = "Inteligência Artificial - Projeto N2 - Universidade Presbiteriana Mackenzie"
+        props.keywords = "aprendizado de máquina; NBA; scikit-learn; calibração; predição conformal"
+        props.comments = ""
+        props.category = ""
         body = self.doc.element.body
         # O template tem duas secoes; o cabecalho com o logo esta preso a
         # primeira (sectPr dentro de um paragrafo). Antes de apagar o conteudo
@@ -692,8 +705,9 @@ def build(video_url: str | None) -> None:
       "pontos previstos, os intervalos de 80% e 90%, a baseline, a probabilidade de superar o patamar recente e, por se "
       "tratar de jogos passados, o resultado real. Consultas fora do domínio do modelo (jogadores fora da rotação, menos "
       "de dez jogos na temporada, pós-temporada) são recusadas com uma explicação, em vez de produzir um número sem "
-      "respaldo. O pipeline completo é reproduzível por `python scripts/run_all.py`, e os cadernos 02 a 05 apresentam cada "
-      "etapa.")
+      "respaldo. O pipeline completo é reproduzível por `python scripts/run_all.py --retrain`, que refaz treino e "
+      "avaliação juntos; sem a opção, o script regenera figuras, cadernos e relatório a partir dos resultados "
+      "versionados. Os cadernos 02 a 05 apresentam cada etapa.")
 
     # ------------------------------------------------------------ 6. resultados
     rel.titulo_secao("6. Resultados")

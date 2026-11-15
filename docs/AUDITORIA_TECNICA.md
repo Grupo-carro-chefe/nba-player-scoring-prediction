@@ -32,10 +32,12 @@ Para uma proporção, o erro-padrão no pior caso (`p = 0,5`) é `0,5/√n`:
 Com 20 jogos, uma estimativa de "65%" tem intervalo de confiança que vai de ~43%
 a ~87%. Qualquer decisão baseada na diferença entre 62% e 58% é ruído.
 
-**O que fizemos:** abandonamos a frequência empírica como estimador. No 2º
-bimestre, a probabilidade sai de um **modelo treinado sobre milhares de linhas**,
-não da contagem dos últimos jogos de um único atleta, e será avaliada por
-**Brier score** e **curva de calibração**, não só por acurácia.
+**O que fizemos:** abandonamos a frequência empírica como estimador. Na N2, a
+probabilidade sai de um **modelo treinado sobre milhares de linhas**, não da
+contagem dos últimos jogos de um único atleta, e foi avaliada por **Brier score**
+e **curva de calibração**, não só por acurácia: no teste 2025-26, Brier de 0,2366
+contra 0,2496 do estimador ingênuo, com a curva de calibração próxima da
+diagonal (ver `results/metrics/test_final.json` e a seção 6.4 do relatório).
 
 ---
 
@@ -126,8 +128,10 @@ da liga; conforme `n` cresce, converge para a frequência observada.
 **O que fizemos:** o dataset não tem estimador de probabilidade embutido; isso
 passa a ser trabalho do modelo. Na N2, a regressão à média foi tratada de
 duas formas: (a) modelos regularizados, que naturalmente encolhem coeficientes; e
-(b) **calibração explícita** das probabilidades previstas, comparando previsto vs.
-observado por faixa.
+(b) **avaliação da calibração** das probabilidades (previsto vs. observado por
+faixa, ECE e Brier). Calibradores pós-treino (sigmoide e isotônico) foram
+testados na validação, mas nenhum superou a regressão logística sem ajuste, que
+ficou como modelo final.
 
 ---
 

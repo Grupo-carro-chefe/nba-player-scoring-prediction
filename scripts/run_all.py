@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: pipeline da N2 de ponta a ponta.
 #   2026-11-15 | Rodrigo    | Não retreina sem --retrain quando o teste já foi avaliado.
+#   2026-11-15 | Rodrigo    | Passa --force ao treino e --pdf no Windows.
 # === FIM DO CABECALHO ===
 
 """Executa o pipeline da N2 de ponta a ponta.
@@ -63,7 +64,7 @@ def main() -> None:
         run("-m", "src.train")
         run("-m", "src.evaluate", "--final")
     elif args.retrain:
-        run("-m", "src.train")
+        run("-m", "src.train", "--force")
         run("-m", "src.evaluate", "--final", "--force")
     else:
         print("teste ja avaliado: usando os resultados salvos (use --retrain para refazer tudo)")
@@ -73,7 +74,11 @@ def main() -> None:
             "--ExecutePreprocessor.timeout=600", f"notebooks/{nb}.ipynb")
     run("scripts/apply_header.py")
     report = ["-m", "src.report"] + (["--video-url", args.video_url] if args.video_url else [])
+    if sys.platform == "win32":
+        report.append("--pdf")  # o PDF e o arquivo entregue; a exportacao usa o Word
     run(*report)
+    if sys.platform != "win32":
+        print("ATENCAO: relatorio_N2.pdf NAO foi regenerado (exige Word no Windows). Exporte o .docx manualmente.")
     run("-m", "pytest", "-q")
 
 
