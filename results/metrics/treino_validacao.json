@@ -1,7 +1,8 @@
 {
   "ambiente": {
-    "gerado_em_utc": "2026-11-15T16:51:31+00:00",
-    "git_commit": "cf7fcf0b70a511a756f986bec970a609e314120d",
+    "gerado_em_utc": "2026-11-15T18:10:35+00:00",
+    "git_commit": "8e1b4b195f18264acdcfe8d071dd07f166865809",
+    "hash_codigo": "788fbf4cec24662a075e80b66efc75406d7566ba3becb707f7d79667e525c8fc",
     "python": "3.12.1",
     "sklearn": "1.9.1",
     "pandas": "3.1.1",
@@ -207,7 +208,7 @@
         "mae": 5.025322427531034,
         "rmse": 6.428250999384041,
         "r2": 0.46078100525205634,
-        "vies": 0.01423332240831982,
+        "vies": 0.014233322408319848,
         "tipo": "modelo"
       },
       "hgb_quadratico": {
@@ -236,24 +237,24 @@
       }
     },
     "tempo_s": {
-      "ridge": 7.2,
-      "lasso": 9.8,
-      "poisson_glm": 0.9,
-      "random_forest": 25.5,
-      "hgb_quadratico": 27.1,
-      "hgb_poisson": 25.6,
-      "hgb_absoluto": 33.4
+      "ridge": 6.6,
+      "lasso": 8.1,
+      "poisson_glm": 0.8,
+      "random_forest": 23.1,
+      "hgb_quadratico": 18.4,
+      "hgb_poisson": 21.3,
+      "hgb_absoluto": 28.2
     },
     "modelo_final": "hgb_absoluto",
     "conformal": {
       "80": {
         "alpha": 0.2,
-        "q": 2.325594165554828,
+        "q": 2.3254980890672803,
         "n_calibracao": 16653
       },
       "90": {
         "alpha": 0.1,
-        "q": 2.946457705396691,
+        "q": 2.9447931190952565,
         "n_calibracao": 16653
       }
     }
@@ -368,7 +369,7 @@
         "brier_ingenuo": 0.2497188954055822,
         "brier_skill": 0.05489155094162068,
         "log_loss": 0.6644471946876159,
-        "ece": 0.009235395482561849,
+        "ece": 0.009235395482561871,
         "tipo": "modelo"
       },
       "hgb": {
@@ -388,10 +389,10 @@
       }
     },
     "tempo_s": {
-      "logistica_l2": 1.4,
-      "logistica_l1": 47.7,
-      "random_forest": 14.1,
-      "hgb": 20.4
+      "logistica_l2": 1.3,
+      "logistica_l1": 39.7,
+      "random_forest": 11.5,
+      "hgb": 18.4
     },
     "taxa_positiva_treino": 0.48398441402737535,
     "modelo_final": "logistica_l2",
@@ -495,5 +496,5 @@
       "linha_inteira"
     ]
   },
-  "tempo_total_s": 216.0
+  "tempo_total_s": 180.2
 }
