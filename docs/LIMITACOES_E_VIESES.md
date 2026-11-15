@@ -24,7 +24,7 @@ vezes; quem se lesiona no meio, 30.
 
 - **Impacto:** estrelas duráveis dominam o conjunto; métricas agregadas refletem
   mais esse perfil do que o jogador mediano.
-- **Mitigação:** no 2º bimestre, reportar métricas **também por faixa de minutos**
+- **Mitigação (feita na N2):** reportar métricas **também por faixa de minutos**
   e considerar validação agrupada por jogador.
 
 ### A3. Recorte temporal exclui as temporadas de COVID
@@ -90,6 +90,19 @@ direções (titular poupado, reserva inflado).
   históricas de props (detalhes em `docs/AUDITORIA_TECNICA.md`). Preferimos um
   alvo reproduzível e honesto a um alvo de origem duvidosa.
 
+### C1b. Empates na linha sintética (identificado na N2)
+A mediana de 10 inteiros pode ser inteira (12 e 12 → 12,0), e o arredondamento
+para `.5` não a altera. Nesses casos existe empate `y_pts == line_synthetic`,
+rotulado como "não superou".
+
+- **Impacto:** 52,3% das linhas têm linha inteira e 2.943 (3,5%) são empates. A
+  taxa de superação é 46,5% com linha inteira e 50,3% com linha `.5`; um modelo
+  que veja a parte fracionária da linha ganha um sinal que é artefato do rótulo.
+- **Mitigação:** o dataset publicado foi mantido (é item de entrega e base de
+  todos os números); a classificação é reportada com e sem empates e com e sem a
+  feature `linha_inteira`. Os resultados praticamente não mudam (ver
+  `notebooks/03_classificacao_e_calibracao.ipynb`).
+
 ### C2. Alvo auto-referencial
 Como a linha nasce do histórico do próprio jogador, ela **persegue** o desempenho:
 quem melhora vê a própria linha subir alguns jogos depois.
@@ -105,7 +118,8 @@ O mesmo jogador aparece centenas de vezes; companheiros de equipe compartilham o
 mesmo jogo. A suposição i.i.d. é violada.
 
 - **Impacto:** intervalos de confiança ingênuos ficam **otimistas demais**.
-- **Mitigação:** split temporal (já feito) e, no 2º bimestre, considerar validação
+- **Mitigação (feita na N2):** split temporal e intervalos de confiança por bootstrap
+  **pareado por jogador** (`src/metrics.py::paired_cluster_bootstrap`). Originalmente: considerar validação
   agrupada por jogador além da cronológica.
 
 ### C4. Perda das primeiras partidas de cada temporada
@@ -124,6 +138,22 @@ testamos em 2025-26.
 - **Mitigação:** é **proposital**: reproduz o cenário real de uso (prever o
   futuro com o passado). Reportar a métrica por temporada para separar os efeitos.
 
+### C6. `rest_days` mistura descanso e ausência (identificado na N2)
+`rest_days` mede dias desde a última partida **do jogador**, não do time. Acima
+de uma semana (3,6% das linhas; máximo de 125 dias) reflete ausência, muitas
+vezes por lesão.
+
+- **Impacto:** a variável carrega, indiretamente, informação de saúde que o
+  projeto se comprometeu a não coletar, e o efeito de "descanso" fica enviesado
+  por sobrevivência (só há linha se o jogador voltou a jogar).
+- **Mitigação:** os modelos limitam `rest_days` em 10 dias
+  (`src/modeling.py::cap_rest_days`); a ablação mostra contribuição pequena da
+  família descanso e mando.
+
+### C7. Alvo condicionado a jogar
+Só existe registro se o jogador entrou em quadra. O modelo estima pontos
+**condicionados a jogar**; não prevê se o jogador vai jogar.
+
 ---
 
 ## D. Reprodutibilidade
@@ -137,10 +167,13 @@ segunda fonte, e mudanças no endpoint quebram a coleta.
   (`.cache_nba/`) permite reconstruir o dataset sem novas requisições.
 
 ### D2. Dado vivo
-A API reflete o estado atual da base. Correções retroativas de estatística ou uma
-temporada ainda em andamento fazem duas coletas em datas diferentes divergirem.
+A API reflete o estado atual da base. Correções retroativas de estatística fazem
+duas coletas em datas diferentes divergirem. (A temporada 2025-26 já estava
+encerrada na coleta: o dataset termina em 12/04/2026.)
 
 - **Mitigação:** sempre citar o `coletado_em_utc` do manifest ao reportar números.
+  Na N2 o dataset versionado é tratado como **congelado**: o treino e a avaliação
+  partem de `data/processed/dataset.parquet` e nunca recoletam.
 
 ---
 

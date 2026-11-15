@@ -92,6 +92,19 @@ python -m src.collect
 python -m src.build_dataset
 ```
 
+## Correção na N2: empates na linha sintética
+
+A mediana de 10 inteiros pode ser inteira (ex.: 12,0), e o arredondamento para
+0,5 não a altera. Por isso há **2.943 empates** (3,5%) entre `y_pts` e
+`line_synthetic`, rotulados como `y_over = 0`. O arquivo publicado foi mantido
+sem alteração; a classificação da N2 é reportada com e sem esses empates.
+
+## Uso na N2
+
+O treino e a avaliação da N2 partem deste arquivo, sem recoletar (a API é dado
+vivo). Resultados em [`../results/`](../results/) e no relatório final
+[`../relatorio/relatorio_N2.pdf`](../relatorio/relatorio_N2.pdf).
+
 ## Limitações
 
 As restrições conhecidas do conjunto, incluindo a ausência de dados de lesão e

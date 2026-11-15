@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: figuras do relatório.
+#   2026-11-15 | Rodrigo    | Figura da distribuição dos pontos (EDA) e baseline em mediana na escada.
 # === FIM DO CABECALHO ===
 
 """Figuras do relatorio, geradas a partir dos JSONs e previsoes salvos.
@@ -53,6 +54,7 @@ NOMES = {
     "media_da_temporada": "Média da temporada",
     "media_exponencial": "Média exponencial (0,9)",
     "linear_sobre_exponencial": "Linear sobre a exponencial",
+    "mediana_sobre_exponencial": "Mediana sobre a exponencial",
     "ridge": "Ridge",
     "lasso": "Lasso",
     "poisson_glm": "GLM Poisson",
@@ -87,9 +89,27 @@ def _save(fig, name: str) -> None:
     plt.close(fig)
 
 
+def fig_distribuicao_pontos(df: pd.DataFrame) -> None:
+    """Histograma de pontos por jogo com media e mediana (assimetria a direita)."""
+    y = df["y_pts"]
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    ax.hist(y, bins=np.arange(0, y.max() + 2) - 0.5, color=AZUL, edgecolor=SUPERFICIE, linewidth=0.4)
+    ax.axvline(y.median(), color=AQUA, linewidth=2, label=f"Mediana: {y.median():.0f}".replace(".", ","))
+    ax.axvline(y.mean(), color=LARANJA, linewidth=2, label=f"Média: {y.mean():.2f}".replace(".", ","))
+    ax.set_xlim(-1, 60)
+    ax.set_xlabel("Pontos marcados no jogo")
+    ax.set_ylabel("Jogos")
+    ax.set_title("Distribuição do alvo (83.799 jogos, 2021-22 a 2025-26)")
+    ax.legend(loc="upper right")
+    _save(fig, "f_distribuicao_pontos")
+
+
 def fig_escada_mae(res: dict) -> None:
     """MAE no teste de todas as baselines e modelos, do pior ao melhor."""
-    t = res["regressao"]["teste"]
+    t = dict(res["regressao"]["teste"])
+    diag = res["regressao"].get("diagnosticos_posteriores", {}).get("mediana_sobre_exponencial")
+    if diag:
+        t["mediana_sobre_exponencial"] = {"mae": diag["mae_teste"]}
     final = res["regressao"]["modelo_final"]
     items = sorted(t.items(), key=lambda kv: kv[1]["mae"], reverse=True)
     fig, ax = plt.subplots(figsize=(7.5, 5.2))
@@ -195,6 +215,9 @@ def make_all() -> list[str]:
     _style()
     res = json.loads((METRICS_DIR / "test_final.json").read_text(encoding="utf-8"))
     preds = pd.read_parquet(RESULTS / "predictions_test.parquet")
+    from src.modeling import load_dataset
+
+    fig_distribuicao_pontos(load_dataset())
     fig_escada_mae(res)
     fig_mae_por_faixa(res)
     fig_previsto_observado(preds, res["regressao"]["modelo_final"])

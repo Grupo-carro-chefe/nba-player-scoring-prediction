@@ -1,185 +1,189 @@
 # Previsão de desempenho de jogadores da NBA
 
-Projeto da disciplina de **Inteligência Artificial**: Universidade Presbiteriana Mackenzie.
+Projeto da disciplina de **Inteligência Artificial** (7º J, Sistemas de
+Informação, Noite), Universidade Presbiteriana Mackenzie. Prof. Dr. Leandro
+Zerbinatti.
 
 O objetivo é prever **quantos pontos um jogador da NBA marca em uma partida**,
 usando apenas informação disponível antes do jogo começar. O enquadramento é de
 previsão de desempenho esportivo: o repositório não contém cálculo de valor
 esperado, gestão de banca nem qualquer camada relacionada a apostas.
 
-- **1º bimestre (conteúdo atual):** coleta, dataset, análise exploratória e relatório.
-- **2º bimestre:** modelagem, avaliação e calibração.
+- **1º bimestre (N1):** coleta, dataset, análise exploratória e relatório.
+- **2º bimestre (N2, conteúdo atual):** modelagem, avaliação, calibração,
+  incerteza, artefato de demonstração, relatório final e vídeo.
+
+| Entrega | Onde |
+|---|---|
+| Relatório final (N2) | [`relatorio/relatorio_N2.pdf`](relatorio/relatorio_N2.pdf) (fonte em `.docx` ao lado) |
+| Relatório da N1 | [`relatorio/relatorio_N1.pdf`](relatorio/relatorio_N1.pdf) |
+| Vídeo de apresentação | link no relatório e em [`GRUPO.md`](GRUPO.md) |
+| Dataset e descrição | [`data/README.md`](data/README.md) |
+| Notebooks | [`notebooks/`](notebooks/) (01 a 05, executados) |
 
 ---
 
 ## Sumário
 
+- [Resultados principais](#resultados-principais)
 - [Como funciona](#como-funciona)
-- [Requisitos](#requisitos)
-- [Instalação](#instalação)
+- [Requisitos e instalação](#requisitos-e-instalação)
 - [Uso](#uso)
-- [Dados gerados](#dados-gerados)
+- [Artefato de demonstração](#artefato-de-demonstração)
+- [Dados e resultados gerados](#dados-e-resultados-gerados)
 - [Estrutura do repositório](#estrutura-do-repositório)
 - [Decisões metodológicas](#decisões-metodológicas)
 - [Cabeçalho obrigatório](#cabeçalho-obrigatório)
 - [Testes](#testes)
 - [Documentação](#documentação)
+- [Aviso de uso](#aviso-de-uso)
 - [Solução de problemas](#solução-de-problemas)
+
+---
+
+## Resultados principais
+
+Teste na temporada **2025-26** (17.101 jogos), avaliado **uma única vez** depois
+de todas as escolhas feitas na validação. Números de
+[`results/metrics/test_final.json`](results/metrics/test_final.json).
+
+**Regressão (pontos no jogo)**
+
+| Previsor | MAE (pontos) |
+|---|---|
+| Média dos 5 jogos anteriores (baseline da N1) | 5,232 |
+| Média exponencial (fator 0,9) | 4,977 |
+| **Gradient boosting, perda absoluta (modelo final)** | **4,924** |
+
+O modelo reduz o erro em 0,308 ponto por jogo contra a baseline da N1 e em
+0,053 contra a média exponencial; os dois intervalos de 95% (bootstrap por
+jogador) excluem zero. Os intervalos conformais de 80% e 90% cobriram **80,2%**
+e **90,2%** dos jogos de teste. Parte do ganho vem de usar perda absoluta: contra
+uma regressão mediana sobre a média exponencial (4,963) a vantagem é de 0,040
+ponto. Um diagnóstico com informação do futuro mostra que conhecer o nível real
+do jogador na temporada reduziria o MAE em só mais 0,066: a maior parte do erro
+restante vem da variação de jogo a jogo.
+
+**Classificação (superar a mediana dos 10 jogos anteriores)**
+
+| Métrica | Modelo final (regressão logística) | Ingênuo |
+|---|---|---|
+| AUC | 0,630 | 0,500 |
+| Brier score | 0,2366 | 0,2496 |
+| Acurácia | 59,1% | 52,0% |
+
+As probabilidades são calibradas (ECE de 0,012). O ganho é modesto, como
+previsto, e não autoriza nenhuma conclusão sobre mercados de apostas.
 
 ---
 
 ## Como funciona
 
-O pipeline tem três etapas independentes:
-
 ```
-  nba_api                src/collect.py            src/build_dataset.py
-(stats.nba.com)  ──────►  data/raw/*.csv   ──────►  data/processed/dataset.csv
-                          + manifest.json           + dataset_manifest.json
-                                                    (features + alvos + split)
+ nba_api            src/collect.py        src/build_dataset.py         src/train.py            src/evaluate.py
+(stats.nba.com) ──► data/raw/*.csv  ──►  data/processed/dataset.* ──► CV temporal +     ──►  teste 2025-26
+                    + manifest.json      (features, alvos, split)     escolhas na          (uma vez) + figuras
+                                                                       validação 2024-25    + notebooks 02-05
 ```
 
-1. **Coleta** (`src/collect.py`): baixa os game logs da temporada, no grão de
-   uma linha por jogador-jogo, com cache local e limite de requisições.
-2. **Features e alvos** (`src/features.py`, `src/target.py`): transforma o
-   histórico em variáveis pré-jogo e define o que será previsto.
-3. **Dataset** (`src/build_dataset.py`): junta tudo, aplica os filtros e marca
-   a divisão treino/validação/teste.
+1. **Coleta** (`src/collect.py`): game logs por temporada, com cache e limite de requisições.
+2. **Dataset** (`src/features.py`, `src/target.py`, `src/build_dataset.py`):
+   features pré-jogo, alvos e divisão temporal. Versionado e tratado como
+   **congelado** na N2 (a API é dado vivo).
+3. **Treino** (`src/train.py`): hiperparâmetros por validação cruzada temporal
+   no treino; escolha do modelo, do calibrador e do intervalo na validação.
+4. **Avaliação** (`src/evaluate.py --final`): teste único, bootstrap por
+   jogador, ablação, cobertura, teto preditivo.
+5. **Artefato** (`src/predict.py`) e **relatório** (`src/report.py`).
 
 ---
 
-## Requisitos
+## Requisitos e instalação
 
-- Python 3.11 ou superior
-- Conexão com a internet na primeira coleta (depois o cache local resolve)
-
-Bibliotecas (em `requirements.txt`): `nba_api`, `pandas`, `numpy`, `pyarrow`,
-`matplotlib`, `seaborn`, `jupyter`, `pytest`.
-
----
-
-## Instalação
+Python 3.11 ou superior. Bibliotecas em `requirements.txt`: `nba_api`, `pandas`,
+`numpy`, `pyarrow`, `scikit-learn` (1.8 ou 1.9), `scipy`, `matplotlib`,
+`seaborn`, `jupyter`, `nbconvert`, `python-docx`, `pytest`.
 
 ```bash
 git clone https://github.com/Grupo-carro-chefe/nba-player-scoring-prediction.git
 cd nba-player-scoring-prediction
-
 python -m venv .venv
-```
-
-Ative o ambiente virtual:
-
-```bash
-# Windows (PowerShell)
-.venv\Scripts\Activate.ps1
-
-# Windows (Git Bash)
-source .venv/Scripts/activate
-
-# Linux / macOS
-source .venv/bin/activate
-```
-
-Instale as dependências:
-
-```bash
+source .venv/bin/activate          # Linux/macOS
+# .venv\Scripts\Activate.ps1       # Windows (PowerShell)
 pip install -r requirements.txt
 ```
+
+Os resultados publicados foram gerados com Python 3.12, scikit-learn 1.9.1 e
+pandas 3.1 (versões registradas em `results/metrics/*.json`).
 
 ---
 
 ## Uso
 
-### 1. Preencher a identificação do grupo
-
-Edite a lista `INTEGRANTES` em [`src/header.py`](src/header.py):
-
-```python
-INTEGRANTES = [
-    {"nome": "Fulano de Tal", "tia": "12345678"},
-    {"nome": "Ciclana de Tal", "tia": "87654321"},
-]
-```
-
-Depois propague o cabeçalho obrigatório para todos os arquivos:
+### Reproduzir a N2 de ponta a ponta
 
 ```bash
-python scripts/apply_header.py
+python scripts/run_all.py
 ```
 
-### 2. Coletar os dados
+Treina (cerca de 4 minutos em 8 núcleos), avalia no teste **se ainda não houver
+avaliação**, gera figuras, executa os notebooks 02 a 05, atualiza cabeçalhos e
+roda os testes. Passo a passo:
 
 ```bash
-python -m src.collect
-```
-
-Baixa 5 temporadas regulares (2021-22 a 2025-26): 10 requisições com pausa de
-1,2 s entre elas, cerca de 131 mil linhas de jogador-jogo. As respostas ficam em
-`.cache_nba/`, então rodar de novo não gera tráfego novo.
-
-Opções:
-
-```bash
-python -m src.collect --seasons 2023-24 2024-25   # recorte menor (mais rápido)
-python -m src.collect --include-playoffs          # inclui playoffs, marcados em IS_PLAYOFF
-python -m src.collect --out caminho/alternativo
-```
-
-### 3. Montar o dataset
-
-```bash
-python -m src.build_dataset
-```
-
-Saída esperada:
-
-```
-dataset: 83,799 linhas x 37 colunas -> data/processed/dataset.*
-split  : {'train': 50045, 'test': 17101, 'val': 16653}
-classe positiva: 0.4831
-```
-
-Opções:
-
-```bash
-python -m src.build_dataset --min-minutes-prev 20   # recorte mais restrito de rotação
-```
-
-### 4. Rodar os testes
-
-```bash
+python -m src.train                 # CV temporal e escolhas na validação (não lê o teste)
+python -m src.evaluate --final      # teste 2025-26; recusa rodar de novo sem --force
+python -m src.figures               # results/figures/*.png
+python -m src.report --pdf          # relatorio/relatorio_N2.docx e .pdf (PDF requer Word no Windows)
 pytest -q
 ```
 
-### 5. Abrir a análise exploratória
+### Reconstruir o dataset (N1)
 
 ```bash
-jupyter notebook notebooks/01_eda.ipynb
+python -m src.collect               # 5 temporadas regulares, ~131 mil linhas
+python -m src.build_dataset         # data/processed/dataset.*
 ```
+
+Atenção: a API reflete o estado atual da base, então uma nova coleta pode não
+reproduzir exatamente o dataset publicado. Para reproduzir os resultados da N2,
+use o `data/processed/dataset.parquet` versionado.
 
 ---
 
-## Dados gerados
+## Artefato de demonstração
 
-O dataset analítico e os manifests ficam versionados, por serem itens de
-entrega. Os arquivos brutos não, por serem grandes e reproduzíveis pelos scripts.
+```bash
+python -m src.predict --sample 5                         # 5 jogos sorteados do teste
+python -m src.predict --player "Jalen Brunson" --date 2026-01-11
+python -m src.predict --team BOS --date 2026-01-10       # rotação de um time num jogo
+```
+
+Para cada jogo, mostra os pontos previstos, intervalos de 80% e 90%, a
+baseline, a probabilidade de o jogador superar o próprio patamar recente e o
+que de fato aconteceu. Consultas fora do domínio (jogadores fora da rotação,
+menos de 10 jogos na temporada, pós-temporada) são recusadas. O notebook
+[`05_demo_artefato.ipynb`](notebooks/05_demo_artefato.ipynb) faz o mesmo com
+gráfico.
+
+---
+
+## Dados e resultados gerados
 
 | Arquivo | Conteúdo | No repositório |
 |---|---|---|
-| `data/processed/dataset.csv` | **Dataset analítico** (24 MB): features pré-jogo, alvos e split | sim |
-| `data/processed/dataset.parquet` | Mesmo conteúdo em formato colunar (4,4 MB) | sim |
-| `data/processed/dataset_manifest.json` | Metadados da construção: features, filtros, balanceamento | sim |
+| `data/processed/dataset.csv` / `.parquet` | **Dataset analítico**: features pré-jogo, alvos e split | sim |
+| `data/processed/dataset_manifest.json` | Metadados da construção: filtros, balanceamento | sim |
 | `data/raw/manifest.json` | Metadados da coleta: data, endpoints, versão da lib, contagens | sim |
-| `data/raw/player_game_logs.csv` | Bruto, uma linha por jogador-jogo (24 MB) | não |
-| `data/raw/team_game_logs.csv` | Bruto por time, base da defesa do adversário (2 MB) | não |
+| `data/raw/*.csv` | Brutos (reproduzíveis com `src.collect`) | não |
+| `results/metrics/treino_validacao.json` | CV temporal, hiperparâmetros, escolhas na validação | sim |
+| `results/metrics/test_final.json` | Avaliação única no teste: métricas, IC, ablação, cobertura, teto | sim |
+| `results/predictions_{val,test}.parquet` | Previsões de todos os modelos | sim |
+| `results/models/` | Modelos finais (regressão, classificação) e quantis conformais | sim |
+| `results/figures/` | Figuras do relatório | sim |
+| `results/cache/` | Todos os modelos intermediários | não |
 
-A descrição do dataset (dimensões, colunas, divisão, balanceamento e como foi
-construído) está em [`data/README.md`](data/README.md).
-
-Os arquivos também são gravados em `.parquet` quando `pyarrow` está instalado.
-O CSV é sempre gerado, então o projeto roda mesmo sem ele.
-
-A descrição coluna a coluna está em
+Descrição do dataset em [`data/README.md`](data/README.md); coluna a coluna em
 [`docs/DICIONARIO_DE_DADOS.md`](docs/DICIONARIO_DE_DADOS.md).
 
 ---
@@ -188,25 +192,29 @@ A descrição coluna a coluna está em
 
 ```
 ├── src/
-│   ├── header.py           # identificação do grupo (fonte do cabeçalho)
+│   ├── header.py           # identificação do grupo, sínteses e histórico por arquivo
 │   ├── collect.py          # coleta via nba_api
 │   ├── features.py         # features pré-jogo
 │   ├── target.py           # alvos e linha sintética
-│   ├── build_dataset.py    # pipeline completo
-│   └── io_utils.py         # parquet com fallback para CSV
+│   ├── build_dataset.py    # pipeline do dataset
+│   ├── io_utils.py         # parquet com fallback para CSV
+│   ├── modeling.py         # splits temporais, famílias de features, baselines, modelos
+│   ├── metrics.py          # métricas, ECE, bootstrap pareado por jogador
+│   ├── uncertainty.py      # intervalos conformais e oráculos do teto
+│   ├── train.py            # treino e escolhas na validação
+│   ├── evaluate.py         # avaliação única no teste
+│   ├── figures.py          # figuras do relatório
+│   ├── predict.py          # artefato de demonstração
+│   └── report.py           # gera o relatório .docx/.pdf a partir dos resultados
 ├── scripts/
-│   └── apply_header.py     # aplica o cabeçalho obrigatório
-├── tests/
-│   └── test_no_leakage.py  # testes de vazamento temporal
-├── notebooks/
-│   └── 01_eda.ipynb        # análise exploratória
-├── docs/
-│   ├── DICIONARIO_DE_DADOS.md
-│   ├── AUDITORIA_TECNICA.md
-│   └── LIMITACOES_E_VIESES.md
-├── data/
-│   ├── raw/                # brutos fora do repo; só o manifest.json entra
-│   └── processed/          # dataset analítico versionado + manifest
+│   ├── apply_header.py     # aplica o cabeçalho obrigatório
+│   └── run_all.py          # pipeline da N2 de ponta a ponta
+├── tests/                  # vazamento, splits, modelagem, documentação, resultados
+├── notebooks/              # 01 EDA; 02 regressão; 03 classificação; 04 incerteza e erros; 05 demo
+├── results/                # métricas, previsões, modelos finais, figuras
+├── relatorio/              # relatórios N1 e N2 (PDF e .docx) e template da FCI
+├── docs/                   # dicionário, auditoria técnica, limitações e vieses
+├── data/                   # dataset versionado + manifests
 ├── GRUPO.md
 ├── requirements.txt
 └── README.md
@@ -219,71 +227,70 @@ A descrição coluna a coluna está em
 ### Recorte temporal
 
 Cinco temporadas regulares: **2021-22 a 2025-26**. As temporadas 2019-20 e
-2020-21 foram excluídas por serem atípicas (pandemia, bolha em Orlando,
-calendário encurtado, ginásios sem público), o que distorceria médias móveis e o
-efeito de mando de quadra.
+2020-21 foram excluídas por serem atípicas (bolha em Orlando, calendário
+encurtado, ginásios sem público).
 
 ### Features sem vazamento
 
-Toda feature é uma estatística dos jogos **anteriores**. Na prática:
-
-1. Ordena por jogador e data.
-2. Agrupa por **(jogador, temporada)**.
-3. Calcula a estatística móvel.
-4. Aplica `shift(1)` dentro do grupo.
-
-O agrupamento por temporada é o que impede a janela de arrastar jogos do ano
-anterior (inclusive playoffs) para dentro da média da temporada corrente.
-Existem testes automatizados cobrindo isso.
-
-Grupos de features: médias móveis de 3, 5 e 10 jogos, média exponencial
-(fator 0,9), minutos, volume de arremesso, dias de descanso, back-to-back,
-mando de quadra, proxy de titularidade e força defensiva do adversário.
+Toda feature é uma estatística dos jogos **anteriores**: ordena por jogador e
+data, agrupa por **(jogador, temporada)**, calcula a estatística móvel e aplica
+`shift(1)` dentro do grupo. Testes automatizados alteram um jogo futuro e
+exigem que nenhuma feature anterior mude, inclusive as do adversário.
 
 ### Alvos
 
 | Coluna | Tipo | Descrição |
 |---|---|---|
-| `y_pts` | regressão | pontos marcados no jogo |
+| `y_pts` | regressão | pontos marcados no jogo (formulação principal) |
 | `y_over` | classificação | 1 se `y_pts` superou `line_synthetic` |
 | `line_synthetic` | referência | mediana dos 10 jogos anteriores, arredondada para `.5` |
 
-Não existe fonte gratuita, completa e reproduzível de linha histórica de
-mercado, então usamos uma linha sintética construída apenas com dados
-pré-jogo. O arredondamento para `.5` elimina empates, já que pontos são
-inteiros. A justificativa e o trade-off estão em
-[`docs/AUDITORIA_TECNICA.md`](docs/AUDITORIA_TECNICA.md).
+Não existe fonte gratuita e reproduzível de linha histórica de mercado, então
+usamos uma linha sintética pré-jogo. **Correção na N2:** a mediana de 10
+inteiros pode ser inteira, e o arredondamento não a altera; há 2.943 empates
+(3,5%), rotulados como "não superou". A classificação é reportada com e sem
+eles. Detalhes em [`docs/LIMITACOES_E_VIESES.md`](docs/LIMITACOES_E_VIESES.md).
 
-### Divisão dos dados
+### Divisão dos dados e protocolo
 
-Split **temporal**, nunca aleatório:
+| Split | Temporadas | Uso |
+|---|---|---|
+| `train` | 2021-22, 2022-23, 2023-24 | hiperparâmetros por CV temporal (21-22→22-23; 21-23→23-24) |
+| `val` | 2024-25 | escolha do modelo, do calibrador e do quantil conformal |
+| `test` | 2025-26 | avaliação única |
 
-| Split | Temporadas |
-|---|---|
-| `train` | 2021-22, 2022-23, 2023-24 |
-| `val` | 2024-25 |
-| `test` | 2025-26 |
+Um split aleatório colocaria jogos de dias vizinhos em conjuntos diferentes e o
+modelo treinaria com o futuro do próprio atleta.
 
-Um split aleatório colocaria jogos de dias vizinhos em conjuntos diferentes.
-Como as features descrevem o estado recente do jogador, o modelo acabaria
-treinando com informação do futuro daquele mesmo atleta.
+### Modelos e avaliação
+
+- Baselines: médias de 3, 5 e 10 jogos, média exponencial, média da temporada,
+  constantes e regressão linear sobre a média exponencial (a régua mais exigente).
+- Modelos: Ridge, Lasso, GLM Poisson, floresta aleatória e gradient boosting
+  (perdas quadrática, Poisson e absoluta), em `Pipeline` do scikit-learn.
+- Classificação: regressão logística L1/L2, floresta e gradient boosting, com a
+  linha e as diferenças em relação a ela como features; calibração escolhida na
+  validação.
+- Incerteza: intervalo conformal `μ ± q·√μ` calibrado na validação.
+- Comparações com IC 95% por **bootstrap pareado por jogador**; métricas por
+  faixa de minutos (pré-jogo) e por temporada; ablação por família de features.
 
 ---
 
 ## Cabeçalho obrigatório
 
-Todo arquivo `.py` e `.ipynb` carrega, em comentário, a identificação dos
-integrantes, a síntese do arquivo e o histórico de alterações. O bloco é
-**gerado** a partir de `src/header.py`:
+Todo `.py` e `.ipynb` carrega, em comentário, a identificação dos integrantes, a
+síntese do arquivo e o **histórico de alterações daquele arquivo** (data, autor,
+descrição). O bloco é gerado a partir de `src/header.py`:
 
 ```bash
 python scripts/apply_header.py          # aplica ou atualiza
 python scripts/apply_header.py --check  # apenas verifica (sai com 1 se desatualizado)
 ```
 
-Não edite o bloco manualmente nos arquivos: ele é sobrescrito na próxima
-execução. Para registrar uma alteração, adicione uma linha em `HISTORICO`
-(em `src/header.py`) e rode o script de novo.
+Para registrar uma alteração, adicione uma entrada em `HISTORICO[<arquivo>]` em
+`src/header.py` e rode o script. Um teste falha se algum arquivo estiver sem
+síntese ou com cabeçalho desatualizado.
 
 ---
 
@@ -293,20 +300,17 @@ execução. Para registrar uma alteração, adicione uma linha em `HISTORICO`
 pytest -q
 ```
 
-São dez testes, em dois grupos.
-
-**Vazamento temporal (6).** O principal altera o resultado de um jogo futuro e
-verifica que nenhuma feature das linhas anteriores muda. Se mudasse, haveria
-informação do futuro vazando para o passado. Os outros verificam o cálculo das
-médias móveis, a linha sintética, o reset entre temporadas, a ausência de
-colunas pós-jogo na lista de features e a inexistência de correlação quase
-perfeita com o alvo.
-
-**Coerência da documentação (4).** Conferem que a aritmética dos filtros fecha
-(`linhas brutas − descartadas = linhas finais`), que a soma dos splits bate com
-o total e que os números citados em `data/README.md` são os mesmos do
-`dataset_manifest.json`. Esses testes são pulados se o dataset ainda não foi
-gerado.
+- **Vazamento temporal** (`test_no_leakage.py`): futuro não altera passado
+  (jogador e adversário), médias móveis, reset entre temporadas, ausência de
+  colunas pós-jogo nas features.
+- **Splits** (`test_splits.py`): treino, validação e teste sem sobreposição de
+  jogos nem de datas; dobras do CV só treinam no passado.
+- **Modelagem** (`test_modelagem.py`): features permitidas, scaler ajustado só no
+  treino, métricas em casos conhecidos, bootstrap por cluster, cobertura do
+  conformal em dados sintéticos, oráculos, reprodutibilidade por semente.
+- **Documentação e resultados** (`test_documentacao.py`, `test_resultados.py`):
+  aritmética do dataset, cabeçalhos, e os números citados neste README e no
+  relatório batem com `results/metrics/test_final.json`.
 
 ---
 
@@ -314,38 +318,42 @@ gerado.
 
 | Documento | Conteúdo |
 |---|---|
-| [`docs/DICIONARIO_DE_DADOS.md`](docs/DICIONARIO_DE_DADOS.md) | Todas as colunas: tipo, descrição, fonte e se é pré ou pós-jogo |
-| [`docs/AUDITORIA_TECNICA.md`](docs/AUDITORIA_TECNICA.md) | Auditoria do estimador de probabilidade anterior: amostra pequena, contaminação entre temporadas, efeito do decaimento e ausência de regressão à média |
-| [`docs/LIMITACOES_E_VIESES.md`](docs/LIMITACOES_E_VIESES.md) | Vieses de amostragem, lacunas de cobertura e limites metodológicos |
-| [`data/README.md`](data/README.md) | Descrição do dataset entregue: dimensões, colunas, divisão e construção |
-| [`GRUPO.md`](GRUPO.md) | Identificação dos integrantes |
+| [`relatorio/relatorio_N2.pdf`](relatorio/relatorio_N2.pdf) | Relatório final |
+| [`docs/DICIONARIO_DE_DADOS.md`](docs/DICIONARIO_DE_DADOS.md) | Todas as colunas: tipo, descrição, fonte, pré ou pós-jogo |
+| [`docs/AUDITORIA_TECNICA.md`](docs/AUDITORIA_TECNICA.md) | Auditoria do estimador de probabilidade anterior e as decisões que gerou |
+| [`docs/LIMITACOES_E_VIESES.md`](docs/LIMITACOES_E_VIESES.md) | Vieses, lacunas de cobertura e limites metodológicos |
+| [`data/README.md`](data/README.md) | Descrição do dataset entregue |
+| [`GRUPO.md`](GRUPO.md) | Identificação dos integrantes e links |
+
+---
+
+## Aviso de uso
+
+Projeto acadêmico. As estimativas são estatísticas de desempenho esportivo, com
+incerteza explícita, e **não são recomendação de aposta**: o "patamar recente" é
+a mediana do próprio jogador, não uma linha de mercado. Os dados vêm das
+interfaces públicas de estatística da NBA e são usados para fins acadêmicos e
+não comerciais.
 
 ---
 
 ## Solução de problemas
 
-**`ModuleNotFoundError: No module named 'nba_api'`**
-A instalação das dependências foi interrompida antes do fim (o `jupyter` é
-grande e demora). Confira o que falta e complete:
-
-```bash
-python -c "import nba_api, matplotlib, seaborn"
-pip install -r requirements.txt
-```
-
 **`ModuleNotFoundError: No module named 'src'`**
-Rode os comandos a partir da raiz do repositório, usando `python -m src.collect`
-(e não `python src/collect.py`).
+Rode os comandos a partir da raiz do repositório, com `python -m src.<módulo>`.
+
+**`test_final.json já existe`**
+É intencional: o teste é avaliado uma vez. Use `--force` só para refazer a mesma
+avaliação, nunca para trocar de modelo depois de ver o teste.
 
 **`Unable to find a usable engine` ao ler parquet**
-Falta o `pyarrow`. Instale com `pip install pyarrow` ou ignore: os arquivos
-`.csv` são gerados de qualquer forma e o pipeline funciona com eles.
+Falta o `pyarrow`: `pip install pyarrow`.
 
 **A coleta falha ou fica lenta**
-A API pública da NBA limita requisições em rajada. O script já espera 1,2 s
-entre chamadas e tenta novamente com espera crescente. Se persistir, aguarde
-alguns minutos. O que já foi baixado fica em `.cache_nba/` e não será
-requisitado outra vez.
+A API pública da NBA limita requisições em rajada. O script espera 1,2 s entre
+chamadas e tenta novamente com espera crescente; o que já foi baixado fica em
+`.cache_nba/`.
 
-**`FileNotFoundError` ao montar o dataset**
-Rode `python -m src.collect` antes de `python -m src.build_dataset`.
+**`src.report --pdf` falha**
+A exportação para PDF usa o Microsoft Word por automação no Windows. Sem Word,
+gere só o `.docx` (`python -m src.report`) e exporte manualmente.

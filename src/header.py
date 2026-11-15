@@ -88,12 +88,27 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
     "tests/__init__.py": [(_N2, "Rodrigo", "Síntese cadastrada no cabeçalho.")],
     "src/modeling.py": [(_N2, "Rodrigo", "Versão inicial: splits, famílias, baselines e catálogo de modelos.")],
     "src/metrics.py": [(_N2, "Rodrigo", "Versão inicial: métricas, ECE e bootstrap pareado por jogador.")],
-    "src/uncertainty.py": [(_N2, "Rodrigo", "Versão inicial: conformal normalizado e oráculos do teto.")],
+    "src/uncertainty.py": [
+        (_N2, "Rodrigo", "Versão inicial: conformal normalizado e oráculos do teto."),
+        (_N2, "Rodrigo", "Oráculos em mediana (régua justa para o MAE)."),
+    ],
     "src/train.py": [(_N2, "Rodrigo", "Versão inicial: CV temporal, seleção, calibração e conformal.")],
-    "src/evaluate.py": [(_N2, "Rodrigo", "Versão inicial: avaliação única no teste, ablação e teto.")],
-    "src/figures.py": [(_N2, "Rodrigo", "Versão inicial: figuras do relatório.")],
-    "src/predict.py": [(_N2, "Rodrigo", "Versão inicial: demonstração com intervalo e aviso de escopo.")],
-    "src/report.py": [(_N2, "Rodrigo", "Versão inicial: relatório N2 gerado a partir dos resultados.")],
+    "src/evaluate.py": [
+        (_N2, "Rodrigo", "Versão inicial: avaliação única no teste, ablação e teto."),
+        (_N2, "Rodrigo", "Diagnósticos posteriores: regressão mediana e modelo com nível oráculo."),
+    ],
+    "src/figures.py": [
+        (_N2, "Rodrigo", "Versão inicial: figuras do relatório."),
+        (_N2, "Rodrigo", "Figura da distribuição dos pontos (EDA) e baseline em mediana na escada."),
+    ],
+    "src/predict.py": [
+        (_N2, "Rodrigo", "Versão inicial: demonstração com intervalo e aviso de escopo."),
+        (_N2, "Rodrigo", "Saída em UTF-8 também quando redirecionada (Windows)."),
+    ],
+    "src/report.py": [
+        (_N2, "Rodrigo", "Versão inicial: relatório N2 gerado a partir dos resultados."),
+        (_N2, "Rodrigo", "Correções da revisão crítica: teto, baselines, ablação, conformal, referências."),
+    ],
     "scripts/run_all.py": [(_N2, "Rodrigo", "Versão inicial: pipeline da N2 de ponta a ponta.")],
     "tests/test_splits.py": [(_N2, "Rodrigo", "Versão inicial: não sobreposição e ordem temporal dos splits.")],
     "tests/test_modelagem.py": [(_N2, "Rodrigo", "Versão inicial: testes de modelagem.")],

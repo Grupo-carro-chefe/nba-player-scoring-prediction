@@ -1,7 +1,7 @@
 {
   "ambiente": {
-    "gerado_em_utc": "2026-11-15T16:58:54+00:00",
-    "git_commit": "89668622423224f22212c14e4f413d9715a1dcb8",
+    "gerado_em_utc": "2026-11-15T17:25:49+00:00",
+    "git_commit": "c764cfb44606f56d4d22b8532aa9ef916862e74e",
     "python": "3.12.1",
     "sklearn": "1.9.1",
     "pandas": "3.1.1",
@@ -110,9 +110,9 @@
       },
       "random_forest": {
         "n": 17101,
-        "mae": 4.961021956390393,
-        "rmse": 6.366404534352171,
-        "r2": 0.4464746824852286,
+        "mae": 4.961021956390392,
+        "rmse": 6.366404534352172,
+        "r2": 0.44647468248522837,
         "vies": 0.20094082898675275,
         "tipo": "modelo"
       },
@@ -408,24 +408,24 @@
       },
       "random_forest_vs_media_5_jogos": {
         "delta": -0.27088261059399416,
-        "ic_inf": -0.29904983185574485,
-        "ic_sup": -0.24352942310369763,
+        "ic_inf": -0.2990498318557448,
+        "ic_sup": -0.24352942310369768,
         "p_valor": 0.0,
         "n_clusters": 450,
         "n_boot": 2000
       },
       "random_forest_vs_media_exponencial": {
-        "delta": -0.015662945224720278,
-        "ic_inf": -0.028212953819005564,
-        "ic_sup": -0.0034016791812255713,
+        "delta": -0.01566294522472027,
+        "ic_inf": -0.028212953819005567,
+        "ic_sup": -0.0034016791812255735,
         "p_valor": 0.014,
         "n_clusters": 450,
         "n_boot": 2000
       },
       "random_forest_vs_linear_sobre_exponencial": {
-        "delta": -0.025113629527611026,
-        "ic_inf": -0.03662617473114783,
-        "ic_sup": -0.013700719151780312,
+        "delta": -0.02511362952761102,
+        "ic_inf": -0.03662617473114781,
+        "ic_sup": -0.013700719151780326,
         "p_valor": 0.0,
         "n_clusters": 450,
         "n_boot": 2000
@@ -998,6 +998,33 @@
       "ganho_sobre_exponencial_que_o_melhor_oraculo_teria": 0.015387626440126922,
       "ganho_sobre_exponencial_do_modelo": 0.05313971250425453
     },
+    "diagnosticos_posteriores": {
+      "nota": "Acrescentados apos a revisao do relatorio; nao alteram nenhuma escolha de modelo.",
+      "mediana_sobre_exponencial": {
+        "mae_validacao": 5.042844678373165,
+        "mae_teste": 4.96345330599641,
+        "modelo_final_vs_esta": {
+          "delta": -0.03990811688555236,
+          "ic_inf": -0.05222150957568806,
+          "ic_sup": -0.02752063060027142,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      },
+      "modelo_com_nivel_oraculo": {
+        "descricao": "modelo final + media leave-one-out do jogador na temporada (usa jogos futuros)",
+        "mae_teste": 4.8574273853519045,
+        "modelo_final_menos_oraculo": {
+          "delta": 0.06611780375895379,
+          "ic_inf": 0.03454033036807678,
+          "ic_sup": 0.09762600372135044,
+          "p_valor": 0.0,
+          "n_clusters": 450,
+          "n_boot": 2000
+        }
+      }
+    },
     "intervalos": {
       "80": {
         "nominal": 0.8,
@@ -1471,7 +1498,7 @@
         "brier_ingenuo": 0.24962808789600366,
         "brier_skill": 0.04568774272986176,
         "log_loss": 0.6690505091159733,
-        "ece": 0.011908574182528062
+        "ece": 0.01190857418252805
       },
       "hgb": {
         "n": 17101,
@@ -1557,7 +1584,7 @@
         "brier_ingenuo": 0.2501567224649725,
         "brier_skill": 0.04873386511113975,
         "log_loss": 0.6684945732206097,
-        "ece": 0.010868499143854807
+        "ece": 0.0108684991438548
       },
       "hgb": {
         "n": 16533,
@@ -1787,5 +1814,5 @@
       "fracao": 0.033214431904566986
     }
   },
-  "tempo_s": 22.8
+  "tempo_s": 97.2
 }

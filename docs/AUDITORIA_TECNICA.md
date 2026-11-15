@@ -124,7 +124,7 @@ onde `α, β` vêm da distribuição da liga. Com `n` pequeno, `p̂` fica perto 
 da liga; conforme `n` cresce, converge para a frequência observada.
 
 **O que fizemos:** o dataset não tem estimador de probabilidade embutido; isso
-passa a ser trabalho do modelo. No 2º bimestre, a regressão à média é tratada de
+passa a ser trabalho do modelo. Na N2, a regressão à média foi tratada de
 duas formas: (a) modelos regularizados, que naturalmente encolhem coeficientes; e
 (b) **calibração explícita** das probabilidades previstas, comparando previsto vs.
 observado por faixa.
@@ -156,5 +156,5 @@ seção correspondente em `docs/LIMITACOES_E_VIESES.md`.
 | Amostra pequena (IC ± 22–31 pp) | Modelo treinado em milhares de linhas; avaliação por Brier + calibração |
 | Contaminação regular × playoffs | Janela agrupada por temporada; playoffs opt-in e marcados; teste automatizado |
 | Decaimento reduz `n_eff` (100 → 19) | Decaimento vira **uma** feature entre médias de 3/5/10; `n_eff` documentado |
-| Sem regressão à média | Regularização + calibração explícita no 2º bimestre |
+| Sem regressão à média | Regularização + calibração avaliada na N2 (Brier, ECE e curva de calibração) |
 | Sem linha de mercado confiável | Linha sintética documentada + alvo de regressão como principal |

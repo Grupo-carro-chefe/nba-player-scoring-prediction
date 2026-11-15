@@ -14,13 +14,14 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: demonstração com intervalo e aviso de escopo.
+#   2026-11-15 | Rodrigo    | Saída em UTF-8 também quando redirecionada (Windows).
 # === FIM DO CABECALHO ===
 
 """Artefato de demonstracao: estimativa de pontos com incerteza para um jogo.
 
-    python -m src.predict --player "Jalen Brunson" --date 2026-01-15
+    python -m src.predict --player "Jalen Brunson" --date 2026-01-11
     python -m src.predict --sample 5            # 5 jogos sorteados do teste
-    python -m src.predict --team BOS --date 2026-01-15
+    python -m src.predict --team BOS --date 2026-01-10
 
 Le apenas o dataset versionado e os modelos finais em results/models/. Para o
 jogo pedido, mostra:
@@ -44,6 +45,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import unicodedata
 
 import joblib
@@ -119,6 +121,11 @@ def main() -> None:
     ap.add_argument("--sample", type=int, help="sorteia N jogos do conjunto de teste")
     ap.add_argument("--seed", type=int, default=SEED)
     args = ap.parse_args()
+    # Acentos corretos tambem quando a saida e redirecionada (no Windows o
+    # padrao de um pipe e cp1252).
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
 
     df = load_dataset()
     if args.sample:

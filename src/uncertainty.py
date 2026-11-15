@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: conformal normalizado e oráculos do teto.
+#   2026-11-15 | Rodrigo    | Oráculos em mediana (régua justa para o MAE).
 # === FIM DO CABECALHO ===
 
 """Incerteza por estimativa (conformal) e estimativa do teto preditivo.

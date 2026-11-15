@@ -64,7 +64,7 @@ Minutos e volume de arremesso são os preditores mais fortes de pontos: quem nã
 |---|---|---|---|---|
 | `reb_ma5_prev` | float | Média de rebotes (5 jogos): proxy de papel/posição | derivada de `REB` | pré-jogo |
 | `ast_ma5_prev` | float | Média de assistências (5 jogos): proxy de papel de criação | derivada de `AST` | pré-jogo |
-| `games_played_prev` | int | Jogos já disputados pelo jogador **naquela temporada** (0 no primeiro) | derivada | pré-jogo |
+| `games_played_prev` | int | Jogos já disputados pelo jogador **naquela temporada**. Vale 0 no primeiro jogo do bruto, mas no dataset analítico o mínimo é 10 (a linha sintética exige 10 jogos anteriores) | derivada | pré-jogo |
 | `starter_proxy_prev` | Int64 (0/1) | **PROXY** de titularidade: `1` se `min_ma5_prev ≥ 28`. Ver ressalva abaixo | derivada de `MIN` | pré-jogo |
 
 > ⚠️ **`starter_proxy_prev` não é a escalação oficial.** O endpoint de game log não expõe `START_POSITION`; obter a escalação real exigiria uma requisição de box score **por jogo** (dezenas de milhares), inviável sob rate limit. Usamos minutos recentes como proxy declarado. Consequência: um titular recém-promovido aparece como reserva por alguns jogos, e um titular voltando de lesão idem. Está listado em `docs/LIMITACOES_E_VIESES.md`.
@@ -73,7 +73,7 @@ Minutos e volume de arremesso são os preditores mais fortes de pontos: quem nã
 
 | Coluna | Tipo | Descrição | Fonte | Momento |
 |---|---|---|---|---|
-| `rest_days` | float | Dias desde o jogo anterior do jogador (NaN no 1º da temporada) | derivada de `GAME_DATE` | pré-jogo |
+| `rest_days` | float | Dias desde o jogo anterior **do jogador** (NaN no 1º da temporada, linha que não chega ao dataset analítico). Valores acima de 7 dias refletem ausência, muitas vezes por lesão; os modelos limitam a variável em 10 | derivada de `GAME_DATE` | pré-jogo |
 | `is_b2b` | Int64 (0/1) | `1` se é *back-to-back* (`rest_days == 1`) | derivada | pré-jogo |
 | `is_home` | Int64 (0/1) | `1` se o jogador joga em casa | derivada de `MATCHUP` | pré-jogo |
 
@@ -102,7 +102,7 @@ clássico.
 
 Notas sobre os alvos:
 
-- A linha é arredondada para `.5` e os pontos são inteiros, então **nunca há empate** (*push*): o alvo binário é sempre bem definido.
+- **Correção na N2:** a mediana de 10 inteiros é a média dos dois valores centrais e pode ser inteira (ex.: 12,0). O arredondamento para `.5` não altera uma mediana inteira, então **pode haver empate** (`y_pts == line_synthetic`), rotulado como `y_over = 0`. No dataset publicado a linha é inteira em 52,3% das linhas e há 2.943 empates (3,5%). A N2 reporta a classificação com e sem empates (`results/metrics/test_final.json`, chave `teste_sem_empates`).
 - `y_over` é `NaN` (e a linha é descartada) enquanto o jogador não tem 10 jogos na temporada. Não viram zero.
 - A justificativa completa da linha sintética (e por que não usamos linha de mercado) está em `src/target.py` e em `docs/AUDITORIA_TECNICA.md`.
 

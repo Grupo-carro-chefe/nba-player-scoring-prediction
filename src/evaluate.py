@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: avaliação única no teste, ablação e teto.
+#   2026-11-15 | Rodrigo    | Diagnósticos posteriores: regressão mediana e modelo com nível oráculo.
 # === FIM DO CABECALHO ===
 
 """Avaliacao final no conjunto de teste (temporada 2025-26).
@@ -45,6 +46,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.base import clone
+from sklearn.linear_model import QuantileRegressor
 from sklearn.metrics import roc_auc_score
 
 from src.features import PRE_GAME_FEATURES
@@ -261,6 +263,37 @@ def evaluate(force: bool = False) -> dict:
     teto["ganho_sobre_exponencial_que_o_melhor_oraculo_teria"] = reg["teste"]["media_exponencial"]["mae"] - teto[melhor]["mae"]
     teto["ganho_sobre_exponencial_do_modelo"] = reg["teste"]["media_exponencial"]["mae"] - mae_final
     reg["teto_preditivo"] = teto
+
+    # Diagnosticos posteriores (acrescentados apos a revisao do relatorio,
+    # 2026-11-15). Nao alteram nenhuma escolha: o modelo final, o calibrador e
+    # o intervalo continuam os escolhidos na validacao.
+    #  1) baseline em MEDIANA sobre a media exponencial: separa o ganho que vem
+    #     de usar perda absoluta do ganho que vem de informacao adicional;
+    #  2) modelo-oraculo: o mesmo modelo final recebendo tambem o nivel real do
+    #     jogador na temporada (media leave-one-out, que usa jogos futuros).
+    #     Mede quanto ainda se ganharia conhecendo o nivel de verdade.
+    lad = QuantileRegressor(quantile=0.5, alpha=0.0, solver="highs").fit(train_df[["pts_ewm_prev"]], train_df[TARGET_REG])
+    preds["reg__mediana_sobre_exponencial"] = lad.predict(test_df[["pts_ewm_prev"]])
+    e_lad = _abs_err(y_te, preds["reg__mediana_sobre_exponencial"])
+    tr_o = train_df.assign(nivel_oraculo=oracle_season_loo(train_df))
+    te_o = test_df.assign(nivel_oraculo=oracle_season_loo(test_df))
+    cols_o = PRE_GAME_FEATURES + ["nivel_oraculo"]
+    m_o = clone(base_pipe).set_params(**params).fit(tr_o[cols_o], tr_o[TARGET_REG])
+    preds["modelo_oraculo_nivel"] = m_o.predict(te_o[cols_o])
+    e_mo = _abs_err(y_te, preds["modelo_oraculo_nivel"])
+    reg["diagnosticos_posteriores"] = {
+        "nota": "Acrescentados apos a revisao do relatorio; nao alteram nenhuma escolha de modelo.",
+        "mediana_sobre_exponencial": {
+            "mae_validacao": float(np.mean(_abs_err(val_df[TARGET_REG], lad.predict(val_df[["pts_ewm_prev"]])))),
+            "mae_teste": float(e_lad.mean()),
+            "modelo_final_vs_esta": paired_cluster_bootstrap(err[final_reg], e_lad, players),
+        },
+        "modelo_com_nivel_oraculo": {
+            "descricao": "modelo final + media leave-one-out do jogador na temporada (usa jogos futuros)",
+            "mae_teste": float(e_mo.mean()),
+            "modelo_final_menos_oraculo": paired_cluster_bootstrap(err[final_reg], e_mo, players),
+        },
+    }
 
     # Incerteza: cobertura do intervalo conformal no teste
     conf = json.loads((MODELS_DIR / "conformal.json").read_text(encoding="utf-8"))
