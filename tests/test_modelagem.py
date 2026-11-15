@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: testes de modelagem.
+#   2026-11-15 | Rodrigo    | Teste da estatística de ordem do conformal.
 # === FIM DO CABECALHO ===
 
 """Testes da modelagem: features permitidas, pipeline sem vazamento, metricas,
@@ -209,3 +210,12 @@ def test_oraculo_em_mediana_exclui_o_proprio_jogo():
     assert temporada[4] == pytest.approx(25.0)  # o 100 nao entra na propria previsao
     local = oracle_median(df, half_window=1)
     assert local[2] == pytest.approx(30.0)  # vizinhos 20 e 40
+
+
+def test_quantil_conformal_e_a_k_esima_estatistica_de_ordem():
+    """q = k-esimo menor escore, k = ceil((n+1)(1-alpha)) (nao o k+1-esimo)."""
+    y = np.arange(1, 10, dtype=float)  # escores |y - mu|/sqrt(mu) com mu = 1 -> 0..8
+    mu = np.ones_like(y)
+    band = ConformalBand.fit(y + 1.0, mu, alpha=0.2)  # escores = y = 1..9, n = 9
+    k = int(np.ceil((9 + 1) * 0.8))  # 8
+    assert band.q == pytest.approx(np.sort(y)[k - 1])  # 8, e nao 9

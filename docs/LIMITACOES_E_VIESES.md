@@ -24,8 +24,10 @@ vezes; quem se lesiona no meio, 30.
 
 - **Impacto:** estrelas duráveis dominam o conjunto; métricas agregadas refletem
   mais esse perfil do que o jogador mediano.
-- **Mitigação (feita na N2):** reportar métricas **também por faixa de minutos**
-  e considerar validação agrupada por jogador.
+- **Mitigação (feita na N2):** métricas reportadas **também por faixa de minutos**
+  e por perfil de jogador, e intervalos de confiança por bootstrap pareado por
+  jogador (ver C3). A validação cruzada agrupada por jogador, cogitada na N1,
+  não foi adotada: a validação é temporal, por temporada.
 
 ### A3. Recorte temporal exclui as temporadas de COVID
 2019-20 e 2020-21 foram removidas de propósito (bolha em Orlando, calendário
@@ -64,9 +66,11 @@ muda de time.
 
 - **Impacto:** logo após uma troca, as médias móveis descrevem o papel do jogador
   no time **antigo**, que pode ser bem diferente.
-- **Mitigação:** conhecida e não corrigida nesta entrega. Correção natural no 2º
-  bimestre: agrupar por (`PLAYER_ID`, `SEASON`, `TEAM_ABBREVIATION`), ao custo de
-  zerar o histórico e perder linhas.
+- **Mitigação:** conhecida e **mantida também na N2**: a janela continua agrupada
+  por (`PLAYER_ID`, `SEASON`). Agrupar também por `TEAM_ABBREVIATION` zeraria o
+  histórico a cada troca e, como a linha sintética exige 10 jogos, descartaria as
+  primeiras partidas no time novo. Cerca de 2,4% das linhas estão nos 10 jogos
+  seguintes a uma troca; fica como trabalho futuro.
 
 ### B4. Contexto físico ausente
 Não temos distância de viagem, fuso horário, altitude (Denver) nem sequência de
@@ -182,5 +186,6 @@ encerrada na coleta: o dataset termina em 12/04/2026.)
 O dataset é **adequado para prever o desempenho de jogadores de rotação da NBA em
 temporada regular**, com um teto de acurácia imposto principalmente pela ausência
 de dados de lesão e escalação (B1). Ele **não** serve para: avaliar jogadores fora
-da rotação (A1), analisar playoffs (A3/C5) ou sustentar qualquer conclusão sobre
-mercados de aposta (C1).
+da rotação (A1), analisar playoffs (o recorte é só de temporada regular; ver
+`docs/AUDITORIA_TECNICA.md` §2) ou sustentar qualquer conclusão sobre mercados de
+aposta (C1).

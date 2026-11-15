@@ -1,7 +1,8 @@
 {
   "ambiente": {
-    "gerado_em_utc": "2026-11-15T16:51:31+00:00",
-    "git_commit": "cf7fcf0b70a511a756f986bec970a609e314120d",
+    "gerado_em_utc": "2026-11-15T18:38:36+00:00",
+    "git_commit": "9a9c959d2c8932114dadfacd23d9024a7a9ee58b",
+    "hash_codigo": "59109f20ae0d04c17edb2aa15d706bc0e81574784158fe27e9182182a53e4e0c",
     "python": "3.12.1",
     "sklearn": "1.9.1",
     "pandas": "3.1.1",
@@ -236,24 +237,24 @@
       }
     },
     "tempo_s": {
-      "ridge": 7.2,
-      "lasso": 9.8,
+      "ridge": 7.7,
+      "lasso": 9.2,
       "poisson_glm": 0.9,
-      "random_forest": 25.5,
-      "hgb_quadratico": 27.1,
-      "hgb_poisson": 25.6,
-      "hgb_absoluto": 33.4
+      "random_forest": 22.2,
+      "hgb_quadratico": 21.7,
+      "hgb_poisson": 23.0,
+      "hgb_absoluto": 31.6
     },
     "modelo_final": "hgb_absoluto",
     "conformal": {
       "80": {
         "alpha": 0.2,
-        "q": 2.325594165554828,
+        "q": 2.3254980890672803,
         "n_calibracao": 16653
       },
       "90": {
         "alpha": 0.1,
-        "q": 2.946457705396691,
+        "q": 2.9447931190952565,
         "n_calibracao": 16653
       }
     }
@@ -368,7 +369,7 @@
         "brier_ingenuo": 0.2497188954055822,
         "brier_skill": 0.05489155094162068,
         "log_loss": 0.6644471946876159,
-        "ece": 0.009235395482561849,
+        "ece": 0.00923539548256186,
         "tipo": "modelo"
       },
       "hgb": {
@@ -388,10 +389,10 @@
       }
     },
     "tempo_s": {
-      "logistica_l2": 1.4,
-      "logistica_l1": 47.7,
-      "random_forest": 14.1,
-      "hgb": 20.4
+      "logistica_l2": 1.5,
+      "logistica_l1": 41.4,
+      "random_forest": 16.0,
+      "hgb": 18.5
     },
     "taxa_positiva_treino": 0.48398441402737535,
     "modelo_final": "logistica_l2",
@@ -495,5 +496,5 @@
       "linha_inteira"
     ]
   },
-  "tempo_total_s": 216.0
+  "tempo_total_s": 196.5
 }

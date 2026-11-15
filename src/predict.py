@@ -15,6 +15,8 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: demonstração com intervalo e aviso de escopo.
 #   2026-11-15 | Rodrigo    | Saída em UTF-8 também quando redirecionada (Windows).
+#   2026-11-15 | Rodrigo    | --team sem data mostra só o jogo mais recente.
+#   2026-11-15 | Rodrigo    | Recusa nome ambíguo e --sample fora do intervalo.
 # === FIM DO CABECALHO ===
 
 """Artefato de demonstracao: estimativa de pontos com incerteza para um jogo.
@@ -129,7 +131,10 @@ def main() -> None:
 
     df = load_dataset()
     if args.sample:
-        rows = df[df["split"] == "test"].sample(args.sample, random_state=args.seed)
+        teste = df[df["split"] == "test"]
+        if not 0 < args.sample <= len(teste):
+            raise SystemExit(f"--sample deve estar entre 1 e {len(teste)}")
+        rows = teste.sample(args.sample, random_state=args.seed)
     else:
         rows = df
         if args.player:
@@ -147,8 +152,16 @@ def main() -> None:
                 "rotação (média >= 15 min nos 5 jogos anteriores) com 10+ jogos na temporada, "
                 "em temporada regular de 2021-22 a 2025-26."
             )
-        if args.player and not args.date:
-            rows = rows.sort_values("GAME_DATE").tail(5)
+        if args.player and rows["PLAYER_ID"].nunique() > 1:
+            nomes = sorted(rows["PLAYER_NAME"].unique())
+            raise SystemExit("o nome bate com mais de um jogador; seja mais específico: " + ", ".join(nomes[:15]))
+        if not args.date:
+            if args.player:
+                # sem data: os 5 jogos mais recentes do jogador
+                rows = rows.sort_values("GAME_DATE").tail(5)
+            else:
+                # time sem data: so o jogo mais recente do time, nao as cinco temporadas
+                rows = rows[rows["GAME_DATE"] == rows["GAME_DATE"].max()]
 
     reg, clf, conf = load_artifacts()
     res = predict_rows(rows.reset_index(drop=True), reg, clf, conf)

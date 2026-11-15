@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
+#   2026-11-15 | Rodrigo    | Manifesto gravado com fim de linha LF.
 # === FIM DO CABECALHO ===
 
 """Coleta game logs da NBA no grao jogador-jogo.
@@ -200,7 +201,7 @@ def collect(
         "filtros": report.filters,
         "arquivos": sorted(p.name for p in out_dir.glob("*_game_logs.*")),
     }
-    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8", newline="\n")
 
     print(f"\njogador-jogo: {report.row_counts['player_game_logs']:,}")
     print(f"time-jogo   : {report.row_counts['team_game_logs']:,}")

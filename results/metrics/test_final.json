@@ -1,7 +1,8 @@
 {
   "ambiente": {
-    "gerado_em_utc": "2026-11-15T17:33:18+00:00",
-    "git_commit": "a937c4df4b9cb5b2e1e981eb22aabcb831b2e4de",
+    "gerado_em_utc": "2026-11-15T18:41:57+00:00",
+    "git_commit": "9a9c959d2c8932114dadfacd23d9024a7a9ee58b",
+    "hash_codigo": "59109f20ae0d04c17edb2aa15d706bc0e81574784158fe27e9182182a53e4e0c",
     "python": "3.12.1",
     "sklearn": "1.9.1",
     "pandas": "3.1.1",
@@ -408,24 +409,24 @@
       },
       "random_forest_vs_media_5_jogos": {
         "delta": -0.27088261059399416,
-        "ic_inf": -0.2990498318557448,
+        "ic_inf": -0.29904983185574474,
         "ic_sup": -0.24352942310369766,
         "p_valor": 0.0,
         "n_clusters": 450,
         "n_boot": 2000
       },
       "random_forest_vs_media_exponencial": {
-        "delta": -0.015662945224720285,
-        "ic_inf": -0.028212953819005578,
-        "ic_sup": -0.003401679181225574,
+        "delta": -0.015662945224720268,
+        "ic_inf": -0.02821295381900555,
+        "ic_sup": -0.0034016791812255683,
         "p_valor": 0.014,
         "n_clusters": 450,
         "n_boot": 2000
       },
       "random_forest_vs_linear_sobre_exponencial": {
-        "delta": -0.02511362952761104,
-        "ic_inf": -0.03662617473114784,
-        "ic_sup": -0.01370071915178033,
+        "delta": -0.025113629527611016,
+        "ic_inf": -0.03662617473114781,
+        "ic_sup": -0.013700719151780298,
         "p_valor": 0.0,
         "n_clusters": 450,
         "n_boot": 2000
@@ -1028,48 +1029,48 @@
     "intervalos": {
       "80": {
         "nominal": 0.8,
-        "q": 2.325594165554828,
+        "q": 2.3254980890672803,
         "global": {
           "n": 17101,
-          "cobertura": 0.8022922636103151,
-          "largura_media": 15.833793644571465,
-          "largura_mediana": 15.43053360966788
+          "cobertura": 0.8022337874978072,
+          "largura_media": 15.833154073475496,
+          "largura_mediana": 15.429896133236197
         },
         "por_faixa_de_minutos": [
           {
             "grupo": "15-20",
             "n": 3218,
             "cobertura": 0.7790553139,
-            "largura_media": 11.3196368621,
-            "largura_mediana": 11.4301973309
+            "largura_media": 11.3192341874,
+            "largura_mediana": 11.429725119
           },
           {
             "grupo": "20-25",
             "n": 4090,
             "cobertura": 0.7843520782,
-            "largura_media": 13.8905810027,
-            "largura_mediana": 13.7000997861
+            "largura_media": 13.8900161182,
+            "largura_mediana": 13.6995337985
           },
           {
             "grupo": "25-30",
             "n": 4521,
-            "cobertura": 0.8095554081,
-            "largura_media": 16.1886458004,
-            "largura_mediana": 15.9282557625
+            "cobertura": 0.8093342181,
+            "largura_media": 16.1879777361,
+            "largura_mediana": 15.9275977239
           },
           {
             "grupo": "30-35",
             "n": 3984,
             "cobertura": 0.8220381526,
-            "largura_media": 19.2041804304,
-            "largura_mediana": 19.1347585121
+            "largura_media": 19.2033870546,
+            "largura_mediana": 19.1339680043
           },
           {
             "grupo": "35+",
             "n": 1288,
             "cobertura": 0.8307453416,
-            "largura_media": 21.6120457252,
-            "largura_mediana": 22.0488098284
+            "largura_media": 21.611152874,
+            "largura_mediana": 22.0478989333
           }
         ],
         "por_tercil_da_previsao": [
@@ -1077,69 +1078,69 @@
             "grupo": "previsao alta",
             "n": 5700,
             "cobertura": 0.8284210526,
-            "largura_media": 20.4677110321,
-            "largura_mediana": 19.9874577787
+            "largura_media": 20.4668654565,
+            "largura_mediana": 19.9866320436
           },
           {
             "grupo": "previsao baixa",
             "n": 5701,
             "cobertura": 0.7812664445,
-            "largura_media": 11.5896399226,
-            "largura_mediana": 11.9430457778
+            "largura_media": 11.5892048138,
+            "largura_mediana": 11.9425523788
           },
           {
             "grupo": "previsao media",
             "n": 5700,
-            "cobertura": 0.7971929825,
-            "largura_media": 15.4447745673,
-            "largura_mediana": 15.4307127503
+            "cobertura": 0.7970175439,
+            "largura_media": 15.4441365026,
+            "largura_mediana": 15.4300752665
           }
         ]
       },
       "90": {
         "nominal": 0.9,
-        "q": 2.946457705396691,
+        "q": 2.9447931190952565,
         "global": {
           "n": 17101,
-          "cobertura": 0.9018770832115081,
-          "largura_media": 19.78031758609167,
-          "largura_mediana": 19.550020947761386
+          "cobertura": 0.9018186070990001,
+          "largura_media": 19.770362594434175,
+          "largura_mediana": 19.53897626281553
         },
         "por_faixa_de_minutos": [
           {
             "grupo": "15-20",
             "n": 3218,
-            "cobertura": 0.8760099441,
-            "largura_media": 13.4763413099,
-            "largura_mediana": 13.2800604338
+            "cobertura": 0.875699192,
+            "largura_media": 13.4715928447,
+            "largura_mediana": 13.275969748
           },
           {
             "grupo": "20-25",
             "n": 4090,
             "cobertura": 0.9019559902,
-            "largura_media": 17.2205405569,
-            "largura_mediana": 17.3548080824
+            "largura_media": 17.2127742142,
+            "largura_mediana": 17.3478073597
           },
           {
             "grupo": "25-30",
             "n": 4521,
             "cobertura": 0.9066578191,
-            "largura_media": 20.4143102604,
-            "largura_mediana": 20.1806199122
+            "largura_media": 20.4034972985,
+            "largura_mediana": 20.1692189735
           },
           {
             "grupo": "30-35",
             "n": 3984,
             "cobertura": 0.9134036145,
-            "largura_media": 24.3232719593,
-            "largura_mediana": 24.2431622395
+            "largura_media": 24.3096197766,
+            "largura_mediana": 24.2294661883
           },
           {
             "grupo": "35+",
             "n": 1288,
             "cobertura": 0.9138198758,
-            "largura_media": 27.381460911,
-            "largura_mediana": 27.9351774165
+            "largura_media": 27.3659952954,
+            "largura_mediana": 27.9193955801
           }
         ],
         "por_tercil_da_previsao": [
@@ -1147,22 +1148,22 @@
             "grupo": "previsao alta",
             "n": 5700,
             "cobertura": 0.9157894737,
-            "largura_media": 25.9319729021,
-            "largura_mediana": 25.3235065067
+            "largura_media": 25.9173227659,
+            "largura_mediana": 25.3092001204
           },
           {
             "grupo": "previsao baixa",
             "n": 5701,
-            "cobertura": 0.8951061217,
-            "largura_media": 13.8419965157,
-            "largura_mediana": 14.1590320152
+            "cobertura": 0.8949307139,
+            "largura_media": 13.8378078116,
+            "largura_mediana": 14.1547577891
           },
           {
             "grupo": "previsao media",
             "n": 5700,
             "cobertura": 0.8947368421,
-            "largura_media": 19.5680251511,
-            "largura_mediana": 19.5502479136
+            "largura_media": 19.5569980049,
+            "largura_mediana": 19.5392031004
           }
         ]
       }
@@ -1498,7 +1499,7 @@
         "brier_ingenuo": 0.24962808789600366,
         "brier_skill": 0.04568774272986176,
         "log_loss": 0.6690505091159733,
-        "ece": 0.011908574182528072
+        "ece": 0.011908574182528055
       },
       "hgb": {
         "n": 17101,
@@ -1584,7 +1585,7 @@
         "brier_ingenuo": 0.2501567224649725,
         "brier_skill": 0.04873386511113975,
         "log_loss": 0.6684945732206097,
-        "ece": 0.0108684991438548
+        "ece": 0.010868499143854795
       },
       "hgb": {
         "n": 16533,
@@ -1814,5 +1815,5 @@
       "fracao": 0.033214431904566986
     }
   },
-  "tempo_s": 101.6
+  "tempo_s": 98.3
 }

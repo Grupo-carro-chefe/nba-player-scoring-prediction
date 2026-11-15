@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: números citados batem com test_final.json.
+#   2026-11-15 | Rodrigo    | Testes de proveniência (hash do código) e dos fatos do relatório.
 # === FIM DO CABECALHO ===
 
 """Prende README e relatorio aos numeros de results/metrics/test_final.json.
@@ -91,3 +92,25 @@ def test_modelo_final_foi_escolhido_sem_o_teste(final):
     val = {k: v["mae"] for k, v in tv["regressao"]["validacao"].items() if v["tipo"] == "modelo"}
     assert final["regressao"]["modelo_final"] == min(val, key=val.get)
     assert tv["ambiente"]["gerado_em_utc"] < final["ambiente"]["gerado_em_utc"]
+
+
+def test_resultados_foram_gerados_pelo_codigo_atual(final):
+    """Se o codigo de modelagem mudou, treino e avaliacao precisam ser refeitos."""
+    pytest.importorskip("sklearn")
+    from src.train import hash_codigo
+
+    tv = json.loads((ROOT / "results" / "metrics" / "treino_validacao.json").read_text(encoding="utf-8"))
+    atual = hash_codigo()
+    assert tv["ambiente"].get("hash_codigo") == atual, "treino_validacao.json desatualizado: rode python -m src.train"
+    assert final["ambiente"].get("hash_codigo") == atual, "test_final.json desatualizado: rode python -m src.evaluate --final --force"
+
+
+def test_fatos_afirmados_no_relatorio_continuam_valendo(final):
+    """As frases qualitativas do relatorio ('todos os IC excluem zero' etc.)."""
+    pytest.importorskip("docx")
+    from src.modeling import regression_zoo
+    from src.report import fatos_do_texto
+
+    tv = json.loads((ROOT / "results" / "metrics" / "treino_validacao.json").read_text(encoding="utf-8"))
+    falsos = [k for k, v in fatos_do_texto(tv, final, regression_zoo()).items() if not v]
+    assert not falsos, f"o relatorio afirma fatos que os resultados nao sustentam: {falsos}"

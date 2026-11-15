@@ -14,6 +14,8 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: CV temporal, seleção, calibração e conformal.
+#   2026-11-15 | Rodrigo    | Hash do código nos resultados; JSON com fim de linha LF.
+#   2026-11-15 | Rodrigo    | Trava: não retreina com o teste já avaliado sem --force.
 # === FIM DO CABECALHO ===
 
 """Treino, selecao de hiperparametros e escolhas feitas na validacao.
@@ -111,11 +113,40 @@ def git_commit() -> str:
         return "desconhecido"
 
 
+# Arquivos cujo conteudo determina os resultados. O hash deles fica gravado nos
+# JSONs; tests/test_resultados.py falha se o codigo mudar sem que os resultados
+# sejam regenerados (o hash do commit sozinho nao detecta arquivos alterados e
+# ainda nao commitados).
+CODIGO_DOS_RESULTADOS = (
+    "src/features.py", "src/target.py", "src/modeling.py", "src/metrics.py",
+    "src/uncertainty.py", "src/train.py", "src/evaluate.py",
+)
+
+
+def hash_codigo() -> str:
+    """SHA-256 do codigo que gera os resultados, ignorando o cabecalho academico.
+
+    O cabecalho muda a cada entrada de historico sem alterar o comportamento;
+    por isso ele e removido antes do hash. Fins de linha sao normalizados.
+    """
+    import hashlib
+
+    h = hashlib.sha256()
+    for rel in CODIGO_DOS_RESULTADOS:
+        texto = (ROOT / rel).read_text(encoding="utf-8").replace("\r\n", "\n")
+        fim = texto.find("# === FIM DO CABECALHO ===")
+        if fim != -1:
+            texto = texto[fim + len("# === FIM DO CABECALHO ==="):]
+        h.update(rel.encode() + b"\0" + texto.strip().encode("utf-8") + b"\0")
+    return h.hexdigest()
+
+
 def environment_info() -> dict:
     commit = git_commit()
     return {
         "gerado_em_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "git_commit": commit or "desconhecido",
+        "hash_codigo": hash_codigo(),
         "python": platform.python_version(),
         "sklearn": sklearn.__version__,
         "pandas": pd.__version__,
@@ -213,7 +244,7 @@ def train(fast: bool = False) -> dict:
     mu_val = preds_val[f"reg__{final_reg}"].to_numpy()
     bands = {f"{int((1 - a) * 100)}": ConformalBand.fit(y_va, mu_val, a) for a in CONFORMAL_ALPHAS}
     reg["conformal"] = {k: vars(b) for k, b in bands.items()}
-    (MODELS_DIR / "conformal.json").write_text(json.dumps(reg["conformal"], indent=2), encoding="utf-8")
+    (MODELS_DIR / "conformal.json").write_text(json.dumps(reg["conformal"], indent=2), encoding="utf-8", newline="\n")
     joblib.dump(joblib.load(CACHE_DIR / f"reg__{final_reg}.joblib"), MODELS_DIR / "regressao_final.joblib", compress=3)
     out["regressao"] = reg
 
@@ -276,7 +307,7 @@ def train(fast: bool = False) -> dict:
 
     preds_val.to_parquet(RESULTS / "predictions_val.parquet", index=False)
     (METRICS_DIR / "treino_validacao.json").write_text(
-        json.dumps(out, indent=2, ensure_ascii=False, default=str), encoding="utf-8"
+        json.dumps(out, indent=2, ensure_ascii=False, default=str), encoding="utf-8", newline="\n"
     )
     print(f"ok: {METRICS_DIR / 'treino_validacao.json'} ({out['tempo_total_s']}s)")
     return out
@@ -285,7 +316,21 @@ def train(fast: bool = False) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Treina e seleciona modelos (nao toca o teste).")
     ap.add_argument("--fast", action="store_true", help="pula RF e variantes do HGB (para depurar)")
+    ap.add_argument("--force", action="store_true",
+                    help="retreina mesmo com o teste ja avaliado (rode depois src.evaluate --final --force)")
     args = ap.parse_args()
+    # Trava: retreinar sobrescreve modelos, quantis e treino_validacao.json. Com
+    # o teste ja avaliado, isso deixaria test_final.json descrevendo artefatos
+    # que nao existem mais. O caminho seguro e scripts/run_all.py --retrain.
+    final = METRICS_DIR / "test_final.json"
+    if final.exists() and not args.force:
+        raise SystemExit(
+            f"{final} ja existe: retreinar agora deixaria o teste inconsistente com os modelos. "
+            "Use python scripts/run_all.py --retrain (treina e reavalia juntos) ou, manualmente, "
+            "python -m src.train --force seguido de python -m src.evaluate --final --force."
+        )
+    if args.fast and final.exists():
+        raise SystemExit("--fast e so para depurar antes da avaliacao: grava nos mesmos arquivos dos modelos finais.")
     train(fast=args.fast)
 
 

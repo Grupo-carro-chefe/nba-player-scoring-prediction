@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
 #   2026-11-15 | Rodrigo    | Usa o histórico por arquivo de src/header.py.
+#   2026-11-15 | Rodrigo    | Grava sempre com fim de linha LF.
 # === FIM DO CABECALHO ===
 
 """Aplica o cabecalho obrigatorio em todos os .py e .ipynb.
@@ -96,7 +97,7 @@ def apply_py(path: Path, header: str, check: bool) -> bool:
     if new == original:
         return False
     if not check:
-        path.write_text(new, encoding="utf-8")
+        path.write_text(new, encoding="utf-8", newline="\n")
     return True
 
 
@@ -123,7 +124,7 @@ def apply_ipynb(path: Path, header: str, check: bool) -> bool:
     if new == raw:
         return False
     if not check:
-        path.write_text(new, encoding="utf-8")
+        path.write_text(new, encoding="utf-8", newline="\n")
     return True
 
 

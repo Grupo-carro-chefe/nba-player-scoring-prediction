@@ -6,7 +6,7 @@ a proposta de divisão está em cada bloco (R = Rodrigo, A = André).
 Antes de gravar, deixe abertos:
 
 1. este roteiro;
-2. o PDF `relatorio/relatorio_N2.pdf`, nas figuras 1, 4 e 5;
+2. o PDF `relatorio/relatorio_N2.pdf`, nas figuras 2, 5 e 6;
 3. um terminal na raiz do repositório, com o venv ativo;
 4. o repositório no navegador: https://github.com/Grupo-carro-chefe/nba-player-scoring-prediction.
 
@@ -84,7 +84,7 @@ previsão com faixa ao longo da temporada.
 
 ## 3:35 a 4:20 · Resultados (R)
 
-**Tela:** Figura 1 (escada de MAE), depois Figuras 4 e 5.
+**Tela:** Figura 2 (escada de MAE), depois Figuras 6 (cobertura) e 5 (calibração).
 
 > "No teste, o modelo final, gradient boosting com perda absoluta, errou em
 > média 4,92 pontos por jogo, contra 5,23 da média de 5 jogos e 4,98 da média

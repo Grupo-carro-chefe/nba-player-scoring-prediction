@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: figuras do relatório.
 #   2026-11-15 | Rodrigo    | Figura da distribuição dos pontos (EDA) e baseline em mediana na escada.
+#   2026-11-15 | Rodrigo    | Título e eixo calculados a partir dos dados.
 # === FIM DO CABECALHO ===
 
 """Figuras do relatorio, geradas a partir dos JSONs e previsoes salvos.
@@ -99,7 +100,8 @@ def fig_distribuicao_pontos(df: pd.DataFrame) -> None:
     ax.set_xlim(-1, 60)
     ax.set_xlabel("Pontos marcados no jogo")
     ax.set_ylabel("Jogos")
-    ax.set_title("Distribuição do alvo (83.799 jogos, 2021-22 a 2025-26)")
+    temporadas = sorted(df["SEASON"].unique())
+    ax.set_title(f"Distribuição do alvo ({len(df):,} jogos, {temporadas[0]} a {temporadas[-1]})".replace(",", "."))
     ax.legend(loc="upper right")
     _save(fig, "f_distribuicao_pontos")
 
@@ -119,7 +121,8 @@ def fig_escada_mae(res: dict) -> None:
         ax.text(m["mae"] + 0.03, i, f"{m['mae']:.3f}".replace(".", ","), va="center", fontsize=8.5, color=TINTA_2)
     ax.set_yticks(range(len(items)), [NOMES.get(n, n) + ("  (final)" if n == final else "") for n, _ in items], fontsize=8.5)
     ax.set_xlabel("Erro absoluto médio no teste (pontos)")
-    ax.set_xlim(4.5, max(m["mae"] for _, m in items) + 0.4)
+    maes = [m["mae"] for _, m in items]
+    ax.set_xlim(np.floor(min(maes) * 2) / 2 - 0.5, max(maes) + 0.4)  # nunca corta a menor barra
     ax.grid(axis="y", visible=False)
     ax.set_title("Escada de previsores: baselines e modelos (teste 2025-26)")
     _save(fig, "f_escada_mae")
