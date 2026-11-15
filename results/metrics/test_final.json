@@ -1,8 +1,8 @@
 {
   "ambiente": {
-    "gerado_em_utc": "2026-11-15T18:13:41+00:00",
-    "git_commit": "8e1b4b195f18264acdcfe8d071dd07f166865809",
-    "hash_codigo": "788fbf4cec24662a075e80b66efc75406d7566ba3becb707f7d79667e525c8fc",
+    "gerado_em_utc": "2026-11-15T18:41:57+00:00",
+    "git_commit": "9a9c959d2c8932114dadfacd23d9024a7a9ee58b",
+    "hash_codigo": "59109f20ae0d04c17edb2aa15d706bc0e81574784158fe27e9182182a53e4e0c",
     "python": "3.12.1",
     "sklearn": "1.9.1",
     "pandas": "3.1.1",
@@ -409,24 +409,24 @@
       },
       "random_forest_vs_media_5_jogos": {
         "delta": -0.27088261059399416,
-        "ic_inf": -0.2990498318557448,
+        "ic_inf": -0.29904983185574474,
         "ic_sup": -0.24352942310369766,
         "p_valor": 0.0,
         "n_clusters": 450,
         "n_boot": 2000
       },
       "random_forest_vs_media_exponencial": {
-        "delta": -0.015662945224720275,
-        "ic_inf": -0.028212953819005557,
-        "ic_sup": -0.0034016791812255514,
+        "delta": -0.015662945224720268,
+        "ic_inf": -0.02821295381900555,
+        "ic_sup": -0.0034016791812255683,
         "p_valor": 0.014,
         "n_clusters": 450,
         "n_boot": 2000
       },
       "random_forest_vs_linear_sobre_exponencial": {
-        "delta": -0.025113629527611026,
-        "ic_inf": -0.03662617473114782,
-        "ic_sup": -0.013700719151780286,
+        "delta": -0.025113629527611016,
+        "ic_inf": -0.03662617473114781,
+        "ic_sup": -0.013700719151780298,
         "p_valor": 0.0,
         "n_clusters": 450,
         "n_boot": 2000
@@ -1499,7 +1499,7 @@
         "brier_ingenuo": 0.24962808789600366,
         "brier_skill": 0.04568774272986176,
         "log_loss": 0.6690505091159733,
-        "ece": 0.01190857418252805
+        "ece": 0.011908574182528055
       },
       "hgb": {
         "n": 17101,
@@ -1815,5 +1815,5 @@
       "fracao": 0.033214431904566986
     }
   },
-  "tempo_s": 116.8
+  "tempo_s": 98.3
 }

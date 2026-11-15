@@ -1,8 +1,8 @@
 {
   "ambiente": {
-    "gerado_em_utc": "2026-11-15T18:10:35+00:00",
-    "git_commit": "8e1b4b195f18264acdcfe8d071dd07f166865809",
-    "hash_codigo": "788fbf4cec24662a075e80b66efc75406d7566ba3becb707f7d79667e525c8fc",
+    "gerado_em_utc": "2026-11-15T18:38:36+00:00",
+    "git_commit": "9a9c959d2c8932114dadfacd23d9024a7a9ee58b",
+    "hash_codigo": "59109f20ae0d04c17edb2aa15d706bc0e81574784158fe27e9182182a53e4e0c",
     "python": "3.12.1",
     "sklearn": "1.9.1",
     "pandas": "3.1.1",
@@ -208,7 +208,7 @@
         "mae": 5.025322427531034,
         "rmse": 6.428250999384041,
         "r2": 0.46078100525205634,
-        "vies": 0.014233322408319848,
+        "vies": 0.01423332240831982,
         "tipo": "modelo"
       },
       "hgb_quadratico": {
@@ -237,13 +237,13 @@
       }
     },
     "tempo_s": {
-      "ridge": 6.6,
-      "lasso": 8.1,
-      "poisson_glm": 0.8,
-      "random_forest": 23.1,
-      "hgb_quadratico": 18.4,
-      "hgb_poisson": 21.3,
-      "hgb_absoluto": 28.2
+      "ridge": 7.7,
+      "lasso": 9.2,
+      "poisson_glm": 0.9,
+      "random_forest": 22.2,
+      "hgb_quadratico": 21.7,
+      "hgb_poisson": 23.0,
+      "hgb_absoluto": 31.6
     },
     "modelo_final": "hgb_absoluto",
     "conformal": {
@@ -369,7 +369,7 @@
         "brier_ingenuo": 0.2497188954055822,
         "brier_skill": 0.05489155094162068,
         "log_loss": 0.6644471946876159,
-        "ece": 0.009235395482561871,
+        "ece": 0.00923539548256186,
         "tipo": "modelo"
       },
       "hgb": {
@@ -389,10 +389,10 @@
       }
     },
     "tempo_s": {
-      "logistica_l2": 1.3,
-      "logistica_l1": 39.7,
-      "random_forest": 11.5,
-      "hgb": 18.4
+      "logistica_l2": 1.5,
+      "logistica_l1": 41.4,
+      "random_forest": 16.0,
+      "hgb": 18.5
     },
     "taxa_positiva_treino": 0.48398441402737535,
     "modelo_final": "logistica_l2",
@@ -496,5 +496,5 @@
       "linha_inteira"
     ]
   },
-  "tempo_total_s": 180.2
+  "tempo_total_s": 196.5
 }
