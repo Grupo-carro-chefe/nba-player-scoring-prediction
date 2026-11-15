@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
+#   2026-11-15 | Rodrigo    | Comparação sem caixa das colunas pós-jogo; teste do futuro para opp_*.
 # === FIM DO CABECALHO ===
 
 """Testes de vazamento temporal nas features.
@@ -108,10 +109,47 @@ def test_window_resets_between_seasons():
 
 
 def test_no_post_game_column_in_feature_list():
-    overlap = set(PRE_GAME_FEATURES) & set(POST_GAME_COLUMNS)
+    # Comparacao sem caixa: as colunas pos-jogo vem em maiusculas do bruto
+    # (PTS, MIN) e as features em minusculas; comparar os nomes crus nunca
+    # acharia sobreposicao, mesmo que "pts" ou "min" entrassem em X.
+    pos_jogo = {c.lower() for c in POST_GAME_COLUMNS}
+    overlap = {c for c in PRE_GAME_FEATURES if c.lower() in pos_jogo}
     assert not overlap, f"colunas pos-jogo em X: {overlap}"
     assert "y_pts" not in PRE_GAME_FEATURES
     assert "y_over" not in PRE_GAME_FEATURES
+
+
+def _fake_teams(n: int = 12) -> pd.DataFrame:
+    """Log por time compativel com _fake_players: AAA x BBB em todas as datas."""
+    dates = pd.date_range("2024-01-01", periods=n, freq="2D")
+    rows = []
+    for i, d in enumerate(dates):
+        gid = f"001{i:04d}"
+        rows.append({"GAME_ID": gid, "GAME_DATE": d, "SEASON": "2023-24", "TEAM_ID": 1, "TEAM_ABBREVIATION": "AAA", "PTS": 100 + i})
+        rows.append({"GAME_ID": gid, "GAME_DATE": d, "SEASON": "2023-24", "TEAM_ID": 2, "TEAM_ABBREVIATION": "BBB", "PTS": 110 - i})
+    return pd.DataFrame(rows)
+
+
+def test_opponent_features_cannot_see_future():
+    """O mesmo teste do futuro, agora cobrindo as features do adversario (opp_*)."""
+    players = _fake_players(n=10)
+    teams = _fake_teams(n=10)
+    poisoned = teams.copy()
+    last = poisoned["GAME_ID"] == poisoned["GAME_ID"].iloc[-1]
+    poisoned.loc[last, "PTS"] = 999
+
+    f_base = build_features(players, teams)
+    f_poison = build_features(players, poisoned)
+    opp_cols = [c for c in PRE_GAME_FEATURES if c.startswith("opp_")]
+    assert opp_cols and f_base[opp_cols].notna().any().all()
+
+    # nenhuma linha (inclusive a do proprio jogo envenenado) pode mudar:
+    # a forca do adversario no jogo t usa so os jogos dele ate t-1
+    pd.testing.assert_frame_equal(
+        f_base[opp_cols].reset_index(drop=True),
+        f_poison[opp_cols].reset_index(drop=True),
+        check_dtype=False,
+    )
 
 
 def test_no_feature_perfectly_predicts_target():

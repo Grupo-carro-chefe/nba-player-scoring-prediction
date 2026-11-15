@@ -11,6 +11,10 @@ data/processed/*
 !data/processed/dataset.parquet
 !data/processed/dataset_manifest.json
 
+# Modelos intermediarios de todas as familias (reproduziveis com python -m src.train).
+# Ficam versionados apenas os modelos finais em results/models/.
+results/cache/
+
 # Cache de respostas da API da NBA
 .cache_nba/
 
