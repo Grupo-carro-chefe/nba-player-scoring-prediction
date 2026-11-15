@@ -193,3 +193,19 @@ def test_mesma_semente_mesma_previsao():
     pa = pipe_a.set_params(**params).fit(X, y).predict(X)
     pb = pipe_b.set_params(**params).fit(X, y).predict(X)
     np.testing.assert_array_equal(pa, pb)
+
+
+def test_oraculo_em_mediana_exclui_o_proprio_jogo():
+    from src.uncertainty import oracle_median
+
+    df = pd.DataFrame({
+        "PLAYER_ID": [1] * 5,
+        "SEASON": ["2025-26"] * 5,
+        "GAME_DATE": pd.date_range("2026-01-01", periods=5),
+        "y_pts": [10.0, 20.0, 30.0, 40.0, 100.0],
+    })
+    temporada = oracle_median(df)
+    assert temporada[0] == pytest.approx(35.0)  # mediana de 20, 30, 40, 100
+    assert temporada[4] == pytest.approx(25.0)  # o 100 nao entra na propria previsao
+    local = oracle_median(df, half_window=1)
+    assert local[2] == pytest.approx(30.0)  # vizinhos 20 e 40

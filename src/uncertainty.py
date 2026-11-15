@@ -42,10 +42,14 @@ o modelo com dois previsores que trapaceiam de proposito, usando o futuro:
 - oraculo_local: media dos 5 jogos anteriores e dos 5 posteriores, sem o
   proprio. Sabe o nivel do atleta naquele trecho da temporada.
 
-Nenhum dos dois e utilizavel na pratica; eles servem de regua. A distancia
-entre o modelo e o oraculo e o que ainda poderia ser ganho conhecendo o nivel
-do jogador; o erro do proprio oraculo e, em boa parte, variancia de jogo a jogo
-que nenhuma informacao de nivel elimina.
+Cada um existe em versao media e mediana (`oracle_median`). Como o MAE e
+minimizado pela mediana e os pontos sao assimetricos, a versao em mediana e a
+regua justa para o MAE.
+
+Nenhum deles e utilizavel na pratica; eles servem de regua. A distancia entre o
+modelo e o oraculo e o que ainda poderia ser ganho conhecendo o nivel do
+jogador; o erro do proprio oraculo e, em boa parte, variancia de jogo a jogo
+(minutos, aproveitamento, contusoes) que nenhuma informacao de nivel elimina.
 """
 
 from __future__ import annotations
@@ -139,3 +143,27 @@ def oracle_local(df: pd.DataFrame, half_window: int = 5, y_col: str = "y_pts") -
     viz = (soma - d[y_col]) / (cont - 1)
     viz = viz.where(cont > 1, d[y_col])
     return viz.reindex(df.index).to_numpy(dtype=float)  # volta a ordem original de df
+
+
+def _loo_median_group(v: np.ndarray, half_window: int | None) -> np.ndarray:
+    """Mediana dos demais jogos do grupo (todos, ou so a vizinhanca)."""
+    out = np.empty(len(v), dtype=float)
+    for i in range(len(v)):
+        lo, hi = (0, len(v)) if half_window is None else (max(0, i - half_window), min(len(v), i + half_window + 1))
+        viz = np.concatenate([v[lo:i], v[i + 1:hi]])
+        out[i] = np.median(viz) if len(viz) else v[i]
+    return out
+
+
+def oracle_median(df: pd.DataFrame, half_window: int | None = None, y_col: str = "y_pts") -> np.ndarray:
+    """Versao em MEDIANA dos oraculos (temporada inteira ou vizinhanca).
+
+    O MAE e minimizado pela mediana, nao pela media; como a distribuicao de
+    pontos e assimetrica a direita, um oraculo em media fica artificialmente
+    pior em MAE. Para servir de regua de MAE, o oraculo precisa prever a mediana.
+    """
+    d = df[["PLAYER_ID", "SEASON", "GAME_DATE", y_col]].sort_values(["PLAYER_ID", "SEASON", "GAME_DATE"])
+    res = pd.Series(np.nan, index=d.index)
+    for _, part in d.groupby(["PLAYER_ID", "SEASON"], sort=False):
+        res.loc[part.index] = _loo_median_group(part[y_col].to_numpy(dtype=float), half_window)
+    return res.reindex(df.index).to_numpy(dtype=float)

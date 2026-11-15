@@ -73,7 +73,14 @@ from src.modeling import (
     regression_zoo,
 )
 from src.train import CACHE_DIR, ID_COLS, METRICS_DIR, MODELS_DIR, RESULTS, environment_info
-from src.uncertainty import ConformalBand, coverage_by_group, coverage_report, oracle_local, oracle_season_loo
+from src.uncertainty import (
+    ConformalBand,
+    coverage_by_group,
+    coverage_report,
+    oracle_local,
+    oracle_median,
+    oracle_season_loo,
+)
 
 FINAL_JSON = METRICS_DIR / "test_final.json"
 N_PERM = 5
@@ -227,19 +234,32 @@ def evaluate(force: bool = False) -> dict:
         coefs = pd.Series(final_model[-1].coef_, index=PRE_GAME_FEATURES)
         reg["coeficientes_padronizados"] = coefs.sort_values(key=np.abs, ascending=False).to_dict()
 
-    # (e) teto preditivo: oraculos que usam o futuro
-    preds["oraculo_temporada"] = oracle_season_loo(test_df)
-    preds["oraculo_local"] = oracle_local(test_df)
-    teto = {}
-    for o in ("oraculo_temporada", "oraculo_local"):
-        mae_o = float(np.mean(_abs_err(y_te, preds[o])))
-        teto[o] = {"mae": mae_o}
-        for ref in ("media_5_jogos", "media_exponencial"):
-            mae_ref = reg["teste"][ref]["mae"]
-            denom = mae_ref - mae_o
-            teto[o][f"fracao_da_lacuna_fechada_vs_{ref}"] = (
-                (mae_ref - reg["teste"][final_reg]["mae"]) / denom if denom > 0 else None
-            )
+    # (e) teto preditivo: oraculos que usam o futuro (so como regua).
+    # Em MAE a regua certa e a MEDIANA: oraculos em media ficam artificialmente
+    # piores porque os pontos sao assimetricos. Reportamos os dois e a
+    # diferenca direta modelo - oraculo (negativa = modelo ja erra menos que o
+    # oraculo daquele tipo).
+    preds["oraculo_temporada_media"] = oracle_season_loo(test_df)
+    preds["oraculo_local_media"] = oracle_local(test_df)
+    preds["oraculo_temporada_mediana"] = oracle_median(test_df)
+    preds["oraculo_local_mediana"] = oracle_median(test_df, half_window=5)
+    mae_final = reg["teste"][final_reg]["mae"]
+    teto = {"nota": (
+        "Oraculos usam jogos futuros do proprio jogador (temporada inteira ou 5 antes/5 depois, "
+        "sem o proprio jogo). Nao sao utilizaveis na pratica: medem quanto erro sobra mesmo "
+        "conhecendo o nivel real do atleta. Versao em mediana acrescentada apos a primeira "
+        "execucao (2026-11-15); nao altera nenhuma escolha de modelo."
+    )}
+    for o in ("oraculo_temporada_media", "oraculo_local_media", "oraculo_temporada_mediana", "oraculo_local_mediana"):
+        e_o = _abs_err(y_te, preds[o])
+        teto[o] = {
+            "mae": float(e_o.mean()),
+            "modelo_menos_oraculo": paired_cluster_bootstrap(err[final_reg], e_o, players),
+        }
+    melhor = min((k for k in teto if k.startswith("oraculo")), key=lambda k: teto[k]["mae"])
+    teto["melhor_oraculo"] = melhor
+    teto["ganho_sobre_exponencial_que_o_melhor_oraculo_teria"] = reg["teste"]["media_exponencial"]["mae"] - teto[melhor]["mae"]
+    teto["ganho_sobre_exponencial_do_modelo"] = reg["teste"]["media_exponencial"]["mae"] - mae_final
     reg["teto_preditivo"] = teto
 
     # Incerteza: cobertura do intervalo conformal no teste
