@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: avaliação única no teste, ablação e teto.
 #   2026-11-15 | Rodrigo    | Diagnósticos posteriores: regressão mediana e modelo com nível oráculo.
+#   2026-11-15 | Rodrigo    | JSON com fim de linha LF.
 # === FIM DO CABECALHO ===
 
 """Avaliacao final no conjunto de teste (temporada 2025-26).
@@ -373,7 +374,7 @@ def evaluate(force: bool = False) -> dict:
     out["tempo_s"] = round(time.time() - t0, 1)
 
     preds.to_parquet(RESULTS / "predictions_test.parquet", index=False)
-    FINAL_JSON.write_text(json.dumps(out, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+    FINAL_JSON.write_text(json.dumps(out, indent=2, ensure_ascii=False, default=str), encoding="utf-8", newline="\n")
 
     r = reg["teste"]
     print(f"[teste] {final_reg}: MAE {r[final_reg]['mae']:.3f} | media 5 {r['media_5_jogos']['mae']:.3f} | exponencial {r['media_exponencial']['mae']:.3f}")

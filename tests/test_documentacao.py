@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
 #   2026-11-15 | Rodrigo    | Teste de que todo arquivo-fonte tem síntese e cabeçalho atualizado.
+#   2026-11-15 | Rodrigo    | Reusa a lista de arquivos do apply_header.
 # === FIM DO CABECALHO ===
 
 """Testes que mantem a documentacao coerente com o dataset gerado.
@@ -104,11 +105,13 @@ def test_todo_arquivo_fonte_tem_cabecalho_e_sintese():
     )
     assert out.returncode == 0, f"cabecalhos desatualizados:\n{out.stdout}"
 
+    # mesma lista de arquivos (e de pastas ignoradas) do proprio apply_header
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from apply_header import iter_targets
+
     sem_sintese = []
-    for p in ROOT.rglob("*"):
+    for p in iter_targets():
         rel = p.relative_to(ROOT).as_posix()
-        if p.suffix not in {".py", ".ipynb"} or any(part in rel.split("/") for part in (".git", ".venv", "data", ".ipynb_checkpoints")):
-            continue
         linha = next((ln for ln in p.read_text(encoding="utf-8").splitlines() if "# SINTESE:" in ln), "")
         if "sem sintese cadastrada" in linha:
             sem_sintese.append(rel)

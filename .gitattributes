@@ -1,0 +1,10 @@
+# Fim de linha LF em todo arquivo de texto, independente do sistema de quem
+# commita (o projeto roda tanto no Windows quanto no Linux/WSL).
+* text=auto eol=lf
+
+# Binarios versionados
+*.png binary
+*.pdf binary
+*.docx binary
+*.parquet binary
+*.joblib binary

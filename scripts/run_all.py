@@ -14,16 +14,21 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: pipeline da N2 de ponta a ponta.
+#   2026-11-15 | Rodrigo    | Não retreina sem --retrain quando o teste já foi avaliado.
 # === FIM DO CABECALHO ===
 
 """Executa o pipeline da N2 de ponta a ponta.
 
-    python scripts/run_all.py            # treino, teste (se ainda nao avaliado), figuras e notebooks
-    python scripts/run_all.py --no-train # so figuras e notebooks a partir dos resultados salvos
+    python scripts/run_all.py            # figuras, relatorio e notebooks a partir dos resultados salvos
+    python scripts/run_all.py --retrain  # retreina E reavalia no teste (artefatos sempre consistentes)
 
-Nao recoleta dados: parte do dataset versionado em data/processed/. A avaliacao
-no teste so roda se results/metrics/test_final.json ainda nao existir (ver
-src/evaluate.py).
+Nao recoleta dados: parte do dataset versionado em data/processed/.
+
+Se o teste ainda nao foi avaliado, o script treina e avalia. Se ja foi, por
+padrao ele NAO retreina: retreinar sobrescreveria modelos, quantis conformais e
+treino_validacao.json, deixando test_final.json descrevendo artefatos que nao
+existem mais. Com --retrain, treino e avaliacao sao refeitos juntos (a avaliacao
+com --force), o que e uma reexecucao da mesma avaliacao, nao uma nova escolha.
 """
 
 from __future__ import annotations
@@ -34,6 +39,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+FINAL = ROOT / "results" / "metrics" / "test_final.json"
 NOTEBOOKS = [
     "02_baselines_e_regressao",
     "03_classificacao_e_calibracao",
@@ -49,18 +55,25 @@ def run(*args: str) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--no-train", action="store_true", help="nao retreina; usa results/ existentes")
+    ap.add_argument("--retrain", action="store_true", help="retreina e reavalia no teste")
+    ap.add_argument("--video-url", help="link do video, repassado ao relatorio")
     args = ap.parse_args()
 
-    if not args.no_train:
+    if not FINAL.exists():
         run("-m", "src.train")
-    if not (ROOT / "results" / "metrics" / "test_final.json").exists():
         run("-m", "src.evaluate", "--final")
+    elif args.retrain:
+        run("-m", "src.train")
+        run("-m", "src.evaluate", "--final", "--force")
+    else:
+        print("teste ja avaliado: usando os resultados salvos (use --retrain para refazer tudo)")
     run("-m", "src.figures")
     for nb in NOTEBOOKS:
         run("-m", "jupyter", "nbconvert", "--to", "notebook", "--execute", "--inplace",
             "--ExecutePreprocessor.timeout=600", f"notebooks/{nb}.ipynb")
     run("scripts/apply_header.py")
+    report = ["-m", "src.report"] + (["--video-url", args.video_url] if args.video_url else [])
+    run(*report)
     run("-m", "pytest", "-q")
 
 

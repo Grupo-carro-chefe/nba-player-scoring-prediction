@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: relatório N2 gerado a partir dos resultados.
 #   2026-11-15 | Rodrigo    | Correções da revisão crítica: teto, baselines, ablação, conformal, referências.
+#   2026-11-15 | Rodrigo    | Fatos do texto verificados contra os resultados; números lidos dos arquivos.
 # === FIM DO CABECALHO ===
 
 """Gera o relatorio da N2 (.docx) sobre o template da FCI.
@@ -49,7 +50,7 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 from src.features import PRE_GAME_FEATURES
-from src.modeling import ROOT, load_dataset
+from src.modeling import ROOT, classification_zoo, load_dataset, regression_zoo
 from src.train import FIG_DIR, METRICS_DIR
 
 TEMPLATE = ROOT / "relatorio" / "template_fci.docx"
@@ -306,6 +307,10 @@ def build(video_url: str | None) -> None:
     b_lad = lad["modelo_final_vs_esta"]
     b_mo = mo["modelo_final_menos_oraculo"]
     fracao_nivel = (T["media_exponencial"]["mae"] - T[fin]["mae"]) / (T["media_exponencial"]["mae"] - mo["mae_teste"])
+    man = json.loads((ROOT / "data" / "processed" / "dataset_manifest.json").read_text(encoding="utf-8"))["filtros"]
+    zoo_reg, zoo_clf = regression_zoo(), classification_zoo()
+    n_grade = lambda zoo, k: int(np.prod([len(v) for v in zoo[k][1].values()]))  # noqa: E731
+    exigir_fatos(fatos_do_texto(tv, tf, zoo_reg))
     clf_fin = C["modelo_final"]
 
     rel = Relatorio()
@@ -519,7 +524,7 @@ def build(video_url: str | None) -> None:
       "controle de taxa, nova tentativa com espera progressiva e cache local.")
     P("O recorte são cinco temporadas regulares, de 2021-22 a 2025-26. As temporadas 2019-20 e 2020-21 ficaram de fora "
       "de propósito (sede única, calendário reduzido e ginásios sem público). As janelas das variáveis históricas são "
-      "reiniciadas a cada temporada. A coleta reuniu 131.292 registros brutos; descartadas as linhas sem histórico "
+      f"reiniciadas a cada temporada. A coleta reuniu {inteiro(man['linhas_brutas'])} registros brutos; descartadas as linhas sem histórico "
       f"suficiente e aplicado o critério mínimo de participação, o conjunto analítico ficou com {inteiro(E['n'])} linhas "
       f"e 37 colunas, cobrindo {inteiro(E['jogadores'])} atletas e {inteiro(E['jogos'])} partidas, entre "
       f"{E['inicio']:%d/%m/%Y} e {E['fim']:%d/%m/%Y}: 9 colunas de identificação, 24 variáveis preditoras pré-jogo, "
@@ -588,7 +593,7 @@ def build(video_url: str | None) -> None:
     rel.itens([
         "ordenação cronológica por atleta e cálculo de todas as variáveis históricas agrupadas por (atleta, temporada) e deslocadas em uma partida (`shift(1)`), de modo que cada linha use apenas partidas anteriores;",
         "médias móveis de 3, 5 e 10 partidas e média exponencial de fator 0,9; indicadores do adversário calculados só com as partidas anteriores dele;",
-        "critério mínimo de participação (15 minutos de média nos 5 jogos anteriores, informação pré-jogo) e descarte das linhas sem 10 jogos de histórico, com a aritmética registrada no manifesto (131.292 − 33.504 − 13.989 = 83.799);",
+        f"critério mínimo de participação ({num(man['min_minutes_prev'], 0)} minutos de média nos 5 jogos anteriores, informação pré-jogo) e descarte das linhas sem 10 jogos de histórico, com a aritmética registrada no manifesto ({inteiro(man['linhas_brutas'])} − {inteiro(man['descartadas_por_minutos'])} − {inteiro(man['descartadas_sem_alvo'])} = {inteiro(E['n'])});",
         "nenhuma imputação: as primeiras partidas de cada temporada, únicas sem histórico, são descartadas, o que elimina uma fonte frequente de vazamento;",
         "padronização das variáveis e limite de `rest_days` encapsulados em um `Pipeline` do scikit-learn, ajustado apenas no treino de cada dobra. Todas as preditoras são numéricas, então não há codificação de categóricas (a menção da N1 a essa etapa foi retirada); adversário e equipe entram apenas por indicadores numéricos;",
         f"divisão temporal: treino 2021-22 a 2023-24 ({inteiro(E['split']['train'])} linhas), validação 2024-25 "
@@ -635,7 +640,9 @@ def build(video_url: str | None) -> None:
     rel.tabela("Hiperparâmetros escolhidos por validação cruzada temporal e MAE na validação (2024-25).",
                ["Modelo", "Hiperparâmetros", "MAE CV", "MAE validação"], hp, larguras=[4.5, 7.5, 1.9, 2.1])
     P("Ridge, Lasso, GLM e floresta aleatória foram ajustados por busca em grade completa. Para o gradient boosting, por "
-      "custo, usou-se busca aleatória com 12 sorteios de uma grade de 32 combinações (12 de 16 na classificação), com a "
+      f"custo, usou-se busca aleatória com {tv['regressao']['cv']['hgb_absoluto']['combinacoes_testadas']} sorteios de uma "
+      f"grade de {n_grade(zoo_reg, 'hgb_absoluto')} combinações ({tv['classificacao']['cv']['hgb']['combinacoes_testadas']} "
+      f"de {n_grade(zoo_clf, 'hgb')} na classificação), com a "
       "mesma semente para as três funções de perda. Alguns valores escolhidos ficaram na borda da grade, então o ajuste "
       "não é exaustivo; o objetivo é comparar famílias, não ajustar o último decimal. Em particular, Ridge e Lasso ficaram "
       "com a menor penalidade testada: com cerca de 50 mil linhas, a multicolinearidade instabiliza os coeficientes "
@@ -693,7 +700,7 @@ def build(video_url: str | None) -> None:
     rel.subtitulo("6.1. Regressão: modelos contra baselines")
     ordem = sorted(T.items(), key=lambda kv: kv[1]["mae"])
     P("A Tabela 3 e a Figura 2 comparam, no teste, todos os modelos treinados e as baselines.")
-    rel.tabela("Desempenho no teste (2025-26, 17.101 jogos), do menor ao maior MAE.",
+    rel.tabela(f"Desempenho no teste (2025-26, {inteiro(tf['linhas_teste'])} jogos), do menor ao maior MAE.",
                ["Previsor", "Tipo", "MAE", "RMSE", "R²", "Viés"],
                [[NOMES_MODELO.get(k, k) + (" (final)" if k == fin else ""), "modelo" if v["tipo"] == "modelo" else "baseline",
                  num(v["mae"]), num(v["rmse"]), num(v["r2"]), num(v["vies"])] for k, v in ordem],
@@ -772,7 +779,7 @@ def build(video_url: str | None) -> None:
     rel.figura("f_ablacao_familias.png", "Ablação por família de variáveis (aumento do MAE, IC 95% por jogador).", largura=13)
     rel.subtitulo("6.4. Classificação e calibração")
     rows = []
-    for k in ["constante_treino", "logistica_l2", "logistica_l1", "random_forest", "hgb"]:
+    for k in [k for k in ["constante_treino", "logistica_l2", "logistica_l1", "random_forest", "hgb"] if k in C["teste"]]:
         v, w = C["teste"][k], C["teste_sem_empates"][k]
         rows.append([NOMES_MODELO[k] + (" (final)" if k == clf_fin else ""), pct(v["acuracia"]), num(v["f1"]), num(v["auc"]),
                      num(v["brier"], 4), pct(v["brier_skill"]), num(v["ece"], 3), num(w["auc"])])
@@ -863,7 +870,7 @@ def build(video_url: str | None) -> None:
     P("Este trabalho desenvolveu um modelo supervisionado para estimar os pontos de atletas da NBA antes de cada partida, "
       "com dados coletados pelo próprio grupo, variáveis estritamente pré-jogo verificadas por testes automatizados e "
       "avaliação temporal com teste único. A Tabela 8 confronta os resultados esperados declarados na N1 com o que foi obtido.")
-    rel.tabela("Resultados esperados (N1) e resultados obtidos.", ["Resultado esperado", "Situação", "Evidência"], [
+    esperados = [
         ["(a) Reduzir o MAE em relação ao baseline de forma perceptível, ainda que modesta", "Alcançado",
          f"−{pct(ganho_ma5)} contra a média de 5 jogos e −{pct(ganho_ewm)} contra a média exponencial; IC excluem zero. Contra uma regressão mediana sobre a exponencial, −{num(-b_lad['delta'])} ponto."],
         ["(b) Descanso, mando e adversário contribuem de forma mensurável, menos que o histórico", "Parcialmente alcançado",
@@ -875,8 +882,13 @@ def build(video_url: str | None) -> None:
          f"Brier {num(cf['brier'], 4)} contra {num(cf['brier_ingenuo'], 4)} (BSS {pct(cf['brier_skill'])}); curva de calibração próxima da diagonal."],
         ["(e) Estimar empiricamente o teto preditivo", "Parcialmente alcançado",
          f"Conhecer o nível real do atleta reduziria o MAE em só mais {num(b_mo['delta'], 3)} ({num(mo['mae_teste'])}); não é teto absoluto, pois não inclui outras informações (minutos, escalação)."],
-    ], larguras=[6.0, 2.6, 7.4])
-    P("Três dos cinco resultados esperados foram alcançados e dois, parcialmente. A principal contribuição não é um número "
+    ]
+    n_alc = sum(1 for e in esperados if e[1] == "Alcançado")
+    n_par = sum(1 for e in esperados if e[1] == "Parcialmente alcançado")
+    rel.tabela("Resultados esperados (N1) e resultados obtidos.", ["Resultado esperado", "Situação", "Evidência"], esperados,
+               larguras=[6.0, 2.6, 7.4])
+    P(f"{_extenso(n_alc).capitalize()} dos cinco resultados esperados {'foi alcançado' if n_alc == 1 else 'foram alcançados'} "
+      f"e {_extenso(n_par) if n_par != 2 else 'dois'}, parcialmente. A principal contribuição não é um número "
       "de acurácia, e sim a delimitação honesta do que é previsível. Com informação pré-jogo de desempenho, um modelo "
       "supervisionado melhora de forma consistente, mas modesta, as médias usadas na prática, produz probabilidades "
       "calibradas e intervalos com a cobertura marginal prometida. O diagnóstico com informação do futuro sugere que a "
@@ -935,6 +947,58 @@ def build(video_url: str | None) -> None:
 def n_testes(arquivo: str = "test_*.py") -> int:
     """Quantidade de funcoes de teste em tests/ (evita numero fixo no texto)."""
     return sum(len(re.findall(r"^def test_", f.read_text(encoding="utf-8"), flags=re.M)) for f in (ROOT / "tests").glob(arquivo))
+
+
+def fatos_do_texto(tv: dict, tf: dict, zoo_reg: dict) -> dict[str, bool]:
+    """Afirmacoes qualitativas que o texto faz, recalculadas a partir dos resultados.
+
+    O texto do relatorio descreve os resultados com frases como "todos os
+    intervalos excluem zero" ou "so a do adversario resiste a correcao". Se um
+    retreino mudar os resultados, essas frases poderiam ficar falsas sem que
+    nenhum numero acusasse. Cada uma e verificada aqui; se alguma deixar de
+    valer, a geracao do relatorio para (ver exigir_fatos) em vez de publicar um
+    texto errado.
+    """
+    R, C = tf["regressao"], tf["classificacao"]
+    fin, T = R["modelo_final"], R["teste"]
+    cb = R["comparacoes_bootstrap"]
+    fx = {k: {d["grupo"]: d["mae"] for d in v} for k, v in R["por_faixa_de_minutos"].items()}
+    ab = R["ablacao_por_familia"]
+    sig = {k for k, v in ab.items() if v["aumento_vs_completo"]["p_valor"] < 0.05 / len(ab)}
+    ot = {k: v for k, v in R["teto_preditivo"].items() if k.startswith("oraculo") and isinstance(v, dict)}
+    alpha_min = {k: tv["regressao"]["cv"][k]["melhores_parametros"]["model__alpha"] == min(zoo_reg[k][1]["model__alpha"])
+                 for k in ("ridge", "lasso")}
+    return {
+        "modelo final e o gradient boosting com perda absoluta": fin == "hgb_absoluto",
+        "IC do modelo contra media de 5, exponencial e linear excluem zero": all(
+            cb[f"{fin}_vs_{r}"]["ic_sup"] < 0 for r in ("media_5_jogos", "media_exponencial", "linear_sobre_exponencial")),
+        "IC do modelo contra a regressao mediana exclui zero": R["diagnosticos_posteriores"]["mediana_sobre_exponencial"]["modelo_final_vs_esta"]["ic_sup"] < 0,
+        "Ridge e Lasso a menos de 0,02 do modelo final": all(T[k]["mae"] - T[fin]["mae"] < 0.02 for k in ("ridge", "lasso")),
+        "Ridge e Lasso escolheram a menor penalidade da grade": all(alpha_min.values()),
+        "modelo abaixo das duas baselines em todas as faixas de minutos": all(
+            fx[fin][g] < fx["media_5_jogos"][g] and fx[fin][g] < fx["media_exponencial"][g] for g in fx[fin]),
+        "modelo abaixo das baselines em todas as temporadas": all(
+            v["modelo_final_mae"] < v["media_exponencial_mae"] and v["modelo_final_mae"] < v["media_5_jogos_mae"]
+            for v in R["por_temporada"].values()),
+        "media exponencial vence as medias simples com IC": all(v["ic_sup"] < 0 for v in R["exponencial_vs_simples"].values()),
+        "so historico e adversario resistem a Bonferroni": sig == {"historico_pontos", "adversario"},
+        "classificador final e logistico sem calibracao adicional": C["modelo_final"].startswith("logistica")
+        and C["calibracao"]["metodo"] == "sem_calibracao",
+        "Brier do modelo abaixo do ingenuo com IC": C["brier_vs_ingenuo"]["ic_sup"] < 0,
+        "nenhum oraculo simples erra menos que o modelo": all(v["modelo_menos_oraculo"]["delta"] < 0 for v in ot.values()),
+        "oraculo local (media) erra mais que a media exponencial": ot["oraculo_local_media"]["mae"] > T["media_exponencial"]["mae"],
+        "modelo com nivel oraculo erra menos que o modelo final": R["diagnosticos_posteriores"]["modelo_com_nivel_oraculo"]["modelo_final_menos_oraculo"]["ic_inf"] > 0,
+    }
+
+
+def exigir_fatos(fatos: dict[str, bool]) -> None:
+    falsos = [k for k, v in fatos.items() if not v]
+    if falsos:
+        raise SystemExit(
+            "o texto do relatorio afirma fatos que os resultados atuais nao sustentam:\n  - "
+            + "\n  - ".join(falsos)
+            + "\nrevise as frases correspondentes em src/report.py antes de gerar o relatorio."
+        )
 
 
 def _p(p: float) -> str:

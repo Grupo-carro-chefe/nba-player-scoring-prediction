@@ -79,11 +79,19 @@ HISTORICO_N1: tuple[str, str, str] = ("2026-09-14", "grupo", "Versão inicial: c
 
 _N2 = "2026-11-15"
 HISTORICO: dict[str, list[tuple[str, str, str]]] = {
+    "src/collect.py": [(_N2, "Rodrigo", "Manifesto gravado com fim de linha LF.")],
+    "src/build_dataset.py": [(_N2, "Rodrigo", "Manifesto gravado com fim de linha LF.")],
     "src/header.py": [(_N2, "Rodrigo", "Histórico por arquivo e sínteses dos arquivos da N2.")],
-    "scripts/apply_header.py": [(_N2, "Rodrigo", "Usa o histórico por arquivo de src/header.py.")],
+    "scripts/apply_header.py": [
+        (_N2, "Rodrigo", "Usa o histórico por arquivo de src/header.py."),
+        (_N2, "Rodrigo", "Grava sempre com fim de linha LF."),
+    ],
     "src/target.py": [(_N2, "Rodrigo", "Corrige a docstring: linha inteira admite empate (y_pts == linha).")],
     "tests/test_no_leakage.py": [(_N2, "Rodrigo", "Comparação sem caixa das colunas pós-jogo; teste do futuro para opp_*.")],
-    "tests/test_documentacao.py": [(_N2, "Rodrigo", "Teste de que todo arquivo-fonte tem síntese e cabeçalho atualizado.")],
+    "tests/test_documentacao.py": [
+        (_N2, "Rodrigo", "Teste de que todo arquivo-fonte tem síntese e cabeçalho atualizado."),
+        (_N2, "Rodrigo", "Reusa a lista de arquivos do apply_header."),
+    ],
     "src/__init__.py": [(_N2, "Rodrigo", "Síntese cadastrada no cabeçalho.")],
     "tests/__init__.py": [(_N2, "Rodrigo", "Síntese cadastrada no cabeçalho.")],
     "src/modeling.py": [(_N2, "Rodrigo", "Versão inicial: splits, famílias, baselines e catálogo de modelos.")],
@@ -91,28 +99,45 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
     "src/uncertainty.py": [
         (_N2, "Rodrigo", "Versão inicial: conformal normalizado e oráculos do teto."),
         (_N2, "Rodrigo", "Oráculos em mediana (régua justa para o MAE)."),
+        (_N2, "Rodrigo", "Corrige o quantil conformal: k-ésima estatística de ordem."),
     ],
-    "src/train.py": [(_N2, "Rodrigo", "Versão inicial: CV temporal, seleção, calibração e conformal.")],
+    "src/train.py": [
+        (_N2, "Rodrigo", "Versão inicial: CV temporal, seleção, calibração e conformal."),
+        (_N2, "Rodrigo", "Hash do código nos resultados; JSON com fim de linha LF."),
+    ],
     "src/evaluate.py": [
         (_N2, "Rodrigo", "Versão inicial: avaliação única no teste, ablação e teto."),
         (_N2, "Rodrigo", "Diagnósticos posteriores: regressão mediana e modelo com nível oráculo."),
+        (_N2, "Rodrigo", "JSON com fim de linha LF."),
     ],
     "src/figures.py": [
         (_N2, "Rodrigo", "Versão inicial: figuras do relatório."),
         (_N2, "Rodrigo", "Figura da distribuição dos pontos (EDA) e baseline em mediana na escada."),
+        (_N2, "Rodrigo", "Título e eixo calculados a partir dos dados."),
     ],
     "src/predict.py": [
         (_N2, "Rodrigo", "Versão inicial: demonstração com intervalo e aviso de escopo."),
         (_N2, "Rodrigo", "Saída em UTF-8 também quando redirecionada (Windows)."),
+        (_N2, "Rodrigo", "--team sem data mostra só o jogo mais recente."),
     ],
     "src/report.py": [
         (_N2, "Rodrigo", "Versão inicial: relatório N2 gerado a partir dos resultados."),
         (_N2, "Rodrigo", "Correções da revisão crítica: teto, baselines, ablação, conformal, referências."),
+        (_N2, "Rodrigo", "Fatos do texto verificados contra os resultados; números lidos dos arquivos."),
     ],
-    "scripts/run_all.py": [(_N2, "Rodrigo", "Versão inicial: pipeline da N2 de ponta a ponta.")],
+    "scripts/run_all.py": [
+        (_N2, "Rodrigo", "Versão inicial: pipeline da N2 de ponta a ponta."),
+        (_N2, "Rodrigo", "Não retreina sem --retrain quando o teste já foi avaliado."),
+    ],
     "tests/test_splits.py": [(_N2, "Rodrigo", "Versão inicial: não sobreposição e ordem temporal dos splits.")],
-    "tests/test_modelagem.py": [(_N2, "Rodrigo", "Versão inicial: testes de modelagem.")],
-    "tests/test_resultados.py": [(_N2, "Rodrigo", "Versão inicial: números citados batem com test_final.json.")],
+    "tests/test_modelagem.py": [
+        (_N2, "Rodrigo", "Versão inicial: testes de modelagem."),
+        (_N2, "Rodrigo", "Teste da estatística de ordem do conformal."),
+    ],
+    "tests/test_resultados.py": [
+        (_N2, "Rodrigo", "Versão inicial: números citados batem com test_final.json."),
+        (_N2, "Rodrigo", "Testes de proveniência (hash do código) e dos fatos do relatório."),
+    ],
     "notebooks/02_baselines_e_regressao.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],
     "notebooks/03_classificacao_e_calibracao.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],
     "notebooks/04_incerteza_teto_e_erros.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],

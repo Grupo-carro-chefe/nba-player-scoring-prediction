@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
+#   2026-11-15 | Rodrigo    | Manifesto gravado com fim de linha LF.
 # === FIM DO CABECALHO ===
 
 """Monta o dataset analitico a partir dos dados brutos.
@@ -117,7 +118,7 @@ def build(
         "alvo": target_report(out),
     }
     (out_dir / "dataset_manifest.json").write_text(
-        json.dumps(manifest, indent=2, ensure_ascii=False, default=str), encoding="utf-8"
+        json.dumps(manifest, indent=2, ensure_ascii=False, default=str), encoding="utf-8", newline="\n"
     )
 
     print(f"dataset: {len(out):,} linhas x {out.shape[1]} colunas -> {out_dir}/dataset.*")

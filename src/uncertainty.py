@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-11-15 | Rodrigo    | Versão inicial: conformal normalizado e oráculos do teto.
 #   2026-11-15 | Rodrigo    | Oráculos em mediana (régua justa para o MAE).
+#   2026-11-15 | Rodrigo    | Corrige o quantil conformal: k-ésima estatística de ordem.
 # === FIM DO CABECALHO ===
 
 """Incerteza por estimativa (conformal) e estimativa do teto preditivo.
@@ -81,9 +82,12 @@ class ConformalBand:
         y_cal = np.asarray(y_cal, dtype=float)
         scores = np.abs(y_cal - np.asarray(mu_cal, dtype=float)) / _scale(mu_cal)
         n = len(scores)
-        # quantil com correcao de amostra finita: ceil((n+1)(1-alpha))/n
-        level = min(1.0, np.ceil((n + 1) * (1 - alpha)) / n)
-        q = float(np.quantile(scores, level, method="higher"))
+        # Correcao de amostra finita do conformal dividido: q e a k-esima menor
+        # pontuacao, com k = ceil((n+1)(1-alpha)). (Uma versao anterior usava
+        # np.quantile(..., k/n, method="higher"), que devolve a (k+1)-esima e
+        # deixava o intervalo um pouco mais largo que o necessario.)
+        k = min(n, int(np.ceil((n + 1) * (1 - alpha))))
+        q = float(np.sort(scores)[k - 1])
         return cls(alpha=alpha, q=q, n_calibracao=n)
 
     def predict(self, mu) -> tuple[np.ndarray, np.ndarray]:
