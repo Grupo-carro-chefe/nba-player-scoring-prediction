@@ -13,28 +13,32 @@ esperado, gestão de banca nem qualquer camada relacionada a apostas.
 - **2º bimestre (N2, conteúdo atual):** modelagem, avaliação, calibração,
   incerteza, artefato de demonstração, relatório final e vídeo.
 
+## Entregas
+
 | Entrega | Onde |
 |---|---|
 | Relatório final (N2) | [`relatorio/relatorio_N2.pdf`](relatorio/relatorio_N2.pdf) (fonte em `.docx` ao lado) |
 | Relatório da N1 | [`relatorio/relatorio_N1.pdf`](relatorio/relatorio_N1.pdf) |
 | Vídeo de apresentação | link no relatório e em [`GRUPO.md`](GRUPO.md) |
 | Dataset e descrição | [`data/README.md`](data/README.md) |
-| Notebooks | [`notebooks/`](notebooks/) (01 a 05, executados) |
+| Notebooks (01 a 05, executados) | [`notebooks/`](notebooks/) |
+| Código e testes | [`src/`](src/), [`scripts/`](scripts/) e [`tests/`](tests/) |
+| Integrantes | [`GRUPO.md`](GRUPO.md) |
 
 ---
 
 ## Sumário
 
 - [Resultados principais](#resultados-principais)
+- [Início rápido](#início-rápido)
 - [Como funciona](#como-funciona)
-- [Requisitos e instalação](#requisitos-e-instalação)
+- [Estrutura do repositório](#estrutura-do-repositório)
 - [Uso](#uso)
 - [Artefato de demonstração](#artefato-de-demonstração)
 - [Dados e resultados gerados](#dados-e-resultados-gerados)
-- [Estrutura do repositório](#estrutura-do-repositório)
 - [Decisões metodológicas](#decisões-metodológicas)
-- [Cabeçalho obrigatório](#cabeçalho-obrigatório)
 - [Testes](#testes)
+- [Cabeçalho obrigatório](#cabeçalho-obrigatório)
 - [Documentação](#documentação)
 - [Aviso de uso](#aviso-de-uso)
 - [Solução de problemas](#solução-de-problemas)
@@ -46,6 +50,15 @@ esperado, gestão de banca nem qualquer camada relacionada a apostas.
 Teste na temporada **2025-26** (17.101 jogos), avaliado **uma única vez** depois
 de todas as escolhas feitas na validação. Números de
 [`results/metrics/test_final.json`](results/metrics/test_final.json).
+
+![Previsto vs. observado no teste, com a distribuição de cada eixo nas laterais](results/figures/f_previsto_vs_observado_marginais.png)
+
+*Cada hexágono agrupa jogos do teste: quanto mais escuro, mais jogos. A diagonal
+tracejada seria a previsão perfeita. Nas laterais, o histograma azul mostra onde
+o modelo prevê e o cinza mostra o que de fato aconteceu: as previsões se
+concentram numa faixa bem mais estreita que a dos pontos marcados. É a
+variação de jogo a jogo, que nenhuma informação pré-jogo explica, e por isso o
+ganho sobre a média recente é modesto.*
 
 **Regressão (pontos no jogo)**
 
@@ -64,6 +77,8 @@ ponto. Um diagnóstico com informação do futuro mostra que conhecer o nível r
 do jogador na temporada reduziria o MAE em só mais 0,066: a maior parte do erro
 restante vem da variação de jogo a jogo.
 
+![Escada de erro: baselines e modelos no teste](results/figures/f_escada_mae.png)
+
 **Classificação (superar a mediana dos 10 jogos anteriores)**
 
 | Métrica | Modelo final (regressão logística) | Ingênuo |
@@ -74,6 +89,34 @@ restante vem da variação de jogo a jogo.
 
 As probabilidades são calibradas (ECE de 0,012). O ganho é modesto, como
 previsto, e não autoriza nenhuma conclusão sobre mercados de apostas.
+
+![Curva de calibração da probabilidade de superar o patamar recente](results/figures/f_curva_calibracao.png)
+
+Todas as figuras do relatório estão em [`results/figures/`](results/figures/).
+
+---
+
+## Início rápido
+
+Python 3.11 ou superior.
+
+```bash
+git clone https://github.com/Grupo-carro-chefe/nba-player-scoring-prediction.git
+cd nba-player-scoring-prediction
+python -m venv .venv
+source .venv/bin/activate          # Linux/macOS
+# .venv\Scripts\Activate.ps1       # Windows (PowerShell)
+pip install -r requirements.txt
+
+python -m src.predict --player "Jalen Brunson" --date 2026-01-11   # demonstração do artefato
+pytest -q                                                          # testes
+```
+
+Bibliotecas em `requirements.txt`: `nba_api`, `pandas`, `numpy`, `pyarrow`,
+`scikit-learn` (1.8 ou 1.9), `scipy`, `matplotlib`, `jupyter`, `nbconvert`,
+`python-docx`, `pytest`, `pypdf`. Os resultados publicados foram gerados com
+Python 3.12, scikit-learn 1.9.1 e pandas 3.1 (versões registradas em
+`results/metrics/*.json`).
 
 ---
 
@@ -98,23 +141,37 @@ previsto, e não autoriza nenhuma conclusão sobre mercados de apostas.
 
 ---
 
-## Requisitos e instalação
+## Estrutura do repositório
 
-Python 3.11 ou superior. Bibliotecas em `requirements.txt`: `nba_api`, `pandas`,
-`numpy`, `pyarrow`, `scikit-learn` (1.8 ou 1.9), `scipy`, `matplotlib`,
-`jupyter`, `nbconvert`, `python-docx`, `pytest`.
-
-```bash
-git clone https://github.com/Grupo-carro-chefe/nba-player-scoring-prediction.git
-cd nba-player-scoring-prediction
-python -m venv .venv
-source .venv/bin/activate          # Linux/macOS
-# .venv\Scripts\Activate.ps1       # Windows (PowerShell)
-pip install -r requirements.txt
 ```
-
-Os resultados publicados foram gerados com Python 3.12, scikit-learn 1.9.1 e
-pandas 3.1 (versões registradas em `results/metrics/*.json`).
+├── src/
+│   ├── header.py           # identificação do grupo, sínteses e histórico por arquivo
+│   ├── collect.py          # coleta via nba_api
+│   ├── features.py         # features pré-jogo
+│   ├── target.py           # alvos e linha sintética
+│   ├── build_dataset.py    # pipeline do dataset
+│   ├── io_utils.py         # parquet com fallback para CSV
+│   ├── modeling.py         # splits temporais, famílias de features, baselines, modelos
+│   ├── metrics.py          # métricas, ECE, bootstrap pareado por jogador
+│   ├── uncertainty.py      # intervalos conformais e oráculos do teto
+│   ├── train.py            # treino e escolhas na validação
+│   ├── evaluate.py         # avaliação única no teste
+│   ├── figures.py          # figuras do relatório e do README
+│   ├── predict.py          # artefato de demonstração
+│   └── report.py           # gera o relatório .docx/.pdf a partir dos resultados
+├── scripts/
+│   ├── apply_header.py     # aplica o cabeçalho obrigatório
+│   └── run_all.py          # pipeline da N2 de ponta a ponta
+├── tests/                  # ver a seção Testes
+├── notebooks/              # 01 EDA; 02 regressão; 03 classificação; 04 incerteza e erros; 05 demo
+├── results/                # métricas, previsões, modelos finais, figuras
+├── relatorio/              # relatórios N1 e N2 (PDF e .docx) e template da FCI
+├── docs/                   # dicionário, auditoria técnica, limitações e vieses
+├── data/                   # dataset versionado + manifests
+├── GRUPO.md
+├── requirements.txt
+└── README.md
+```
 
 ---
 
@@ -191,45 +248,11 @@ gráfico.
 | `results/metrics/test_final.json` | Avaliação única no teste: métricas, IC, ablação, cobertura, teto | sim |
 | `results/predictions_{val,test}.parquet` | Previsões de todos os modelos | sim |
 | `results/models/` | Modelos finais (regressão, classificação) e quantis conformais | sim |
-| `results/figures/` | Figuras do relatório | sim |
+| `results/figures/` | Figuras do relatório e do README | sim |
 | `results/cache/` | Todos os modelos intermediários | não |
 
 Descrição do dataset em [`data/README.md`](data/README.md); coluna a coluna em
 [`docs/DICIONARIO_DE_DADOS.md`](docs/DICIONARIO_DE_DADOS.md).
-
----
-
-## Estrutura do repositório
-
-```
-├── src/
-│   ├── header.py           # identificação do grupo, sínteses e histórico por arquivo
-│   ├── collect.py          # coleta via nba_api
-│   ├── features.py         # features pré-jogo
-│   ├── target.py           # alvos e linha sintética
-│   ├── build_dataset.py    # pipeline do dataset
-│   ├── io_utils.py         # parquet com fallback para CSV
-│   ├── modeling.py         # splits temporais, famílias de features, baselines, modelos
-│   ├── metrics.py          # métricas, ECE, bootstrap pareado por jogador
-│   ├── uncertainty.py      # intervalos conformais e oráculos do teto
-│   ├── train.py            # treino e escolhas na validação
-│   ├── evaluate.py         # avaliação única no teste
-│   ├── figures.py          # figuras do relatório
-│   ├── predict.py          # artefato de demonstração
-│   └── report.py           # gera o relatório .docx/.pdf a partir dos resultados
-├── scripts/
-│   ├── apply_header.py     # aplica o cabeçalho obrigatório
-│   └── run_all.py          # pipeline da N2 de ponta a ponta
-├── tests/                  # vazamento, splits, modelagem, documentação, resultados
-├── notebooks/              # 01 EDA; 02 regressão; 03 classificação; 04 incerteza e erros; 05 demo
-├── results/                # métricas, previsões, modelos finais, figuras
-├── relatorio/              # relatórios N1 e N2 (PDF e .docx) e template da FCI
-├── docs/                   # dicionário, auditoria técnica, limitações e vieses
-├── data/                   # dataset versionado + manifests
-├── GRUPO.md
-├── requirements.txt
-└── README.md
-```
 
 ---
 
@@ -291,6 +314,41 @@ modelo treinaria com o futuro do próprio atleta.
 
 ---
 
+## Testes
+
+```bash
+pytest -q                  # tudo, incluindo o teste de ponta a ponta (~2 min)
+pytest -q -m "not slow"    # sem o teste de ponta a ponta (~40 s)
+```
+
+Os testes ficam em [`tests/`](tests/) e cobrem desde a construção dos dados até
+a consistência do que é entregue:
+
+| Arquivo | O que garante |
+|---|---|
+| `test_no_leakage.py` | Futuro não altera passado (jogador e adversário), médias móveis, reset entre temporadas, ausência de colunas pós-jogo nas features |
+| `test_features_e_alvos.py` | Features, linha sintética e alvos com valores calculados à mão (médias, ewm, descanso, adversário, empates) |
+| `test_splits.py` | Treino, validação e teste sem sobreposição de jogos nem de datas; dobras do CV só treinam no passado |
+| `test_dados.py` | Invariantes do dataset versionado: chave única, alvo coerente com a linha, só jogadores de rotação, CSV igual ao parquet, manifestos e dicionário |
+| `test_build_dataset.py` | Pipeline do dataset de ponta a ponta em dados sintéticos: aritmética dos filtros, split, arquivos gerados |
+| `test_collect_io.py` | Coleta com a API simulada (cache, nova tentativa com espera crescente, manifesto) e leitura/escrita de tabelas |
+| `test_modelagem.py` | Features permitidas, scaler ajustado só no treino, bootstrap por cluster, cobertura do conformal, oráculos, reprodutibilidade por semente |
+| `test_unidades_modelagem.py` | Métricas, ECE, splits e suas travas, catálogo de modelos (todos treinam e preveem), conformal e oráculos em casos pequenos |
+| `test_predict.py` | Artefato de demonstração: consultas aceitas, recusas, formato, e o modelo salvo reproduz as previsões registradas |
+| `test_artefatos.py` | Métricas do `test_final.json` recalculadas das previsões salvas; travas do protocolo de teste único; hash do código |
+| `test_pipeline_fim_a_fim.py` | Treino, teste único e figuras com dados reduzidos; o treino **não lê** o conjunto de teste |
+| `test_scripts.py` | Cabeçalho obrigatório (`apply_header.py`) e ordem das etapas de `run_all.py` |
+| `test_documentacao.py` | Aritmética do dataset e cabeçalho em todos os arquivos-fonte |
+| `test_resultados.py` | Os números citados neste README e no relatório batem com `test_final.json`; proveniência dos resultados |
+| `test_relatorio.py` | Geração do relatório: formatação pt-BR, frases verificadas contra os resultados, e o `.docx` versionado é igual ao que o código gera hoje |
+| `test_entrega.py` | Checklist do enunciado: seções do relatório, PDF coerente com o DOCX, link do vídeo, links do README, notebooks, dependências, arquivos no git |
+
+O número de testes citado no relatório é contado a partir de `tests/`: ao
+adicionar testes, regenere o relatório (`python -m src.report --pdf`). O
+`test_entrega.py` falha enquanto os dois estiverem desencontrados.
+
+---
+
 ## Cabeçalho obrigatório
 
 Todo `.py` e `.ipynb` carrega, em comentário, a identificação dos integrantes, a
@@ -305,26 +363,6 @@ python scripts/apply_header.py --check  # apenas verifica (sai com 1 se desatual
 Para registrar uma alteração, adicione uma entrada em `HISTORICO[<arquivo>]` em
 `src/header.py` e rode o script. Um teste falha se algum arquivo estiver sem
 síntese ou com cabeçalho desatualizado.
-
----
-
-## Testes
-
-```bash
-pytest -q
-```
-
-- **Vazamento temporal** (`test_no_leakage.py`): futuro não altera passado
-  (jogador e adversário), médias móveis, reset entre temporadas, ausência de
-  colunas pós-jogo nas features.
-- **Splits** (`test_splits.py`): treino, validação e teste sem sobreposição de
-  jogos nem de datas; dobras do CV só treinam no passado.
-- **Modelagem** (`test_modelagem.py`): features permitidas, scaler ajustado só no
-  treino, métricas em casos conhecidos, bootstrap por cluster, cobertura do
-  conformal em dados sintéticos, oráculos, reprodutibilidade por semente.
-- **Documentação e resultados** (`test_documentacao.py`, `test_resultados.py`):
-  aritmética do dataset, cabeçalhos, e os números citados neste README e no
-  relatório batem com `results/metrics/test_final.json`.
 
 ---
 
@@ -371,3 +409,7 @@ chamadas e tenta novamente com espera crescente; o que já foi baixado fica em
 **`src.report --pdf` falha**
 A exportação para PDF usa o Microsoft Word por automação no Windows. Sem Word,
 gere só o `.docx` (`python -m src.report`) e exporte manualmente.
+
+**`test_entrega.py` falha dizendo que o relatório cita outra quantidade de testes**
+O relatório foi gerado antes da última mudança na suíte. Rode
+`python -m src.report --pdf`.

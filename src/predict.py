@@ -17,6 +17,7 @@
 #   2026-11-15 | Rodrigo    | Saída em UTF-8 também quando redirecionada (Windows).
 #   2026-11-15 | Rodrigo    | --team sem data mostra só o jogo mais recente.
 #   2026-11-15 | Rodrigo    | Recusa nome ambíguo e --sample fora do intervalo.
+#   2026-11-17 | Rodrigo    | --sample 0 passa a ser recusado com a mensagem de intervalo (antes caía em 'informe --player').
 # === FIM DO CABECALHO ===
 
 """Artefato de demonstracao: estimativa de pontos com incerteza para um jogo.
@@ -130,7 +131,7 @@ def main() -> None:
             stream.reconfigure(encoding="utf-8")
 
     df = load_dataset()
-    if args.sample:
+    if args.sample is not None:  # 0 tambem entra aqui, para a guarda abaixo recusa-lo com a mensagem certa
         teste = df[df["split"] == "test"]
         if not 0 < args.sample <= len(teste):
             raise SystemExit(f"--sample deve estar entre 1 e {len(teste)}")
