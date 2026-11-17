@@ -16,6 +16,7 @@
 #   2026-11-15 | Rodrigo    | Versão inicial: figuras do relatório.
 #   2026-11-15 | Rodrigo    | Figura da distribuição dos pontos (EDA) e baseline em mediana na escada.
 #   2026-11-15 | Rodrigo    | Título e eixo calculados a partir dos dados.
+#   2026-11-17 | Rodrigo    | Figura de dispersão previsto x observado com distribuições marginais.
 # === FIM DO CABECALHO ===
 
 """Figuras do relatorio, geradas a partir dos JSONs e previsoes salvos.
@@ -156,6 +157,72 @@ def fig_previsto_observado(preds: pd.DataFrame, final: str) -> None:
     _save(fig, "f_previsto_vs_observado")
 
 
+def fig_previsto_marginais(preds: pd.DataFrame, final: str) -> None:
+    """Dispersao previsto x observado com a distribuicao de cada eixo nas laterais.
+
+    O centro e densidade (hexbin), nao pontos: sao ~17 mil jogos e pontos soltos
+    virariam uma mancha. As laterais mostram o achado do relatorio: as previsoes
+    ficam espremidas num intervalo estreito, enquanto os pontos marcados se
+    espalham muito mais; a distancia entre os dois histogramas e a variacao de
+    jogo a jogo que nenhuma informacao pre-jogo explica. Os dois eixos usam a
+    mesma escala, para que a diagonal tracejada seja a previsao perfeita.
+    """
+    mu, y = preds[f"reg__{final}"].to_numpy(float), preds["y_pts"].to_numpy(float)
+    lim = float(np.ceil(max(np.quantile(y, 0.999), np.quantile(mu, 0.999)))) + 2
+    fora = int(((y > lim) | (mu > lim)).sum())
+    mae = float(np.mean(np.abs(y - mu)))
+
+    fig = plt.figure(figsize=(6.6, 6.4))
+    gs = fig.add_gridspec(2, 2, width_ratios=(4, 1), height_ratios=(1, 4), hspace=0.04, wspace=0.04)
+    ax = fig.add_subplot(gs[1, 0])
+    ax_x = fig.add_subplot(gs[0, 0], sharex=ax)
+    ax_y = fig.add_subplot(gs[1, 1], sharey=ax)
+    canto = fig.add_subplot(gs[0, 1])
+    canto.axis("off")
+
+    hb = ax.hexbin(mu, y, gridsize=38, extent=(0, lim, 0, lim), cmap="Blues", mincnt=1, bins="log", linewidths=0.2, edgecolors=SUPERFICIE)
+    ax.plot([0, lim], [0, lim], color=TINTA_2, linewidth=1, linestyle="--")
+    ax.set_xlim(0, lim)
+    ax.set_ylim(0, lim)
+    ax.set_xlabel("Pontos previstos pelo modelo")
+    ax.set_ylabel("Pontos marcados no jogo")
+    ax.text(lim * 0.97, lim * 0.93, "previsão perfeita", color=TINTA_2, fontsize=8.5, ha="right", rotation=0)
+
+    bins = np.arange(0, lim + 1, 1.0)
+    ax_x.hist(mu, bins=bins, color=AZUL, rwidth=0.85)
+    ax_y.hist(y, bins=bins, color=CINZA, rwidth=0.85, orientation="horizontal")
+    # Os eixos das laterais compartilham escala com o grafico central, entao so se
+    # esconde o que e decoracao (ticks e linhas), nunca a escala em si.
+    for lateral in (ax_x, ax_y):
+        lateral.grid(False)
+    ax_x.set_yticks([])
+    ax_x.spines["left"].set_visible(False)
+    ax_x.tick_params(labelbottom=False, bottom=False)
+    ax_y.set_xticks([])
+    ax_y.spines["bottom"].set_visible(False)
+    ax_y.tick_params(labelleft=False, left=False)
+    ax_x.text(0.99, 0.80, "distribuição das previsões", transform=ax_x.transAxes, color=TINTA_2, fontsize=8.5, ha="right")
+    ax_y.text(0.97, 0.99, "distribuição\ndo que\nocorreu", transform=ax_y.transAxes, color=TINTA_2, fontsize=8.5, ha="right", va="top")
+
+    cax = canto.inset_axes([0.62, 0.05, 0.14, 0.72])
+    cb = fig.colorbar(hb, cax=cax)
+    cb.outline.set_visible(False)
+    cb.ax.yaxis.set_ticks_position("right")
+    cb.ax.yaxis.set_label_position("left")
+    cb.set_label("jogos (log)", fontsize=8.5)
+
+    nota = f"{len(y):,} jogos de teste (2025-26)".replace(",", ".")
+    if fora:
+        nota += f"; {fora} fora do recorte dos eixos"
+    titulo = "Previsto vs. observado · MAE " + f"{mae:.2f}".replace(".", ",") + " pontos"
+    ax_x.set_title(titulo, loc="left", fontsize=11, fontweight="bold", pad=22)
+    ax_x.text(0.0, 1.07, nota, transform=ax_x.transAxes, fontsize=8.5, color=TINTA_2, ha="left")
+
+    FIG_DIR.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIG_DIR / "f_previsto_vs_observado_marginais.png", dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
 def fig_calibracao(res: dict) -> None:
     c = res["classificacao"]
     fig, ax = plt.subplots(figsize=(5.6, 5))
@@ -224,6 +291,7 @@ def make_all() -> list[str]:
     fig_escada_mae(res)
     fig_mae_por_faixa(res)
     fig_previsto_observado(preds, res["regressao"]["modelo_final"])
+    fig_previsto_marginais(preds, res["regressao"]["modelo_final"])
     fig_calibracao(res)
     fig_cobertura(res)
     fig_ablacao(res)

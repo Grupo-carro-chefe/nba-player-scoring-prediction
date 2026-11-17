@@ -15,6 +15,7 @@
 #   -----------|------------|-------------------------------------------
 #   2026-09-14 | grupo      | Versão inicial: coleta, features, alvos, testes e EDA.
 #   2026-11-15 | Rodrigo    | Histórico por arquivo e sínteses dos arquivos da N2.
+#   2026-11-17 | Rodrigo    | Sínteses e histórico dos novos arquivos de teste.
 # === FIM DO CABECALHO ===
 
 """Metadados do grupo usados pelo cabecalho obrigatorio.
@@ -62,6 +63,18 @@ SINTESES: dict[str, str] = {
     "tests/test_splits.py": "Testes da divisão temporal treino/validação/teste e das dobras do CV.",
     "tests/test_modelagem.py": "Testes da modelagem: features, pipeline, métricas, intervalos, sementes.",
     "tests/test_resultados.py": "Testes que prendem README e relatório aos números de test_final.json.",
+    "tests/conftest.py": "Configuração compartilhada dos testes (marcador slow).",
+    "tests/test_dados.py": "Invariantes do dataset versionado e coerência dos manifestos e do dicionário.",
+    "tests/test_features_e_alvos.py": "Features, linha sintética e alvos com valores calculados à mão.",
+    "tests/test_build_dataset.py": "Pipeline de construção do dataset de ponta a ponta em dados sintéticos.",
+    "tests/test_collect_io.py": "Coleta (API simulada), cache, nova tentativa e leitura/escrita de tabelas.",
+    "tests/test_unidades_modelagem.py": "Métricas, splits, catálogo de modelos, conformal e oráculos em casos pequenos.",
+    "tests/test_predict.py": "Artefato de demonstração: consultas, recusas, formato e reprodução dos resultados.",
+    "tests/test_artefatos.py": "Métricas do JSON recalculadas das previsões e travas do protocolo de teste único.",
+    "tests/test_scripts.py": "Cabeçalho obrigatório (apply_header) e ordem do pipeline em run_all.",
+    "tests/test_entrega.py": "Checklist do enunciado: relatório, PDF, link do vídeo, links, notebooks e git.",
+    "tests/test_pipeline_fim_a_fim.py": "Treino, teste único e figuras com dados reduzidos; treino não lê o teste.",
+    "tests/test_relatorio.py": "Relatório: formatação pt-BR, fatos verificados, geração do .docx e coerência com o versionado.",
     "notebooks/01_eda.ipynb": "Análise exploratória do dataset.",
     "notebooks/02_baselines_e_regressao.ipynb": "Baselines e modelos de regressão: validação temporal e teste.",
     "notebooks/03_classificacao_e_calibracao.ipynb": "Classificação contra o patamar recente e calibração.",
@@ -78,10 +91,14 @@ ARQUIVOS_N1 = {
 HISTORICO_N1: tuple[str, str, str] = ("2026-09-14", "grupo", "Versão inicial: coleta, features, alvos, testes e EDA.")
 
 _N2 = "2026-11-15"
+_N3 = "2026-11-17"  # ampliacao da suite de testes
 HISTORICO: dict[str, list[tuple[str, str, str]]] = {
     "src/collect.py": [(_N2, "Rodrigo", "Manifesto gravado com fim de linha LF.")],
     "src/build_dataset.py": [(_N2, "Rodrigo", "Manifesto gravado com fim de linha LF.")],
-    "src/header.py": [(_N2, "Rodrigo", "Histórico por arquivo e sínteses dos arquivos da N2.")],
+    "src/header.py": [
+        (_N2, "Rodrigo", "Histórico por arquivo e sínteses dos arquivos da N2."),
+        (_N3, "Rodrigo", "Sínteses e histórico dos novos arquivos de teste."),
+    ],
     "scripts/apply_header.py": [
         (_N2, "Rodrigo", "Usa o histórico por arquivo de src/header.py."),
         (_N2, "Rodrigo", "Grava sempre com fim de linha LF."),
@@ -118,12 +135,14 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
         (_N2, "Rodrigo", "Versão inicial: figuras do relatório."),
         (_N2, "Rodrigo", "Figura da distribuição dos pontos (EDA) e baseline em mediana na escada."),
         (_N2, "Rodrigo", "Título e eixo calculados a partir dos dados."),
+        (_N3, "Rodrigo", "Figura de dispersão previsto x observado com distribuições marginais."),
     ],
     "src/predict.py": [
         (_N2, "Rodrigo", "Versão inicial: demonstração com intervalo e aviso de escopo."),
         (_N2, "Rodrigo", "Saída em UTF-8 também quando redirecionada (Windows)."),
         (_N2, "Rodrigo", "--team sem data mostra só o jogo mais recente."),
         (_N2, "Rodrigo", "Recusa nome ambíguo e --sample fora do intervalo."),
+        (_N3, "Rodrigo", "--sample 0 passa a ser recusado com a mensagem de intervalo (antes caía em 'informe --player')."),
     ],
     "src/report.py": [
         (_N2, "Rodrigo", "Versão inicial: relatório N2 gerado a partir dos resultados."),
@@ -145,6 +164,18 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
         (_N2, "Rodrigo", "Versão inicial: números citados batem com test_final.json."),
         (_N2, "Rodrigo", "Testes de proveniência (hash do código) e dos fatos do relatório."),
     ],
+    "tests/conftest.py": [(_N3, "Rodrigo", "Versão inicial: registra o marcador slow.")],
+    "tests/test_dados.py": [(_N3, "Rodrigo", "Versão inicial: invariantes do dataset versionado.")],
+    "tests/test_features_e_alvos.py": [(_N3, "Rodrigo", "Versão inicial: features e alvos com valores conhecidos.")],
+    "tests/test_build_dataset.py": [(_N3, "Rodrigo", "Versão inicial: pipeline do dataset em dados sintéticos.")],
+    "tests/test_collect_io.py": [(_N3, "Rodrigo", "Versão inicial: coleta com API simulada e io_utils.")],
+    "tests/test_unidades_modelagem.py": [(_N3, "Rodrigo", "Versão inicial: métricas, splits, modelos, conformal e oráculos.")],
+    "tests/test_predict.py": [(_N3, "Rodrigo", "Versão inicial: artefato de demonstração.")],
+    "tests/test_artefatos.py": [(_N3, "Rodrigo", "Versão inicial: métricas recalculadas e travas do protocolo.")],
+    "tests/test_scripts.py": [(_N3, "Rodrigo", "Versão inicial: apply_header e run_all.")],
+    "tests/test_entrega.py": [(_N3, "Rodrigo", "Versão inicial: checklist do enunciado da N2.")],
+    "tests/test_pipeline_fim_a_fim.py": [(_N3, "Rodrigo", "Versão inicial: pipeline reduzido de ponta a ponta.")],
+    "tests/test_relatorio.py": [(_N3, "Rodrigo", "Versão inicial: geração e coerência do relatório.")],
     "notebooks/02_baselines_e_regressao.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],
     "notebooks/03_classificacao_e_calibracao.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],
     "notebooks/04_incerteza_teto_e_erros.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],
