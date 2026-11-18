@@ -14,7 +14,7 @@
 
 - Repositório: https://github.com/Grupo-carro-chefe/nba-player-scoring-prediction
 - Relatório final: [`relatorio/relatorio_N2.pdf`](relatorio/relatorio_N2.pdf)
-- Vídeo de apresentação (YouTube): *será adicionado após a publicação*
+- Vídeo de apresentação (YouTube): https://youtu.be/b6IV7HtJuvw
 
 ## Cabeçalho dos arquivos
 

@@ -14,6 +14,7 @@
 #   data       | autor      | descricao
 #   -----------|------------|-------------------------------------------
 #   2026-11-17 | Rodrigo    | Versão inicial: checklist do enunciado da N2.
+#   2026-11-18 | Rodrigo    | Link do vídeo casado pelo ID de 11 caracteres, sem absorver o texto seguinte.
 # === FIM DO CABECALHO ===
 
 """Checklist da entrega: o que o enunciado da N2 exige, conferido contra o repositorio.
@@ -50,7 +51,9 @@ SECOES = [
     "Metodologia", "Resultados", "Conclusão", "Endereço GitHub", "Referências",
 ]
 SUBSECOES = ["1.1. Contextualização", "1.2. Justificativa", "1.3. Objetivo", "1.4. Opção do projeto", "4.3. Análise exploratória"]
-YOUTUBE = re.compile(r"https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]{6,}")
+# O ID de um video do YouTube tem sempre 11 caracteres. Fixar o tamanho impede
+# que, no texto sem espacos, o link absorva o que vem depois (ex.: "9. Referencias").
+YOUTUBE = re.compile(r"https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]{11}")
 
 
 def _paragrafos_docx(path: Path = DOCX) -> list[str]:

@@ -149,6 +149,7 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
         (_N2, "Rodrigo", "Correções da revisão crítica: teto, baselines, ablação, conformal, referências."),
         (_N2, "Rodrigo", "Fatos do texto verificados contra os resultados; números lidos dos arquivos."),
         (_N2, "Rodrigo", "Metadados próprios do .docx; texto do run_all --retrain."),
+        ("2026-11-18", "Rodrigo", "Revisão de estilo do texto: menos negrito, frases mais diretas, mesmos números."),
     ],
     "scripts/run_all.py": [
         (_N2, "Rodrigo", "Versão inicial: pipeline da N2 de ponta a ponta."),
@@ -173,7 +174,10 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
     "tests/test_predict.py": [(_N3, "Rodrigo", "Versão inicial: artefato de demonstração.")],
     "tests/test_artefatos.py": [(_N3, "Rodrigo", "Versão inicial: métricas recalculadas e travas do protocolo.")],
     "tests/test_scripts.py": [(_N3, "Rodrigo", "Versão inicial: apply_header e run_all.")],
-    "tests/test_entrega.py": [(_N3, "Rodrigo", "Versão inicial: checklist do enunciado da N2.")],
+    "tests/test_entrega.py": [
+        (_N3, "Rodrigo", "Versão inicial: checklist do enunciado da N2."),
+        ("2026-11-18", "Rodrigo", "Link do vídeo casado pelo ID de 11 caracteres, sem absorver o texto seguinte."),
+    ],
     "tests/test_pipeline_fim_a_fim.py": [(_N3, "Rodrigo", "Versão inicial: pipeline reduzido de ponta a ponta.")],
     "tests/test_relatorio.py": [(_N3, "Rodrigo", "Versão inicial: geração e coerência do relatório.")],
     "notebooks/02_baselines_e_regressao.ipynb": [(_N2, "Rodrigo", "Versão inicial.")],

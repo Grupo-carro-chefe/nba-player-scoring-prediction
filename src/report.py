@@ -17,6 +17,7 @@
 #   2026-11-15 | Rodrigo    | Correções da revisão crítica: teto, baselines, ablação, conformal, referências.
 #   2026-11-15 | Rodrigo    | Fatos do texto verificados contra os resultados; números lidos dos arquivos.
 #   2026-11-15 | Rodrigo    | Metadados próprios do .docx; texto do run_all --retrain.
+#   2026-11-18 | Rodrigo    | Revisão de estilo do texto: menos negrito, frases mais diretas, mesmos números.
 # === FIM DO CABECALHO ===
 
 """Gera o relatorio da N2 (.docx) sobre o template da FCI.
@@ -358,9 +359,9 @@ def build(video_url: str | None) -> None:
         f"cobriram {pct(iv80['global']['cobertura'])} e {pct(iv90['global']['cobertura'])} dos jogos de teste. Na "
         "formulação de classificação, a probabilidade de o atleta superar a mediana dos seus dez jogos anteriores "
         f"atingiu AUC de {num(cf['auc'], 2)} e Brier score {pct(cf['brier_skill'])} menor que o de um estimador "
-        "ingênuo, com probabilidades bem calibradas. Um diagnóstico com informação do futuro indica que conhecer o "
-        f"nível real do jogador na temporada reduziria o MAE em apenas mais {num(b_mo['delta'], 2)} ponto: a maior parte "
-        "do erro restante parece vir da variação de jogo a jogo, e não de estimar mal o nível do atleta.",
+        "ingênuo, com probabilidades bem calibradas. Um diagnóstico que usa informação do futuro indica que, mesmo "
+        f"conhecendo o nível real do jogador na temporada, o MAE cairia só mais {num(b_mo['delta'], 2)} ponto. O erro "
+        "que sobra parece vir sobretudo da variação de um jogo para outro.",
         italic=True, left=0.8, right=0.8, first=None, before=6,
     )
     P("**Palavras-chave:** aprendizado de máquina; análise esportiva; NBA; scikit-learn; calibração; predição conformal.",
@@ -379,9 +380,9 @@ def build(video_url: str | None) -> None:
         f"80% and 90% intervals covered {100 * iv80['global']['cobertura']:.1f}% and {100 * iv90['global']['cobertura']:.1f}% "
         "of test games. In the classification formulation, the probability of exceeding the median of the previous ten "
         f"games reached an AUC of {cf['auc']:.2f} and a Brier score {100 * cf['brier_skill']:.1f}% below a naive "
-        "estimator, with well calibrated probabilities. A diagnostic that uses future information indicates that knowing "
-        f"each player's true season level would lower the MAE by only {b_mo['delta']:.2f} more points: most of the remaining "
-        "error seems to come from game-to-game variation rather than from misjudging the player's level.",
+        "estimator, with well calibrated probabilities. A diagnostic that uses future information shows that even knowing "
+        f"each player's true season level would lower the MAE by only {b_mo['delta']:.2f} more points, so most of the "
+        "remaining error seems to come from game-to-game variation.",
         italic=True, left=0.8, right=0.8, first=None, before=6,
     )
     P("**Keywords:** machine learning; sports analytics; NBA; scikit-learn; calibration; conformal prediction.",
@@ -393,8 +394,8 @@ def build(video_url: str | None) -> None:
     P("O basquete profissional adotou cedo a análise quantitativa como apoio à decisão. Oliver (2004) organizou um "
       "conjunto de métricas de eficiência ofensiva e defensiva que deslocou a avaliação de jogadores das estatísticas "
       "brutas para indicadores ajustados ao ritmo de jogo, e Kubatko et al. (2007) consolidaram esse vocabulário em uma "
-      "base metodológica comum. Desde então, franquias, veículos de mídia e plataformas de estatística passaram a "
-      "tratar a produção individual como objeto mensurável.")
+      "base metodológica comum. Desde então, times, imprensa e sites de estatística tratam a produção individual como "
+      "algo que se mede.")
     P("A disponibilidade de dados acompanhou esse movimento. A NBA publica em suas interfaces oficiais o registro "
       "detalhado de cada partida, incluindo o desempenho de cada atleta em cada jogo. São milhares de observações por "
       "temporada, organizadas de forma estável ao longo do tempo, o que atende aos requisitos das técnicas de "
@@ -404,14 +405,14 @@ def build(video_url: str | None) -> None:
       "quem é o adversário, se a partida é em casa, quanto o atleta descansou e qual o seu papel atual na rotação. Como "
       "atribui peso igual a todas as observações, ela também demora a reagir quando alguma dessas condições muda.")
     rel.subtitulo("1.2. Justificativa")
-    P("A lacuna que motiva o projeto está na distância entre a riqueza dos dados disponíveis e a simplicidade do "
-      "estimador usual. Modelos supervisionados permitem incorporar contexto de forma explícita e medir, com rigor, "
-      "quanto esse contexto de fato acrescenta. Há também uma motivação metodológica: séries esportivas são terreno "
-      "fértil para vazamento de dados, porque quase toda estatística sobre uma partida só existe depois que ela termina. "
+    P("O projeto parte de um descompasso: a liga publica o registro detalhado de cada partida, mas a projeção usual "
+      "usa só a média dos últimos jogos. Um modelo supervisionado pode levar em conta o contexto da partida e permite "
+      "medir quanto esse contexto acrescenta à média. Há também uma motivação metodológica: em séries esportivas é "
+      "fácil vazar informação do futuro, porque quase toda estatística sobre uma partida só existe depois que ela termina. "
       "Construir variáveis estritamente pré-jogo, demonstrar por testes automatizados que não há vazamento e avaliar o "
       "modelo por divisão temporal exercita os fundamentos de preparação de dados e validação vistos na disciplina.")
-    P("Por fim, uma estimativa pontual sem medida de incerteza induz confiança que os dados não sustentam. Por isso a "
-      "solução acompanha cada previsão de um intervalo com cobertura verificada e avalia a calibração das probabilidades.")
+    P("Uma estimativa pontual sem medida de incerteza também passa mais confiança do que os dados sustentam. Por isso "
+      "cada previsão sai com um intervalo de cobertura verificada, e as probabilidades têm a calibração avaliada.")
     rel.subtitulo("1.3. Objetivo")
     P("O objetivo geral é desenvolver e avaliar um modelo de aprendizado de máquina supervisionado capaz de estimar a "
       "produção individual de atletas da NBA a partir de informação disponível antes do início da partida. São objetivos "
@@ -445,12 +446,12 @@ def build(video_url: str | None) -> None:
       "atleta e do contexto já conhecido da partida corrente (adversário, mando de quadra e calendário). O problema é "
       "tratado em duas formulações complementares:")
     rel.itens([
-        "**regressão** (formulação principal): estimar diretamente o número de pontos (`y_pts`);",
-        "**classificação**: estimar a probabilidade de o atleta superar um limiar de referência (`y_over`), o que permite avaliar a calibração das estimativas, e não apenas o erro pontual.",
+        "regressão (formulação principal): estimar diretamente o número de pontos (`y_pts`);",
+        "classificação: estimar a probabilidade de o atleta superar um limiar de referência (`y_over`), o que permite avaliar a calibração das estimativas, e não apenas o erro pontual.",
     ])
     P("Não existe série histórica de limiares de mercado em fonte pública, gratuita e reprodutível: interfaces comerciais "
       "restringem o histórico a planos pagos, agregadores não o publicam e sua extração automatizada violaria termos de "
-      "uso. Adotou-se então um limiar sintético, a **mediana dos pontos nas dez partidas anteriores** do atleta, "
+      "uso. Adotou-se então um limiar sintético, a mediana dos pontos nas dez partidas anteriores do atleta, "
       "arredondada para meio ponto (`line_synthetic`). Superar a própria mediana recente é tarefa diferente de superar um "
       "limiar de mercado, e o alvo é autorreferencial: o "
       "limiar acompanha o próprio jogador, o que aproxima a taxa de superação de 50% e limita a acurácia alcançável a "
@@ -464,11 +465,11 @@ def build(video_url: str | None) -> None:
       "todos os resultados de classificação são reportados com e sem os empates (Seção 6.4).")
     P("O problema tem dificuldades específicas que condicionam a modelagem:")
     rel.itens([
-        "**variância alta**: a produção em uma única partida é ruidosa, e existe um teto preditivo que nenhum modelo ultrapassa;",
-        "**dependência dos minutos jogados**: o volume de produção depende do tempo em quadra, que depende de decisões técnicas, faltas e placar, nada disso conhecido antes do jogo;",
-        "**heterogeneidade entre atletas**: titulares e jogadores de rotação curta têm distribuições muito diferentes;",
-        "**não estacionariedade**: contusões, trocas e mudanças de função alteram a distribuição ao longo do tempo, o que inviabiliza a divisão aleatória entre treino e teste;",
-        "**mistura de contextos**: temporada regular e pós-temporada têm regimes distintos e não são misturados.",
+        "variância alta: a produção em uma única partida é ruidosa, e existe um teto preditivo que nenhum modelo ultrapassa;",
+        "dependência dos minutos jogados: o volume de produção depende do tempo em quadra, que depende de decisões técnicas, faltas e placar, nada disso conhecido antes do jogo;",
+        "heterogeneidade entre atletas: titulares e jogadores de rotação curta têm distribuições muito diferentes;",
+        "não estacionariedade: contusões, trocas e mudanças de função alteram a distribuição ao longo do tempo, o que inviabiliza a divisão aleatória entre treino e teste;",
+        "mistura de contextos: temporada regular e pós-temporada têm regimes distintos e não são misturados.",
     ])
     P("O artefato é um estimador de desempenho esportivo para fins analíticos e acadêmicos. Não é ferramenta de "
       "recomendação de apostas: o projeto não inclui cotações, cálculo de valor esperado nem gestão de banca.")
@@ -477,21 +478,21 @@ def build(video_url: str | None) -> None:
     rel.titulo_secao("3. Aspectos Éticos e Responsabilidade no Desenvolvimento da Solução")
     P("A discussão ética se organiza em seis eixos, tomando como referência o panorama de princípios de ética em IA de "
       "Jobin, Ienca e Vayena (2019), do qual se aproveitam transparência, justiça, não maleficência e responsabilidade. "
-      "Na N2, cada compromisso assumido na primeira entrega ganhou um mecanismo verificável no código.")
+      "Na N2, cada compromisso assumido na primeira entrega passou a ter uma verificação no código.")
     rel.subtitulo("3.1. Risco de uso indevido")
     P("Um modelo que estima a produção individual de atletas tem aplicação imediata em mercados de apostas, e esse é o "
       "risco mais relevante do projeto. O repositório não incorpora cotações, valor esperado ou qualquer camada de decisão "
-      "financeira; a probabilidade estimada é sempre a de superar o **próprio patamar recente** do jogador, nunca uma "
+      "financeira; a probabilidade estimada é sempre a de superar o próprio patamar recente do jogador, nunca uma "
       "linha de mercado; e o artefato de demonstração imprime, em toda consulta, o aviso de que se trata de estimativa "
       "estatística e não de recomendação de aposta. Os resultados de classificação são modestos e não autorizam nenhuma "
-      "conclusão sobre lucratividade. Essas medidas reduzem o risco, mas não o eliminam: qualquer estimador público pode "
-      "ser reaproveitado por terceiros, e o que a não maleficência exige é não facilitar esse uso e ser transparente "
-      "quanto à sua possibilidade.")
+      "conclusão sobre lucratividade. Essas medidas reduzem o risco sem eliminá-lo, porque qualquer estimador público "
+      "pode ser reaproveitado por terceiros. O princípio de não maleficência pede, então, que o projeto não facilite "
+      "esse uso e deixe claro que ele é possível.")
     rel.subtitulo("3.2. Dados pessoais e privacidade")
     P("O conjunto trata de pessoas identificadas, o que atrai a Lei nº 13.709/2018 (BRASIL, 2018). Os dados são "
       "estatísticas de desempenho profissional tornadas públicas pela própria liga, usadas para fins acadêmicos, sem "
-      "tratamento de dados sensíveis. O grupo não coleta nem infere informação de saúde. Na N2 identificou-se uma "
-      f"sutileza: a variável `rest_days` mede os dias desde a última partida do atleta e chega a {int(E['rest_max'])} dias; "
+      "tratamento de dados sensíveis. O grupo não coleta nem infere informação de saúde. Na N2, porém, o grupo percebeu "
+      f"que a variável `rest_days`, que mede os dias desde a última partida do atleta, chega a {int(E['rest_max'])} dias; "
       f"acima de uma semana ({pct(E['rest_7'])} dos registros) ela reflete ausência, frequentemente por contusão. A "
       "variável foi mantida por ser pública e pré-jogo. O limite de 10 dias aplicado nos modelos contém a escala, mas não "
       "remove a informação de ausência: o valor 10 continua indicando que o atleta ficou fora por dez dias ou mais. O "
@@ -505,7 +506,7 @@ def build(video_url: str | None) -> None:
       "viés de sobrevivência (atletas que deixam a liga somem da base) e de seleção: só existe registro se o atleta entrou "
       "em quadra, de modo que o modelo estima pontos *condicionados a jogar*.")
     rel.subtitulo("3.4. Comunicação da incerteza e responsabilidade")
-    P("Dada a variância do fenômeno, apresentar uma estimativa pontual sem qualificação seria uma forma de desinformar. "
+    P("Como a pontuação varia muito de um jogo para outro, uma estimativa pontual sem qualificação induziria o leitor ao erro. "
       "O compromisso da N1 foi cumprido assim: toda previsão vem com intervalos conformais de 80% e 90%, cuja cobertura "
       "real foi medida no teste (Seção 6.5); as probabilidades da classificação têm calibração avaliada (Seção 6.4); e o "
       "quanto do erro se deve a não conhecer o nível do atleta foi estimado e declarado (Seção 6.6). A responsabilidade "
@@ -543,7 +544,7 @@ def build(video_url: str | None) -> None:
       f"{E['inicio']:%d/%m/%Y} e {E['fim']:%d/%m/%Y}: 9 colunas de identificação, 24 variáveis preditoras pré-jogo, "
       "3 de alvo e linha de referência e 1 de divisão temporal.")
     rel.subtitulo("4.2. Conteúdo do conjunto e dicionário de dados")
-    P("A Tabela 1 traz o dicionário das principais variáveis, **com os nomes reais das colunas** do arquivo publicado. "
+    P("A Tabela 1 traz o dicionário das principais variáveis, com os nomes reais das colunas do arquivo publicado. "
       "Na N1, a tabela usou nomes descritivos em português que não existem no arquivo, e duas descrições estavam "
       "imprecisas: a titularidade não é uma proporção, mas um indicador binário estimado pelos minutos recentes; e a "
       "força do adversário não é um rating de eficiência, mas a média de pontos cedidos. A versão abaixo corrige isso.")
@@ -574,13 +575,13 @@ def build(video_url: str | None) -> None:
       "médias de minutos e pela titularidade estimada, ambas calculadas sobre o histórico anterior.")
     rel.subtitulo("4.3. Análise exploratória")
     co = E["corr"]
-    P("A análise exploratória está no caderno `notebooks/01_eda.ipynb`. Os principais resultados, recalculados sobre o "
-      "dataset publicado, são os seguintes.")
+    P("A análise exploratória está no caderno `notebooks/01_eda.ipynb`. Os números abaixo foram recalculados sobre o "
+      "dataset publicado.")
     P(f"**Distribuição do alvo.** Os pontos têm assimetria à direita: média {num(E['media'], 2)}, mediana {num(E['mediana'], 0)}, "
       f"desvio padrão {num(E['dp'], 2)}, moda {num(E['moda'], 0)}, quartis {num(E['q1'], 0)} e {num(E['q3'], 0)}, assimetria "
       f"{num(E['assim'], 3)} e curtose {num(E['curt'], 3)}. Partidas sem pontos respondem por {pct(E['zeros'], 2)} das linhas. "
-      "A assimetria (Figura 1) tem consequência direta na modelagem: o erro absoluto é minimizado pela mediana, e não pela "
-      "média, o que favorece modelos treinados com perda absoluta (Seção 6.1).")
+      "A assimetria (Figura 1) pesa na modelagem: o erro absoluto é minimizado pela mediana, não pela média, o que "
+      "favorece modelos treinados com perda absoluta (Seção 6.1).")
     rel.figura("f_distribuicao_pontos.png", "Distribuição dos pontos por jogo, com média e mediana.", largura=13)
     P(f"**Correlações.** As variáveis de histórico recente têm associação forte com os pontos: média exponencial "
       f"{num(co['pts_ewm_prev'])}, média da temporada {num(co['pts_season_mean_prev'])}, média de dez jogos "
@@ -588,7 +589,7 @@ def build(video_url: str | None) -> None:
       f"quase não se correlacionam linearmente com o alvo (adversário {num(co['opp_def_pts_allowed_prev'])}, mando "
       f"{num(co['is_home'])}). Com o alvo binário, a maior correlação absoluta é {num(E['corr_over'])}: como a linha é a "
       "mediana recente do próprio atleta, as variáveis que preveem pontos preveem igualmente a linha. A Seção 6.4 mostra "
-      "que o sinal da classificação está na **diferença** entre a forma recente e a linha.")
+      "que o sinal da classificação está na diferença entre a forma recente e a linha.")
     P(f"**Balanceamento, extremos e multicolinearidade.** A classe positiva responde por {pct(E['pos'], 2)} das linhas. "
       f"Pelo critério do intervalo interquartil, {pct(E['iqr_out'], 2)} dos valores do alvo são extremos; partidas de 30 ou "
       f"mais pontos são {pct(E['p30'], 2)}, de 40 ou mais {pct(E['p40'], 2)} e de 50 ou mais {pct(E['p50'], 2)}, com máximo de "
@@ -629,22 +630,22 @@ def build(video_url: str | None) -> None:
     P("Uma divisão aleatória colocaria jogos de dias vizinhos em conjuntos diferentes; como as variáveis descrevem o estado "
       "recente do atleta, o modelo treinaria com informação do futuro. O protocolo tem três níveis (BERGMEIR; BENÍTEZ, 2012):")
     rel.itens([
-        "**hiperparâmetros**: validação cruzada temporal dentro do treino, com janela expansiva por temporada (treina em 2021-22 e valida em 2022-23; treina em 2021-22 e 2022-23 e valida em 2023-24), com as dobras fornecidas explicitamente ao `GridSearchCV` (ou ao `RandomizedSearchCV`, no gradient boosting); a melhor configuração é reajustada no treino inteiro;",
-        "**escolhas na validação (2024-25)**: comparação das famílias de modelos, escolha do modelo final, escolha e ajuste do calibrador de probabilidades e calibração do intervalo conformal;",
-        "**teste (2025-26)**: avaliado uma única vez, depois de todas as escolhas congeladas (`python -m src.evaluate --final`).",
+        "hiperparâmetros: validação cruzada temporal dentro do treino, com janela expansiva por temporada (treina em 2021-22 e valida em 2022-23; treina em 2021-22 e 2022-23 e valida em 2023-24), com as dobras fornecidas explicitamente ao `GridSearchCV` (ou ao `RandomizedSearchCV`, no gradient boosting); a melhor configuração é reajustada no treino inteiro;",
+        "escolhas na validação (2024-25): comparação das famílias de modelos, escolha do modelo final, escolha e ajuste do calibrador de probabilidades e calibração do intervalo conformal;",
+        "teste (2025-26): avaliado uma única vez, depois de todas as escolhas congeladas (`python -m src.evaluate --final`).",
     ])
     rel.subtitulo("5.3. Baselines e modelos de regressão")
     P("A baseline prometida na N1 é a média dos cinco jogos anteriores. A análise mostrou que ela fica entre as mais "
       "fracas das médias recentes (só a de três jogos erra mais) e bem atrás da média exponencial, então os modelos também "
       "foram comparados com a média exponencial e com uma regressão linear de uma variável sobre ela, que verifica se o "
       "ganho vem só de reescalar a média recente. Por ser ajustada por mínimos quadrados, essa regressão linear não é a "
-      "régua mais exigente em MAE; por isso a Seção 6.1 acrescenta, como diagnóstico, uma regressão **mediana** sobre a "
+      "régua mais exigente em MAE; por isso a Seção 6.1 acrescenta, como diagnóstico, uma regressão mediana sobre a "
       "média exponencial. Os modelos, em ordem crescente de complexidade, foram:")
     rel.itens([
-        "**Ridge e Lasso** (HOERL; KENNARD, 1970; TIBSHIRANI, 1996): regressão linear com penalização L2 e L1, incluídas por causa da multicolinearidade observada;",
-        "**GLM de Poisson**: modelo linear generalizado com ligação logarítmica, natural para contagens;",
-        "**floresta aleatória** (BREIMAN, 2001): comitê de árvores por bagging, capaz de capturar interações não lineares;",
-        "**gradient boosting** (FRIEDMAN, 2001), na implementação `HistGradientBoostingRegressor`, com três funções de perda: quadrática, Poisson e absoluta. A perda absoluta otimiza diretamente o MAE.",
+        "Ridge e Lasso (HOERL; KENNARD, 1970; TIBSHIRANI, 1996): regressão linear com penalização L2 e L1, incluídas por causa da multicolinearidade observada;",
+        "GLM de Poisson: modelo linear generalizado com ligação logarítmica, natural para contagens;",
+        "floresta aleatória (BREIMAN, 2001): comitê de árvores por bagging, que captura interações não lineares;",
+        "gradient boosting (FRIEDMAN, 2001), na implementação `HistGradientBoostingRegressor`, com três funções de perda: quadrática, Poisson e absoluta. A perda absoluta otimiza diretamente o MAE.",
     ])
     hp = [[NOMES_MODELO[k], ", ".join(f"{p.replace('model__', '')}={_fmt_param(v)}" for p, v in d["melhores_parametros"].items()),
            num(-d["score_cv_medio"]), num(tv["regressao"]["validacao"][k]["mae"])]
@@ -677,7 +678,7 @@ def build(video_url: str | None) -> None:
       "SHAFER, 2005; ANGELOPOULOS; BATES, 2021). O escore de não conformidade é o erro absoluto normalizado pela raiz da "
       "previsão, |y − μ| / √max(μ, 1), porque a variância de uma contagem cresce com a média. O quantil q do escore é "
       "calculado na validação, com correção de amostra finita, e o intervalo é μ ± q·√max(μ, 1), limitado inferiormente a "
-      "zero. Sob permutabilidade entre validação e teste, o método garante cobertura **marginal** de pelo menos o nível "
+      "zero. Sob permutabilidade entre validação e teste, o método garante cobertura *marginal* de pelo menos o nível "
       "nominal, mas não cobertura por subgrupo. Como há deriva entre temporadas e a validação também serviu para escolher "
       "o modelo, a cobertura no teste é medida, não presumida.")
     rel.subtitulo("5.6. Métricas e comparação estatística")
@@ -686,7 +687,7 @@ def build(video_url: str | None) -> None:
       "revocação, F1, área sob a curva ROC (AUC), Brier score (BRIER, 1950), Brier skill score em relação ao estimador "
       "ingênuo (que prevê sempre a taxa do treino), perda logarítmica, erro esperado de calibração (ECE) e curva de "
       "calibração. Como as linhas de um mesmo atleta não são independentes, as diferenças entre modelos são acompanhadas "
-      "de intervalos de confiança de 95% por **bootstrap pareado por jogador** (2.000 réplicas; 1.000 para a AUC). "
+      "de intervalos de confiança de 95% por bootstrap pareado por jogador (2.000 réplicas; 1.000 para a AUC). "
       "Reamostrar o atleta inteiro trata a dependência entre os jogos de um mesmo jogador, mas não a dependência entre "
       "jogadores de uma mesma partida nem a variação entre temporadas: os intervalos medem a incerteza amostral dentro da "
       "temporada 2025-26, com o modelo fixo, e podem ainda ser algo otimistas.")
@@ -697,9 +698,9 @@ def build(video_url: str | None) -> None:
       "embaralha a família inteira de uma vez; embaralhar uma coluna isolada subestima a importância quando há colunas "
       "quase idênticas. Para estimar quanto do erro se deve a não conhecer o nível do atleta, usaram-se previsores que "
       "trapaceiam de propósito, com informação do futuro: oráculos simples (média e mediana do próprio atleta na "
-      "temporada inteira, sem o jogo previsto, e nos cinco jogos antes e depois) e um **modelo com nível oráculo**, o "
-      "mesmo modelo final recebendo também a média do atleta na temporada inteira. Não são utilizáveis na prática: "
-      "servem de régua.")
+      "temporada inteira, sem o jogo previsto, e nos cinco jogos antes e depois) e um *modelo com nível oráculo*, o "
+      "mesmo modelo final recebendo também a média do atleta na temporada inteira. Nenhum deles pode ser usado na "
+      "prática; servem apenas como referência de comparação.")
     rel.subtitulo("5.8. Artefato")
     P("O artefato é uma ferramenta de linha de comando (`python -m src.predict`) que recebe jogador e data e devolve os "
       "pontos previstos, os intervalos de 80% e 90%, a baseline, a probabilidade de superar o patamar recente e, por se "
@@ -729,14 +730,14 @@ def build(video_url: str | None) -> None:
       f"mediana só sobre a média exponencial (diagnóstico posterior) erra {num(lad['mae_teste'])}, e contra ela o ganho do "
       f"modelo cai para {num(-b_lad['delta'])} ponto (IC de {num(-b_lad['ic_sup'])} a {num(-b_lad['ic_inf'])}). Esse é o "
       "ganho que vem de informação além da média recente.")
-    P("Três observações qualificam o resultado. Primeiro, todos os modelos ficam muito próximos entre si (diferença de "
-      f"{num(max(v['mae'] for v in T.values() if v['tipo'] == 'modelo') - T[fin]['mae'])} entre o pior e o "
-      "melhor modelo treinado): a informação disponível, e não o algoritmo, limita o desempenho. Segundo, o gradient "
-      "boosting com perda absoluta vence porque prevê a mediana condicional, que minimiza o erro absoluto numa variável "
-      "assimétrica; por isso também tem viés negativo (subestima a média) e RMSE ligeiramente maior que o do Ridge, que "
-      "prevê a média. Terceiro, o Ridge e o Lasso, com coeficientes interpretáveis, ficam a menos de 0,02 ponto do melhor "
-      "modelo, o que os torna alternativa razoável quando a explicabilidade pesa mais. O modelo final foi escolhido por "
-      "ter o menor MAE na validação, critério fixado antes de ler o teste.")
+    P("Os modelos treinados ficam muito próximos entre si: a diferença entre o pior e o melhor é de "
+      f"{num(max(v['mae'] for v in T.values() if v['tipo'] == 'modelo') - T[fin]['mae'])} ponto. O que limita o "
+      "desempenho, portanto, é mais a informação disponível antes do jogo do que o algoritmo. O gradient boosting com "
+      "perda absoluta vence porque prevê a mediana condicional, que minimiza o erro absoluto numa variável assimétrica. "
+      "Pelo mesmo motivo ele tem viés negativo (subestima a média) e RMSE um pouco maior que o do Ridge, que prevê a "
+      "média. Ridge e Lasso, de coeficientes interpretáveis, ficam a menos de 0,02 ponto do melhor modelo e são uma "
+      "alternativa razoável quando a explicabilidade pesa mais. O modelo final foi escolhido por ter o menor MAE na "
+      "validação, critério fixado antes de ler o teste.")
     rel.figura("f_escada_mae.png", "Escada de previsores: MAE no teste de baselines e modelos.", largura=14.5)
     rel.subtitulo("6.2. Erro por faixa de minutos e por temporada")
     fx = {k: pd.DataFrame(v).set_index("grupo") for k, v in R["por_faixa_de_minutos"].items()}
@@ -830,9 +831,9 @@ def build(video_url: str | None) -> None:
       f"No teste, a cobertura foi de {pct(iv80['global']['cobertura'])} e {pct(iv90['global']['cobertura'])}, com largura "
       f"média de {num(iv80['global']['largura_media'], 1)} e {num(iv90['global']['largura_media'], 1)} pontos. Por faixa de "
       f"minutos (Figura 6), a cobertura variou de {pct(min(cob80))} a {pct(max(cob80))} no nível de 80% e de "
-      f"{pct(min(cob90))} a {pct(max(cob90))} no de 90%: é menor para os atletas de menos minutos, como esperado de uma "
-      "garantia apenas marginal. A largura dos intervalos é, ela mesma, um resultado: prever os pontos de um atleta em um "
-      f"jogo comporta, honestamente, uma faixa de cerca de {num(iv80['global']['largura_media'], 0)} pontos para 80% de cobertura.")
+      f"{pct(min(cob90))} a {pct(max(cob90))} no de 90%: é menor para os atletas de menos minutos, como se espera de uma "
+      "garantia apenas marginal. A largura também é um resultado: para cobrir 80% dos jogos, a previsão dos pontos de um "
+      f"atleta precisa de uma faixa de cerca de {num(iv80['global']['largura_media'], 0)} pontos.")
     rel.figura("f_cobertura_intervalos.png", "Cobertura dos intervalos conformais por faixa de minutos (pontilhado: nominal).", largura=13)
     rel.subtitulo("6.6. Quanto do erro se deve a não conhecer o nível do atleta")
     ot = {k: v for k, v in teto.items() if k.startswith("oraculo") and isinstance(v, dict)}
@@ -856,9 +857,9 @@ def build(video_url: str | None) -> None:
       f"distância entre a média exponencial ({num(T['media_exponencial']['mae'])}) e esse modelo com informação do futuro, o "
       f"modelo final percorre cerca de {pct(fracao_nivel, 0)}. O erro que sobra, perto de {num(mo['mae_teste'], 1)} pontos por "
       "jogo mesmo com o nível conhecido, vem principalmente da variação de jogo a jogo: minutos que dependem do placar e "
-      "de faltas, aproveitamento de arremessos, contusões durante a partida e escalações. Isso não é um teto absoluto (um "
-      "oráculo com outras informações, como os minutos que o atleta vai jogar, iria mais longe), mas delimita o quanto "
-      "informação adicional sobre o *nível* do atleta poderia ajudar.")
+      "de faltas, aproveitamento de arremessos, contusões durante a partida e escalações. Esse valor não é um teto "
+      "absoluto, porque um oráculo com outras informações, como os minutos que o atleta vai jogar, iria mais longe. Ele "
+      "mostra quanto ainda se ganharia com mais informação sobre o *nível* do atleta.")
     rel.subtitulo("6.7. Análise de erros")
     me = R["maiores_erros"][:5]
     exemplos = "; ".join(f"{d['PLAYER_NAME']} em {pd.Timestamp(d['GAME_DATE']):%d/%m/%Y} ({int(d['y_pts'])} pontos, previsão de {num(d['previsto'], 1)})" for d in me[:3])
@@ -902,20 +903,20 @@ def build(video_url: str | None) -> None:
     rel.tabela("Resultados esperados (N1) e resultados obtidos.", ["Resultado esperado", "Situação", "Evidência"], esperados,
                larguras=[6.0, 2.6, 7.4])
     P(f"{_extenso(n_alc).capitalize()} dos cinco resultados esperados {'foi alcançado' if n_alc == 1 else 'foram alcançados'} "
-      f"e {_extenso(n_par) if n_par != 2 else 'dois'}, parcialmente. A principal contribuição não é um número "
-      "de acurácia, e sim a delimitação honesta do que é previsível. Com informação pré-jogo de desempenho, um modelo "
-      "supervisionado melhora de forma consistente, mas modesta, as médias usadas na prática, produz probabilidades "
-      "calibradas e intervalos com a cobertura marginal prometida. O diagnóstico com informação do futuro sugere que a "
-      "maior parte do erro restante vem da variação de jogo a jogo, e não de estimar mal o nível do atleta. Também se "
-      "mostrou que a escolha da baseline importa: vencer a média de cinco jogos é fácil; vencer a média exponencial, e uma "
-      "regressão mediana sobre ela, com intervalo de confiança, é o teste que realmente mede o valor do modelo.")
+      f"e {_extenso(n_par) if n_par != 2 else 'dois'}, parcialmente. O principal resultado é a medida de quanto da "
+      "pontuação dá para prever com informação pré-jogo. Com essa informação, um modelo supervisionado melhora de forma "
+      "consistente, mas modesta, as médias usadas na prática, e entrega probabilidades calibradas e intervalos com a "
+      "cobertura marginal prometida. Pelo diagnóstico com informação do futuro, a maior parte do erro restante vem da "
+      "variação de um jogo para outro; estimar melhor o nível do atleta ajudaria pouco. A escolha da baseline também pesa "
+      "na conclusão. Vencer a média de cinco jogos é fácil. A comparação que mede o valor do modelo é contra a média "
+      "exponencial e contra uma regressão mediana sobre ela, com intervalo de confiança.")
     P("As limitações permanecem as declaradas na N1: ausência de informação de contusões e escalações, que é a maior fonte "
       "de erro irredutível; recorte aos atletas de rotação; titularidade estimada; janela que não reinicia quando o atleta "
       "troca de equipe; dependência entre observações (tratada com bootstrap por jogador); e fonte única de dados. "
-      "Acrescentam-se os empates da linha sintética, agora documentados. Como trabalhos futuros, destacam-se incorporar a "
+      "Acrescentam-se os empates da linha sintética, agora documentados. Ficam como trabalhos futuros incorporar a "
       "escalação confirmada antes do jogo, modelar minutos e aproveitamento separadamente e testar intervalos condicionais "
       "por quantis (ROMANO; PATTERSON; CANDÈS, 2019).")
-    P("Em síntese, o artefato serve para estimar, com incerteza explícita, o desempenho de atletas de rotação em partidas "
+    P("O artefato serve para estimar, com incerteza explícita, o desempenho de atletas de rotação em partidas "
       "de temporada regular. Não serve para jogadores fora da rotação, para pós-temporada, nem para qualquer conclusão a "
       "respeito de mercados de apostas.")
 

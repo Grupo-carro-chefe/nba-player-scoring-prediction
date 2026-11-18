@@ -19,7 +19,7 @@ esperado, gestão de banca nem qualquer camada relacionada a apostas.
 |---|---|
 | Relatório final (N2) | [`relatorio/relatorio_N2.pdf`](relatorio/relatorio_N2.pdf) (fonte em `.docx` ao lado) |
 | Relatório da N1 | [`relatorio/relatorio_N1.pdf`](relatorio/relatorio_N1.pdf) |
-| Vídeo de apresentação | link no relatório e em [`GRUPO.md`](GRUPO.md) |
+| Vídeo de apresentação | [youtu.be/b6IV7HtJuvw](https://youtu.be/b6IV7HtJuvw) |
 | Dataset e descrição | [`data/README.md`](data/README.md) |
 | Notebooks (01 a 05, executados) | [`notebooks/`](notebooks/) |
 | Código e testes | [`src/`](src/), [`scripts/`](scripts/) e [`tests/`](tests/) |
