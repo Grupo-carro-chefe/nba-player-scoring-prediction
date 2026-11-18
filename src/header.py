@@ -149,6 +149,7 @@ HISTORICO: dict[str, list[tuple[str, str, str]]] = {
         (_N2, "Rodrigo", "Correções da revisão crítica: teto, baselines, ablação, conformal, referências."),
         (_N2, "Rodrigo", "Fatos do texto verificados contra os resultados; números lidos dos arquivos."),
         (_N2, "Rodrigo", "Metadados próprios do .docx; texto do run_all --retrain."),
+        ("2026-11-18", "Rodrigo", "Revisão de estilo do texto: menos negrito, frases mais diretas, mesmos números."),
     ],
     "scripts/run_all.py": [
         (_N2, "Rodrigo", "Versão inicial: pipeline da N2 de ponta a ponta."),
